@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
 import { clsx, type ClassValue } from 'clsx';
+import { useEffect, useState, useCallback } from 'react';
+import type { FC } from 'react';
 import { twMerge } from 'tailwind-merge';
+
 import type { Toast as ToastType } from '@/types';
 
 /**
  * Utility to merge tailwind classes
  */
-export function cn(...inputs: ClassValue[]) {
+function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
@@ -18,9 +20,16 @@ export interface ToastProps {
 /**
  * Individual Toast notification component
  */
-export const ToastItem: React.FC<ToastProps> = ({ toast, onClose }) => {
+export const ToastItem: FC<ToastProps> = ({ toast, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);
   
+  const handleClose = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onClose(toast.id);
+    }, 300);
+  }, [onClose, toast.id]);
+
   useEffect(() => {
     const duration = toast.duration || 5000;
     const timer = setTimeout(() => {
@@ -28,14 +37,7 @@ export const ToastItem: React.FC<ToastProps> = ({ toast, onClose }) => {
     }, duration);
     
     return () => clearTimeout(timer);
-  }, [toast.duration]);
-  
-  const handleClose = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      onClose(toast.id);
-    }, 300);
-  };
+  }, [toast.duration, handleClose]);
   
   const icons = {
     success: (
@@ -114,7 +116,7 @@ export interface ToastContainerProps {
 /**
  * Toast container component for managing multiple toasts
  */
-export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onClose }) => {
+export const ToastContainer: FC<ToastContainerProps> = ({ toasts, onClose }) => {
   if (toasts.length === 0) return null;
   
   return (

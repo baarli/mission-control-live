@@ -3,6 +3,7 @@
    ============================================ */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+
 import type { Toast, ToastType } from '../types';
 
 interface UseToastReturn {
@@ -22,6 +23,10 @@ export const useToast = (): UseToastReturn => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const idCounter = useRef(0);
 
+  const removeToast = useCallback((id: string): void => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
   const showToast = useCallback((message: string, type: ToastType = 'info'): void => {
     const id = `toast-${++idCounter.current}-${Date.now()}`;
     const newToast: Toast = { id, message, type };
@@ -32,11 +37,7 @@ export const useToast = (): UseToastReturn => {
     setTimeout(() => {
       removeToast(id);
     }, 3000);
-  }, []);
-
-  const removeToast = useCallback((id: string): void => {
-    setToasts(prev => prev.filter(t => t.id !== id));
-  }, []);
+  }, [removeToast]);
 
   // Listen to global toast events
   useEffect(() => {

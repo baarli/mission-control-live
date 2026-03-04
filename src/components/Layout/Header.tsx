@@ -3,8 +3,10 @@
    ============================================ */
 
 import React from 'react';
-import { Button, Toggle } from '../UI';
+
 import type { NavItem, Theme } from '../../types';
+import { Button, Toggle } from '../UI';
+
 import styles from './Header.module.css';
 
 interface HeaderProps {

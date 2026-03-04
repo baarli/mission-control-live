@@ -3,7 +3,9 @@
    ============================================ */
 
 import React from 'react';
+
 import type { NielsenMetric, PodcastMetric } from '../../types';
+
 import styles from './DataTable.module.css';
 
 interface DataTableProps {

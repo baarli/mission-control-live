@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi } from 'vitest';
+
 import { SakItem } from '@/components/Saksliste/SakItem';
 import type { Sak } from '@/types';
 
@@ -25,7 +26,6 @@ describe('SakItem', () => {
   const mockOnEdit = vi.fn();
   const mockOnDelete = vi.fn();
   const mockOnStatusChange = vi.fn();
-  const mockOnPriorityChange = vi.fn();
   
   describe('rendering', () => {
     it('renders sak title', () => {

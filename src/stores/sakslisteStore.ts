@@ -3,8 +3,8 @@
    ============================================ */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
+import { persist, createJSONStorage, devtools } from 'zustand/middleware';
+
 import type { Sak, Category } from '../types';
 
 interface SakslisteState {
@@ -31,7 +31,7 @@ interface SakslisteState {
   reorderItems: (orderedIds: string[]) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  setFilter: (key: keyof SakslisteState['filters'], value: any) => void;
+  setFilter: (key: keyof SakslisteState['filters'], value: SakslisteState['filters'][keyof SakslisteState['filters']]) => void;
   clearFilters: () => void;
   setSort: (sortBy: SakslisteState['sortBy'], sortOrder?: 'asc' | 'desc') => void;
   reset: () => void;
@@ -126,7 +126,7 @@ export const useSakslisteStore = create<SakslisteState>()(
           set({ error, isLoading: false });
         },
 
-        setFilter: (key: keyof SakslisteState['filters'], value: any) => {
+        setFilter: (key: keyof SakslisteState['filters'], value: SakslisteState['filters'][keyof SakslisteState['filters']]) => {
           set((state) => ({
             filters: { ...state.filters, [key]: value }
           }));

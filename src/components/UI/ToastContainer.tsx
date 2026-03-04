@@ -3,8 +3,10 @@
    ============================================ */
 
 import React from 'react';
-import { ToastItem } from './Toast';
+
 import type { Toast as ToastType } from '../../types';
+
+import { ToastItem } from './Toast';
 import styles from './ToastContainer.module.css';
 
 interface ToastContainerProps {

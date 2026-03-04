@@ -3,11 +3,13 @@
    ============================================ */
 
 import React, { useState } from 'react';
-import { SakItem } from './SakItem';
-import SakEditForm from './SakEditForm';
-import EmptyState from './EmptyState';
-import { GlassCard, Button, Input, SkeletonCard } from '../UI';
+
 import type { Sak } from '../../types';
+import { GlassCard, Button, Input, SkeletonCard } from '../UI';
+
+import EmptyState from './EmptyState';
+import SakEditForm from './SakEditForm';
+import { SakItem } from './SakItem';
 import styles from './Saksliste.module.css';
 
 interface SakslisteProps {

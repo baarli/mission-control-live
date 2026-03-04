@@ -1,15 +1,16 @@
-import React from 'react';
 import { clsx, type ClassValue } from 'clsx';
+import { forwardRef } from 'react';
+import type { HTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 /**
  * Utility to merge tailwind classes
  */
-export function cn(...inputs: ClassValue[]) {
+function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface GlassCardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'elevated' | 'outlined';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   hoverable?: boolean;
@@ -18,7 +19,7 @@ export interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Glass-morphism card component
  */
-export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
+export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
   (
     {
       className,

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { MetricCard } from '@/components/Dashboard/MetricCard';
+
 import { render, screen } from '../test-utils';
 
 describe('MetricCard', () => {

@@ -1,15 +1,16 @@
-import React, { useState, useCallback } from 'react';
 import { clsx, type ClassValue } from 'clsx';
+import React, { useState, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
+
+import { Button } from '@/components/UI/Button';
+import { GlassCard } from '@/components/UI/GlassCard';
 import type { Sak } from '@/types';
 import { timeAgo } from '@/utils/timeAgo';
-import { GlassCard } from '@/components/UI/GlassCard';
-import { Button } from '@/components/UI/Button';
 
 /**
  * Utility to merge tailwind classes
  */
-export function cn(...inputs: ClassValue[]) {
+function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
@@ -29,7 +30,7 @@ export const SakItem: React.FC<SakItemProps> = ({
   onEdit,
   onDelete,
   onStatusChange,
-  onPriorityChange,
+  onPriorityChange: _onPriorityChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   

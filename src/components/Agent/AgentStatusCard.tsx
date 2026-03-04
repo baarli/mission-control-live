@@ -3,8 +3,11 @@
    ============================================ */
 
 import React from 'react';
-import { GlassCard } from '../Layout';
+
 import { useAgentStore } from '@/stores/agentStore';
+
+import { GlassCard } from '../Layout';
+
 import styles from './styles.module.css';
 
 export const AgentStatusCard: React.FC = () => {

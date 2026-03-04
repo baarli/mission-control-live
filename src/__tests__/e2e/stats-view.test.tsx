@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StatCard } from '@/components/UI/StatCard';
-import { GlassCard } from '@/components/UI/GlassCard';
 import React from 'react';
+import { describe, it, expect } from 'vitest';
+
+import { GlassCard } from '@/components/UI/GlassCard';
+import { StatCard } from '@/components/UI/StatCard';
+
 
 // Local type for test dashboard stats
 interface DashboardStats {

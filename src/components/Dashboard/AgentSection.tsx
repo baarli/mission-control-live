@@ -3,7 +3,9 @@
    ============================================ */
 
 import React from 'react';
+
 import { AgentStatusCard, CommandSender, TaskList, ApprovalQueue, ActivityLog } from '../Agent';
+
 import styles from './Dashboard.module.css';
 
 export const AgentSection: React.FC = () => {

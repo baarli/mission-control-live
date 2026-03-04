@@ -3,8 +3,9 @@
    PDF report generation
    ============================================ */
 
-import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 import type { Sak, NielsenMetric, PodcastMetric } from '../types';
+
+import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
 export interface PdfGenerationOptions {
   title?: string;
@@ -249,7 +250,7 @@ function getCategoryCounts(saker: Sak[]): Record<string, number> {
  */
 export async function previewPdf(
   content: string | HTMLElement,
-  options: PdfGenerationOptions = {}
+  _options: PdfGenerationOptions = {}
 ): Promise<string> {
   // In a real implementation, this would use a library like pdfmake or jsPDF
   // to generate a preview data URL

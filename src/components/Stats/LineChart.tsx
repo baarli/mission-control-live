@@ -3,7 +3,9 @@
    ============================================ */
 
 import React, { useState, useMemo } from 'react';
+
 import type { ChartDataPoint } from '../../types';
+
 import styles from './LineChart.module.css';
 
 interface LineChartProps {
@@ -16,6 +18,8 @@ interface LineChartProps {
   showPoints?: boolean;
   yAxisFormatter?: (value: number) => string;
 }
+
+const CHART_PADDING = { top: 20, right: 20, bottom: 40, left: 60 };
 
 const LineChart: React.FC<LineChartProps> = ({
   data,
@@ -30,11 +34,11 @@ const LineChart: React.FC<LineChartProps> = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
-  const padding = { top: 20, right: 20, bottom: 40, left: 60 };
+  const padding = CHART_PADDING;
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
-  const { minValue, maxValue, yScale, xScale, points, pathD, areaD } = useMemo(() => {
+  const { minValue, maxValue, points, pathD, areaD } = useMemo(() => {
     if (data.length === 0) {
       return {
         minValue: 0,
@@ -53,11 +57,11 @@ const LineChart: React.FC<LineChartProps> = ({
     const range = maxValue - minValue || 1;
 
     const yScale = (value: number) => {
-      return padding.top + chartHeight - ((value - minValue) / range) * chartHeight;
+      return CHART_PADDING.top + chartHeight - ((value - minValue) / range) * chartHeight;
     };
 
     const xScale = (index: number) => {
-      return padding.left + (index / (data.length - 1)) * chartWidth;
+      return CHART_PADDING.left + (index / (data.length - 1)) * chartWidth;
     };
 
     const points = data.map((d, i) => ({
@@ -84,7 +88,7 @@ const LineChart: React.FC<LineChartProps> = ({
     // Generate area path
     const lastPoint = points[points.length - 1]!;
     const firstPoint = points[0]!;
-    const areaD = `${pathD} L ${lastPoint.x} ${padding.top + chartHeight} L ${firstPoint.x} ${padding.top + chartHeight} Z`;
+    const areaD = `${pathD} L ${lastPoint.x} ${CHART_PADDING.top + chartHeight} L ${firstPoint.x} ${CHART_PADDING.top + chartHeight} Z`;
 
     return { minValue, maxValue, yScale, xScale, points, pathD, areaD };
   }, [data, chartWidth, chartHeight]);

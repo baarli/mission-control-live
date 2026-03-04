@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import { localStorageMock } from '@/__mocks__/localStorage';
 import {
   getItem,
   setItem,
@@ -8,7 +10,6 @@ import {
   getAllKeys,
   StorageKeys,
 } from '@/services/storage';
-import { localStorageMock } from '@/__mocks__/localStorage';
 
 describe('Storage Service', () => {
   const PREFIX = 'mission_control_';
@@ -241,5 +242,3 @@ describe('Storage Service', () => {
   });
 });
 
-// Need to import vi for the spy
-import { vi } from 'vitest';

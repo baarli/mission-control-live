@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom/vitest';
-import { vi, expect, afterEach, beforeAll, afterAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
-import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import { vi, expect, afterEach, beforeAll, afterAll } from 'vitest';
 
 // Import mocks
 import { setupLocalStorageMock, resetLocalStorageMock } from '@/__mocks__/localStorage';
@@ -156,14 +156,12 @@ expect.extend({
 // Global Types
 // ============================================================================
 
-declare global {
-  namespace Vi {
-    interface Assertion {
-      toBeWithinRange(floor: number, ceiling: number): void;
-    }
-    interface AsymmetricMatchersContaining {
-      toBeWithinRange(floor: number, ceiling: number): void;
-    }
+declare module 'vitest' {
+  interface Assertion {
+    toBeWithinRange(floor: number, ceiling: number): void;
+  }
+  interface AsymmetricMatchersContaining {
+    toBeWithinRange(floor: number, ceiling: number): void;
   }
 }
 

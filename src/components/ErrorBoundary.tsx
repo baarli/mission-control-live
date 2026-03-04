@@ -1,7 +1,8 @@
-import React from 'react';
+import { Component } from 'react';
+import type { ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 interface ErrorBoundaryState {
@@ -13,7 +14,7 @@ interface ErrorBoundaryState {
  * Error boundary that catches rendering errors and displays a fallback UI
  * instead of a white screen.
  */
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };

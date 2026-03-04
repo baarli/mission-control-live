@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import type { 
   AgentCommand, 
   AgentResponse, 
@@ -55,7 +56,7 @@ const initialState = {
 /**
  * Agent store for managing BaarliClaw agent state
  */
-export const useAgentStore = create<AgentState>((set, get) => ({
+export const useAgentStore = create<AgentState>((set, _get) => ({
   ...initialState,
   
   setIsConnected: (connected) => set({ isConnected: connected }),

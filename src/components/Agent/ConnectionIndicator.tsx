@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+
 import { useAgentStore } from '@/stores';
+
 import styles from './styles.module.css';
 
 export function ConnectionIndicator() {

@@ -3,7 +3,9 @@
    ============================================ */
 
 import React from 'react';
+
 import { GlassCard } from '../Layout';
+
 import styles from './StatCard.module.css';
 
 interface StatCardProps {

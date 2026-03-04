@@ -3,9 +3,10 @@
    CSV, JSON, and other export formats
    ============================================ */
 
-import type { Sak, SearchResult, NielsenMetric, PodcastMetric } from '../types';
-import { formatDate } from './date';
 import { getCategoryLabel } from '../constants/categories';
+import type { Sak, SearchResult, NielsenMetric, PodcastMetric } from '../types';
+
+import { formatDate } from './date';
 
 /**
  * Export data to CSV

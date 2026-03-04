@@ -3,10 +3,12 @@
    ============================================ */
 
 import React, { useMemo } from 'react';
-import LineChart from './LineChart';
-import DataTable from './DataTable';
-import { GlassCard, Button, SkeletonCard } from '../UI';
+
 import type { NielsenMetric, PodcastMetric, ChartDataPoint } from '../../types';
+import { GlassCard, Button, SkeletonCard } from '../UI';
+
+import DataTable from './DataTable';
+import LineChart from './LineChart';
 import styles from './StatsView.module.css';
 
 interface StatsViewProps {

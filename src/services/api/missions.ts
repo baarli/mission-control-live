@@ -1,7 +1,8 @@
-import { supabase } from '../supabase';
 
 import type { Mission } from '@/types';
 import type { CreateMissionInput, UpdateMissionInput } from '@/types/supabase';
+
+import { supabase } from '../supabase';
 
 export const missionsApi = {
   async getAll(): Promise<Mission[]> {

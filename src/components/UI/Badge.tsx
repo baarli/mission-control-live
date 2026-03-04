@@ -3,7 +3,9 @@
    ============================================ */
 
 import React from 'react';
+
 import type { BadgeVariant, Category } from '../../types';
+
 import styles from './Badge.module.css';
 
 interface BadgeProps {

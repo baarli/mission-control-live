@@ -3,6 +3,7 @@
    ============================================ */
 
 import React from 'react';
+
 import styles from './Toggle.module.css';
 
 interface ToggleProps {

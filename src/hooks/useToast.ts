@@ -3,6 +3,7 @@
    ============================================ */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+
 import type { Toast, ToastType } from '../types';
 
 interface UseToastReturn {
@@ -89,6 +90,7 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
     };
     
     toastListeners.push(listener);
+    const timers = timersRef.current;
     
     return () => {
       const index = toastListeners.indexOf(listener);
@@ -97,8 +99,8 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
       }
       
       // Clear all timers on unmount
-      timersRef.current.forEach((timer) => clearTimeout(timer));
-      timersRef.current.clear();
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
     };
   }, [showToast]);
 

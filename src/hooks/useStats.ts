@@ -3,6 +3,7 @@
    ============================================ */
 
 import { useCallback, useEffect, useMemo } from 'react';
+
 import { 
   useStatsStore, 
   useNielsenData, 
@@ -12,7 +13,8 @@ import {
   useStatsTimeRange,
   useStatsView
 } from '../stores/statsStore';
-import type { ChartDataPoint } from '../types';
+import type { ChartDataPoint, NielsenMetric, PodcastMetric } from '../types';
+
 import { useToast } from './useToast';
 
 type StatsTimeRange = 'week' | 'month' | 'quarter' | 'year';
@@ -62,7 +64,7 @@ interface UseStatsReturn {
 }
 
 // Mock API calls - replace with actual API calls
-const mockFetchNielsen = async (): Promise<any[]> => {
+const mockFetchNielsen = async (): Promise<NielsenMetric[]> => {
   await new Promise((resolve) => setTimeout(resolve, 600));
   return [
     { id: '1', channel: 'NRJ', metric_type: 'listeners', value: 150000, week_start: '2024-01-01', created_at: new Date().toISOString() },
@@ -72,7 +74,7 @@ const mockFetchNielsen = async (): Promise<any[]> => {
   ];
 };
 
-const mockFetchPodcasts = async (): Promise<any[]> => {
+const mockFetchPodcasts = async (): Promise<PodcastMetric[]> => {
   await new Promise((resolve) => setTimeout(resolve, 600));
   return [
     { id: '1', podcast_title: 'Kloakkontroll', rank: 5, total_listens: 50000, week_start: '2024-01-01', created_at: new Date().toISOString() },
@@ -95,11 +97,11 @@ export function useStats(): UseStatsReturn {
   const chartType = useStatsStore((state) => state.chartType);
 
   // Memoized computed values
-  const nielsenChartData = useMemo(() => store.getNielsenChartData(), [store, nielsenData, selectedChannels, timeRange]);
-  const podcastChartData = useMemo(() => store.getPodcastChartData(), [store, podcastData, selectedPodcasts, timeRange]);
-  const availableChannels = useMemo(() => store.getAvailableChannels(), [store, nielsenData]);
-  const availablePodcasts = useMemo(() => store.getAvailablePodcasts(), [store, podcastData]);
-  const summary = useMemo(() => store.getStatsSummary(), [store, nielsenData, podcastData]);
+  const nielsenChartData = useMemo(() => store.getNielsenChartData(), [store]);
+  const podcastChartData = useMemo(() => store.getPodcastChartData(), [store]);
+  const availableChannels = useMemo(() => store.getAvailableChannels(), [store]);
+  const availablePodcasts = useMemo(() => store.getAvailablePodcasts(), [store]);
+  const summary = useMemo(() => store.getStatsSummary(), [store]);
 
   // Actions
   const fetchNielsenData = useCallback(async () => {
@@ -179,6 +181,7 @@ export function useStats(): UseStatsReturn {
     if (podcastData.length === 0 && !isLoading) {
       fetchPodcastData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

@@ -3,13 +3,15 @@
    ============================================ */
 
 import React, { useState, useCallback } from 'react';
-import SearchResult from './SearchResult';
+
+import type { SearchResult as SearchResultType, SearchHistoryItem } from '../../types';
+import EmptyState from '../Saksliste/EmptyState';
+import { GlassCard, Button, Input, Select, SkeletonCard } from '../UI';
+
 import PromptEditor from './PromptEditor';
 import SearchHistory from './SearchHistory';
-import { GlassCard, Button, Input, Select, SkeletonCard } from '../UI';
-import EmptyState from '../Saksliste/EmptyState';
-import type { SearchResult as SearchResultType, SearchHistoryItem, Category } from '../../types';
 import styles from './SearchPanel.module.css';
+import SearchResult from './SearchResult';
 
 interface SearchPanelProps {
   results: SearchResultType[];

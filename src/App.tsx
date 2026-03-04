@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
+
+import { ConnectionIndicator } from '@components/Agent';
+import { Dashboard , AgentSection } from '@components/Dashboard';
 import { Layout } from '@components/Layout';
-import { Dashboard } from '@components/Dashboard';
-import { AgentSection } from '@components/Dashboard';
 import { Saksliste } from '@components/Saksliste';
 import { SearchPanel } from '@components/Search';
 import { StatsView } from '@components/Stats';
-import { ConnectionIndicator } from '@components/Agent';
 import { useKeyboardShortcuts, getMissionControlShortcuts } from '@hooks/useKeyboardShortcuts';
 
 function App() {

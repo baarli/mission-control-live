@@ -3,7 +3,9 @@
    ============================================ */
 
 import React, { InputHTMLAttributes, TextareaHTMLAttributes, forwardRef } from 'react';
+
 import type { InputType } from '../../types';
+
 import styles from './Input.module.css';
 
 interface BaseInputProps {

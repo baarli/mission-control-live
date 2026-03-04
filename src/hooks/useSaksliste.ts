@@ -3,6 +3,7 @@
    ============================================ */
 
 import { useCallback, useEffect, useMemo } from 'react';
+
 import { 
   useSakslisteStore, 
   useSakslisteItems, 
@@ -12,6 +13,7 @@ import {
   useFilteredSakslisteItems
 } from '../stores/sakslisteStore';
 import type { Sak, Category } from '../types';
+
 import { useToast } from './useToast';
 
 interface UseSakslisteReturn {
@@ -69,7 +71,7 @@ const mockUpdateItem = async (id: string, updates: Partial<Sak>): Promise<Sak> =
   } as Sak;
 };
 
-const mockDeleteItem = async (id: string): Promise<void> => {
+const mockDeleteItem = async (_id: string): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
 };
 
@@ -192,6 +194,7 @@ export function useSaksliste(): UseSakslisteReturn {
     if (items.length === 0 && !isLoading) {
       refreshItems();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

@@ -1,20 +1,21 @@
-import React from 'react';
 import { clsx, type ClassValue } from 'clsx';
+import { forwardRef } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 /**
  * Utility to merge tailwind classes
  */
-export function cn(...inputs: ClassValue[]) {
+function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface StatCardProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   value: string | number;
   change?: number;
   changeLabel?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   trend?: 'up' | 'down' | 'neutral';
   loading?: boolean;
 }
@@ -22,7 +23,7 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Stat card component for displaying metrics
  */
-export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
+export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
   (
     {
       className,

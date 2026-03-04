@@ -3,8 +3,10 @@
    ============================================ */
 
 import React from 'react';
+
 import { GlassCard } from '../Layout';
 import { SkeletonText } from '../UI';
+
 import styles from './StatusPanel.module.css';
 
 export type StatusType = 'loading' | 'success' | 'error' | 'warning';

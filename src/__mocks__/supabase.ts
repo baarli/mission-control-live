@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+
 import type { User, Sak } from '@/types';
 
 /**

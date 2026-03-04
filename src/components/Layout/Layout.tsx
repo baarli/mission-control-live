@@ -3,12 +3,14 @@
    ============================================ */
 
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import ToastContainer from '../UI/ToastContainer';
+
 import { useToast } from '../../hooks/useToast';
 import type { Theme } from '../../types';
+import ToastContainer from '../UI/ToastContainer';
+
+import Header from './Header';
 import styles from './Layout.module.css';
+import Sidebar from './Sidebar';
 
 interface LayoutProps {
   children: React.ReactNode;

@@ -142,10 +142,9 @@ export async function generateSocialMediaGraphic(
 export async function generateHeroImage(
   title: string,
   subtitle?: string,
-  options: ImageGenerationOptions = {},
+  _options: ImageGenerationOptions = {},
   onProgress?: ProgressCallback
 ): Promise<SkillResult<GeneratedImage>> {
-  const opts = { ...DEFAULT_OPTIONS, ...options, type: 'hero-image' as const };
   const bridge = getSkillBridge();
 
   const envCheck = bridge.checkEnvironment('imagegen');

@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import { localStorageMock } from '@/__mocks__/localStorage';
 import LoginScreen from '@/components/Auth/LoginScreen';
 import { useAuthStore, initializeAuth } from '@/stores/authStore';
-import { localStorageMock } from '@/__mocks__/localStorage';
 
 describe('Auth Flow Integration', () => {
   beforeEach(() => {
@@ -237,7 +238,7 @@ describe('Auth Flow Integration', () => {
       const user = userEvent.setup();
       render(<LoginScreen onLogin={vi.fn()} />);
       
-      const button = screen.getByRole('button', { name: 'Logg inn' });
+      screen.getByRole('button', { name: 'Logg inn' });
       await user.tab();
       
       expect(document.activeElement).toBe(screen.getByPlaceholderText('Skriv passord...'));
