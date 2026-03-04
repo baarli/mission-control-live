@@ -18,6 +18,105 @@ body {
   margin: 0;
   line-height: 1.6;
 }
+
+/* ===== QUICK WIN #1: LOADING STATES ===== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-top: -8px;
+  margin-left: -8px;
+  border: 2px solid transparent;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--b) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+/* ===== QUICK WIN #3: TOAST NOTIFICATIONS ===== */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.toast {
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--b);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+.toast-success { border-color: var(--c2); }
+.toast-success::before { content: '✅ '; }
+.toast-error { border-color: var(--c3); }
+.toast-error::before { content: '❌ '; }
+.toast-info { border-color: var(--c1); }
+.toast-info::before { content: 'ℹ️ '; }
+
+/* ===== QUICK WIN #5: BETTER EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(30,41,59,0.5);
+  border-radius: 1rem;
+  border: 2px dashed var(--b);
+}
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--tx);
+  font-size: 1.25rem;
+}
+.empty-state p {
+  color: var(--muted);
+  margin: 0 0 1.5rem 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== EXISTING STYLES (unchanged) ===== */
 .login { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 1000; }
 .box { background: var(--bg2); padding: 2rem; border-radius: 1rem; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--b); }
 .icon { width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; }
@@ -51,41 +150,19 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .wrap { flex-wrap: wrap; }
 
 /* Search results */
-.search-result { 
-  border: 1px solid var(--b); 
-  border-radius: 0.75rem; 
-  padding: 1rem; 
-  margin-bottom: 0.75rem; 
-  background: var(--bg2);
-  transition: all 0.2s;
-}
+.search-result { border: 1px solid var(--b); border-radius: 0.75rem; padding: 1rem; margin-bottom: 0.75rem; background: var(--bg2); transition: all 0.2s; }
 .search-result:hover { border-color: var(--c1); }
-.search-result.selected { 
-  border-color: var(--c2); 
-  background: rgba(16,185,129,0.1);
-}
+.search-result.selected { border-color: var(--c2); background: rgba(16,185,129,0.1); }
 .search-result h4 { margin: 0 0 0.5rem 0; font-size: 1rem; }
 .search-result p { margin: 0 0 0.5rem 0; font-size: 0.875rem; color: var(--muted); }
 .search-result .meta { font-size: 0.75rem; color: var(--muted); }
-.search-result .score { 
-  display: inline-block; 
-  padding: 0.25rem 0.5rem; 
-  border-radius: 0.25rem; 
-  font-size: 0.75rem; 
-  font-weight: 600;
-}
+.search-result .score { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; }
 .score-high { background: var(--c2); color: white; }
 .score-medium { background: var(--c4); color: black; }
 .score-low { background: var(--b); color: var(--muted); }
 
 /* Checkbox styling */
-.result-checkbox { 
-  width: 20px; 
-  height: 20px; 
-  margin: 0 0.75rem 0 0; 
-  cursor: pointer;
-  accent-color: var(--c2);
-}
+.result-checkbox { width: 20px; height: 20px; margin: 0 0.75rem 0 0; cursor: pointer; accent-color: var(--c2); }
 
 /* Category badges */
 .cat { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
@@ -97,32 +174,55 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .cat-talk { background: var(--c1); color: white; }
 
 /* Prompt editor */
-.prompt-editor { 
-  background: var(--bg); 
-  border: 1px solid var(--b); 
-  border-radius: 0.5rem; 
-  padding: 1rem; 
-  font-family: monospace; 
-  font-size: 0.875rem;
-  white-space: pre-wrap;
-  min-height: 100px;
+.prompt-editor { background: var(--bg); border: 1px solid var(--b); border-radius: 0.5rem; padding: 1rem; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap; min-height: 100px; }
+
+/* Keyboard shortcut hint */
+.keyboard-hint {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--b);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.7;
+}
+.keyboard-hint kbd {
+  background: var(--bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--b);
+  font-family: monospace;
 }
 
 @media (max-width: 768px) { 
   .header { padding: 1rem; } 
   .container { padding: 1rem; }
   .flex { flex-direction: column; }
+  .toast-container { left: 1rem; right: 1rem; bottom: 1rem; }
+  .keyboard-hint { display: none; }
 }
 </style>
 </head>
 <body>
+<!-- Toast Container (Quick Win #3) -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Keyboard Hint (Quick Win #4) -->
+<div class="keyboard-hint">
+  Trykk <kbd>Ctrl</kbd> + <kbd>K</kbd> for å søke
+</div>
+
+<!-- Login -->
 <div class="login" id="login-screen">
   <div class="box">
     <div class="icon">🎛️</div>
     <h1>Mission Control</h1>
     <p style="color: var(--muted); margin-bottom: 2rem;">NRJ Morgen Dashboard</p>
     <input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key=='Enter')doLogin()">
-    <button class="full" onclick="doLogin()">Logg inn</button>
+    <button class="full" onclick="doLogin()" id="login-btn">Logg inn</button>
     <p id="login-error" style="color: var(--c3); display: none; margin-top: 1rem;">Feil passord</p>
   </div>
 </div>
@@ -160,10 +260,15 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
           <h2>📋 Saksliste</h2>
           <div class="flex">
             <input type="date" id="saksliste-date" onchange="loadSaker()" style="width: auto; margin: 0;">
-            <button onclick="loadSaker()">🔄</button>
+            <button onclick="loadSaker()" id="refresh-btn">🔄</button>
           </div>
         </div>
-        <div id="saksliste-content"><div class="loading">Laster...</div></div>
+        <div id="saksliste-content">
+          <!-- Skeleton loading (Quick Win #1) -->
+          <div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>
+          <div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>
+          <div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>
+        </div>
       </div>
     </section>
 
@@ -268,20 +373,57 @@ NEGATIVE FAKTORER (-20 hver):
 
 Returner KUN et tall (0-100).`;
 
-// Auth
-function doLogin() {
-  const i = document.getElementById('password-input').value;
-  if (i === P) {
-    localStorage.setItem('mc_auth', 'true');
-    showApp();
+// ===== QUICK WIN #3: TOAST NOTIFICATIONS =====
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  
+  // Trigger animation
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Auto remove
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== QUICK WIN #1: LOADING STATES =====
+function setLoading(buttonId, isLoading) {
+  const btn = document.getElementById(buttonId);
+  if (isLoading) {
+    btn.classList.add('btn-loading');
+    btn.disabled = true;
   } else {
-    document.getElementById('login-error').style.display = 'block';
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
   }
 }
 
+// Auth
+function doLogin() {
+  setLoading('login-btn', true);
+  const i = document.getElementById('password-input').value;
+  if (i === P) {
+    localStorage.setItem('mc_auth', 'true');
+    showToast('✅ Logget inn!', 'success');
+    showApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    showToast('❌ Feil passord', 'error');
+  }
+  setLoading('login-btn', false);
+}
+
 function doLogout() {
-  localStorage.removeItem('mc_auth');
-  location.reload();
+  if (confirm('Er du sikker på at du vil logge ut?')) {
+    localStorage.removeItem('mc_auth');
+    showToast('👋 Logget ut', 'info');
+    location.reload();
+  }
 }
 
 function showApp() {
@@ -329,31 +471,61 @@ async function loadDashboard() {
     document.getElementById('dash-status').innerHTML = '<div class="alert ok">✅ Tilkoblet! ' + s.length + ' saker for ' + d + '</div>';
   } catch (e) {
     document.getElementById('dash-status').innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
+    showToast('Feil ved lasting av dashboard', 'error');
   }
 }
 
 async function loadSaker() {
+  setLoading('refresh-btn', true);
   const c = document.getElementById('saksliste-content'),
         d = document.getElementById('saksliste-date').value;
-  c.innerHTML = '<div class="loading">Laster...</div>';
+  
+  // Show skeleton loading
+  c.innerHTML = '<div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>' +
+                '<div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>' +
+                '<div class="skeleton" style="height: 60px; margin-bottom: 0.75rem;"></div>';
+  
   try {
     const s = await sup('/agenda_items?tenant_id=eq.' + T + '&show_date=eq.' + d + '&order=order_index.asc');
     if (s.length === 0) {
-      c.innerHTML = '<p style="text-align:center;color:var(--muted)">Ingen saker for ' + d + '</p>';
-      return;
-    }
-    c.innerHTML = s.map((a, i) => {
-      const catClass = getCatClass(a.category);
-      return '<div style="display:flex;gap:1rem;padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;">' +
-        '<div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;">' + (i + 1) + '</div>' +
-        '<div style="flex:1">' +
-          '<div style="font-weight:600;">' + escapeHtml(a.title) + '</div>' +
-          '<div style="font-size:0.875rem;color:var(--muted)">' + (a.category ? '<span class="cat ' + catClass + '">' + a.category + '</span>' : 'TALK') + '</div>' +
-        '</div>' +
+      // ===== QUICK WIN #5: BETTER EMPTY STATE =====
+      c.innerHTML = '<div class="empty-state">' +
+        '<div class="empty-icon">📋</div>' +
+        '<h3>Ingen saker ennå</h3>' +
+        '<p>Start med å søke etter nyheter eller legg til manuelt fra søkefanen.</p>' +
+        '<button onclick="showSection('search')">🔍 Søk etter saker</button>' +
       '</div>';
-    }).join('');
+    } else {
+      c.innerHTML = s.map((a, i) => {
+        const catClass = getCatClass(a.category);
+        return '<div style="display:flex;gap:1rem;padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;" class="sak-item" data-id="' + a.id + '">' +
+          '<div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;">' + (i + 1) + '</div>' +
+          '<div style="flex:1">' +
+            '<div style="font-weight:600;">' + escapeHtml(a.title) + '</div>' +
+            '<div style="font-size:0.875rem;color:var(--muted)">' + (a.category ? '<span class="cat ' + catClass + '">' + a.category + '</span>' : 'TALK') + '</div>' +
+          '</div>' +
+          // ===== QUICK WIN #2: DELETE CONFIRMATION =====
+          '<button onclick="confirmDeleteSak('' + a.id + '')" style="background:var(--c3);padding:0.5rem;" title="Slett">🗑️</button>' +
+        '</div>';
+      }).join('');
+    }
   } catch (e) {
     c.innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
+    showToast('Feil ved lasting av saker', 'error');
+  }
+  setLoading('refresh-btn', false);
+}
+
+// ===== QUICK WIN #2: DELETE CONFIRMATION =====
+async function confirmDeleteSak(id) {
+  if (confirm('Er du sikker på at du vil slette denne saken?')) {
+    try {
+      await sup('/agenda_items?id=eq.' + id, { method: 'DELETE' });
+      showToast('🗑️ Sak slettet', 'success');
+      loadSaker();
+    } catch (e) {
+      showToast('❌ Kunne ikke slette sak', 'error');
+    }
   }
 }
 
@@ -365,6 +537,7 @@ async function loadStats() {
     document.getElementById('podcast-stats').innerHTML = p.length > 0 ? p.map(x => '<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke ' + x.week_number + '</strong>: Rank #' + x.rank + ' • ' + (x.unique_units || 0).toLocaleString() + ' unike</div>').join('') : '<p style="color:var(--muted)">Ingen data</p>';
   } catch (e) {
     document.getElementById('radio-stats').innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
+    showToast('Feil ved lasting av statistikk', 'error');
   }
 }
 
@@ -374,21 +547,18 @@ async function doSearch() {
   const category = document.getElementById('search-category').value;
   const freshness = document.getElementById('search-freshness').value;
   const container = document.getElementById('search-results');
-  const btn = document.getElementById('search-btn');
   
   if (!query) {
-    alert('Vennligst skriv inn søkeord');
+    showToast('Vennligst skriv inn søkeord', 'warn');
     return;
   }
   
-  btn.disabled = true;
-  btn.textContent = '⏳ Søker...';
+  setLoading('search-btn', true);
   container.innerHTML = '<div class="loading">Søker etter nyheter...</div>';
   selectedResults.clear();
   updateSelectedCount();
   
   try {
-    // Build search query with category context
     let searchQuery = query;
     if (category === 'REALITY_TV') searchQuery += ' reality TV Norge';
     else if (category === 'KJENDIS_DRAMA') searchQuery += ' kjendis drama Norge';
@@ -408,52 +578,44 @@ async function doSearch() {
     const data = await response.json();
     const results = data.results || [];
     
-    // Filter and score results
-    const prompt = document.getElementById('prompt-editor').value || DEFAULT_PROMPT;
-    searchResults = await Promise.all(results.map(async (r, i) => {
-      const score = calculateEntertainmentScore(r.title, r.description);
-      return {
-        id: i,
-        title: r.title,
-        description: r.description,
-        url: r.url,
-        source: r.source || 'Ukjent',
-        published: r.published || 'Ukjent',
-        score: score,
-        category: category || 'TALK'
-      };
+    searchResults = results.map((r, i) => ({
+      id: i,
+      title: r.title,
+      description: r.description,
+      url: r.url,
+      source: r.source || 'Ukjent',
+      published: r.published || 'Ukjent',
+      score: calculateEntertainmentScore(r.title, r.description),
+      category: category || 'TALK'
     }));
     
-    // Sort by score
     searchResults.sort((a, b) => b.score - a.score);
     
     if (searchResults.length === 0) {
-      container.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">Ingen resultater funnet</p>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>Ingen resultater</h3><p>Prøv et annet søkeord eller kategori.</p></div>';
       document.getElementById('search-actions').style.display = 'none';
     } else {
       renderSearchResults();
       document.getElementById('search-actions').style.display = 'block';
+      showToast('Fant ' + searchResults.length + ' resultater', 'success');
     }
     
   } catch (e) {
     container.innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
     document.getElementById('search-actions').style.display = 'none';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '🔍 Søk';
+    showToast('Søk feilet', 'error');
   }
+  setLoading('search-btn', false);
 }
 
 function calculateEntertainmentScore(title, description) {
   const text = (title + ' ' + (description || '')).toLowerCase();
   let score = 50;
   
-  // Positive factors
-  const positive = ['brudd', 'krangel', 'drama', 'skandale', 'avsløring', 'hemmelig', 'kontrovers', 'konflikt', 'exit', 'overraskelse', 'pinlig', 'sterkt sitat', 'tårer', 'raser', 'sjokk', 'kaos', 'kjendis', 'reality', 'farmen', 'paradise', 'kompani', 'love island'];
+  const positive = ['brudd', 'krangel', 'drama', 'skandale', 'avsløring', 'hemmelig', 'kontrovers', 'konflikt', 'exit', 'overraskelse', 'pinlig', 'sterkt sitat', 'tårer', 'raser', 'sjokk', 'kaos', 'kjendis', 'reality', 'farmen', 'paradise', 'kompani'];
   positive.forEach(word => { if (text.includes(word)) score += 10; });
   
-  // Negative factors
-  const negative = ['sport', 'fotball', 'håndball', 'ski', 'politikk', 'økonomi', 'skatt', 'lovforslag', 'regjering', 'krig', 'død', 'ulykke', 'tragedie'];
+  const negative = ['sport', 'fotball', 'håndball', 'ski', 'politikk', 'økonomi', 'skatt', 'lovforslag', 'krig', 'død', 'ulykke', 'tragedie'];
   negative.forEach(word => { if (text.includes(word)) score -= 20; });
   
   return Math.min(100, Math.max(0, score));
@@ -497,6 +659,7 @@ function toggleResult(id) {
 function selectAllResults(select) {
   if (select) {
     searchResults.forEach(r => selectedResults.add(r.id));
+    showToast('Valgte alle ' + searchResults.length + ' resultater', 'info');
   } else {
     selectedResults.clear();
   }
@@ -510,7 +673,7 @@ function updateSelectedCount() {
 
 async function addSelectedToSaksliste() {
   if (selectedResults.size === 0) {
-    alert('Velg minst én sak å legge til');
+    showToast('Velg minst én sak å legge til', 'warn');
     return;
   }
   
@@ -541,12 +704,11 @@ async function addSelectedToSaksliste() {
     }
   }
   
-  alert('✅ ' + added + ' saker lagt til i sakslista for ' + date + '!');
+  showToast('✅ ' + added + ' saker lagt til i sakslista!', 'success');
   selectedResults.clear();
   updateSelectedCount();
   renderSearchResults();
   
-  // Refresh saksliste if visible
   if (document.getElementById('saksliste').classList.contains('active')) {
     loadSaker();
   }
@@ -554,6 +716,7 @@ async function addSelectedToSaksliste() {
 
 function resetPrompt() {
   document.getElementById('prompt-editor').value = DEFAULT_PROMPT;
+  showToast('Prompt tilbakestilt', 'info');
 }
 
 function getCatClass(cat) {
@@ -567,6 +730,23 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+// ===== QUICK WIN #4: KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', (e) => {
+  // Ctrl/Cmd + K = Søk
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    showSection('search');
+    document.getElementById('search-query').focus();
+  }
+  
+  // ESC = Lukk/lukk (hvis i søk, gå tilbake)
+  if (e.key === 'Escape') {
+    if (document.getElementById('search').classList.contains('active')) {
+      showSection('saksliste');
+    }
+  }
+});
 
 if (localStorage.getItem('mc_auth') === 'true') showApp();
 setInterval(() => { if (document.getElementById('app').style.display === 'block') loadDashboard(); }, 300000);
