@@ -478,13 +478,27 @@
             const statusEl = document.getElementById('system-status');
             
             try {
-                // Hent dagens saker
+                // Hent saker for både i dag og i morgen (morgenrutinen setter alltid show_date til neste dag)
                 const today = new Date().toISOString().split('T')[0];
-                log(`Henter saker for dato: ${today}`);
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
                 
-                const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
-                log(`Fant ${saker.length} saker`, 'success');
+                log(`Henter saker for datoer: ${today} og ${tomorrowStr}`);
+                
+                // Hent for begge datoer
+                const sakerToday = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
+                const sakerTomorrow = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${tomorrowStr}`);
+                
+                // Bruk den som har data
+                let saker = sakerToday.length > 0 ? sakerToday : sakerTomorrow;
+                let displayDate = sakerToday.length > 0 ? today : tomorrowStr;
+                
+                log(`Fant ${saker.length} saker for ${displayDate}`, 'success');
                 document.getElementById('stat-saker').textContent = saker.length;
+                
+                // Lagre hvilken dato vi skal bruke for saksliste
+                window.currentShowDate = displayDate;
 
                 // Hent stats
                 log('Henter radio stats...');
@@ -531,7 +545,7 @@
                     <div class="success">
                         <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
                             <span>✅ Supabase tilkoblet</span>
-                            <span>✅ ${saker.length} saker i dag</span>
+                            <span>✅ ${saker.length} saker for ${displayDate}</span>
                             <span>✅ Dashboard aktivt</span>
                         </div>
                     </div>
@@ -554,16 +568,29 @@
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Laster saker...</p></div>';
             
             try {
-                const today = new Date().toISOString().split('T')[0];
-                log(`Laster saker for ${today}...`);
+                // Bruk dato fra dashboard hvis tilgjengelig, ellers sjekk begge datoer
+                let dateToUse = window.currentShowDate;
                 
-                const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}&order=order_index.asc`);
-                log(`Fant ${saker.length} saker`, 'success');
+                if (!dateToUse) {
+                    const today = new Date().toISOString().split('T')[0];
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+                    
+                    // Sjekk hvilken dato som har data
+                    const sakerToday = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}&order=order_index.asc`);
+                    dateToUse = sakerToday.length > 0 ? today : tomorrowStr;
+                }
+                
+                log(`Laster saker for ${dateToUse}...`);
+                
+                const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${dateToUse}&order=order_index.asc`);
+                log(`Fant ${saker.length} saker for ${dateToUse}`, 'success');
                 
                 if (saker.length === 0) {
                     container.innerHTML = `
                         <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
-                            <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ingen saker for i dag</p>
+                            <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ingen saker funnet</p>
                             <p>Kjør Morning Routine for å legge til saker.</p>
                         </div>
                     `;
@@ -599,6 +626,12 @@
                 log(`Saksliste feil: ${error.message}`, 'error');
                 container.innerHTML = `
                     <div class="error">
+                        <strong>❌ Kunne ikke laste saker:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
                         <strong>❌ Kunne ikke laste saker:</strong><br>
                         ${error.message}
                     </div>
