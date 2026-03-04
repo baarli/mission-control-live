@@ -1,771 +1,110 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mission Control | NRJ Morgen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --color-primary: #6366f1;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-danger: #ef4444;
-            --color-info: #3b82f6;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.8);
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.1);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        .login-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .login-box {
-            background: var(--bg-secondary);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-        .brand-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }
-        .login-box h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-        .login-box p { color: var(--text-muted); margin-bottom: 2rem; }
-        input[type="password"] {
-            width: 100%;
-            padding: 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            color: var(--text-primary);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-        button {
-            padding: 0.75rem 1.5rem;
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-full { width: 100%; padding: 1rem; font-size: 1rem; }
-        .btn-success { background: var(--color-success); }
-        .btn-warning { background: var(--color-warning); }
-        .btn-danger { background: var(--color-danger); }
-        .btn-sm { padding: 0.5rem 1rem; font-size: 0.75rem; }
-        .error { color: var(--color-danger); margin-top: 1rem; }
-        .app { display: none; }
-        .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .brand { display: flex; align-items: center; gap: 0.75rem; }
-        .nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .nav button {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-        .nav button.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-            color: white;
-        }
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .card h2 { 
-            font-size: 1.25rem; 
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .stat-card:hover {
-            border-color: var(--color-primary);
-            transform: translateY(-2px);
-        }
-        .stat-value { 
-            font-size: 3rem; 
-            font-weight: 700; 
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .stat-label { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem; }
-        .sak-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1.25rem;
-            background: var(--bg-secondary);
-            border-radius: 0.75rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-        .sak-item:hover { border-color: var(--color-primary); }
-        .sak-number {
-            width: 36px;
-            height: 36px;
-            background: var(--color-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.875rem;
-            flex-shrink: 0;
-        }
-        .sak-content { flex: 1; min-width: 0; }
-        .sak-title { 
-            font-weight: 600; 
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        .sak-meta { 
-            display: flex; 
-            gap: 0.75rem; 
-            font-size: 0.875rem; 
-            color: var(--text-muted);
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .sak-category { 
-            padding: 0.25rem 0.75rem; 
-            border-radius: 0.25rem; 
-            font-size: 0.75rem; 
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .cat-talk { background: var(--color-primary); }
-        .cat-reality { background: #f59e0b; }
-        .cat-kjendis { background: #ec4899; }
-        .cat-film { background: #3b82f6; }
-        .cat-musikk { background: #10b981; }
-        .cat-internasjonalt { background: #8b5cf6; }
-        .sak-link { color: var(--color-primary); text-decoration: none; }
-        .sak-link:hover { text-decoration: underline; }
-        .sak-notes {
-            margin-top: 0.75rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-        .sak-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-direction: column;
-        }
-        .loading { text-align: center; padding: 3rem; color: var(--text-muted); }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .success { color: var(--color-success); }
-        .warning { color: var(--color-warning); }
-        .danger { color: var(--color-danger); }
-        .info { color: var(--color-info); }
-        .alert {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .alert-success { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--color-success); }
-        .alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--color-danger); }
-        .alert-warning { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--color-warning); }
-        .flex { display: flex; }
-        .flex-between { justify-content: space-between; }
-        .flex-wrap { flex-wrap: wrap; }
-        .gap-1 { gap: 1rem; }
-        .mb-1 { margin-bottom: 1rem; }
-        .text-muted { color: var(--text-muted); }
-        .text-center { text-align: center; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
-        @media (max-width: 768px) {
-            .header { padding: 1rem; }
-            .container { padding: 1rem; }
-            .grid-2 { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Mission Control | NRJ Morgen</title>
+<style>
+:root { --c1: #6366f1; --c2: #10b981; --c3: #ef4444; --bg: #0f172a; --bg2: #1e293b; --tx: #f8fafc; --muted: #94a3b8; --b: #334155; }
+body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--tx); margin: 0; }
+.login { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 1000; }
+.box { background: var(--bg2); padding: 2rem; border-radius: 1rem; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--b); }
+.icon { width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; }
+input, button { padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--b); font-size: 1rem; }
+input { width: 100%; background: var(--bg); color: var(--tx); margin-bottom: 1rem; box-sizing: border-box; }
+button { background: var(--c1); color: white; border: none; cursor: pointer; }
+button:hover { opacity: 0.9; }
+.full { width: 100%; }
+.app { display: none; }
+.header { background: var(--bg2); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--b); }
+.nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.nav button { background: transparent; color: var(--muted); }
+.nav button.active { background: var(--c1); color: white; }
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.section { display: none; }
+.section.active { display: block; }
+.card { background: rgba(30,41,59,0.8); border: 1px solid var(--b); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.stat { text-align: center; padding: 1.5rem; background: rgba(30,41,59,0.5); border-radius: 0.75rem; border: 1px solid var(--b); }
+.val { font-size: 2.5rem; font-weight: 700; color: var(--c1); }
+.lbl { color: var(--muted); font-size: 0.875rem; margin-top: 0.5rem; }
+.loading { text-align: center; padding: 3rem; color: var(--muted); }
+.alert { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; }
+.ok { background: rgba(16,185,129,0.1); border: 1px solid var(--c2); color: var(--c2); }
+.err { background: rgba(239,68,68,0.1); border: 1px solid var(--c3); color: var(--c3); }
+.flex { display: flex; gap: 1rem; }
+.between { justify-content: space-between; align-items: center; }
+@media (max-width: 768px) { .header { padding: 1rem; } .container { padding: 1rem; } }
+</style>
 </head>
 <body>
-    <!-- Login -->
-    <div class="login-screen" id="login-screen">
-        <div class="login-box">
-            <div class="brand-icon">🎛️</div>
-            <h1>Mission Control</h1>
-            <p>NRJ Morgen Dashboard</p>
-            <input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key==='Enter')doLogin()">
-            <button class="btn-full" onclick="doLogin()">Logg inn</button>
-            <p class="error" id="login-error" style="display: none;">Feil passord</p>
-        </div>
-    </div>
+<div class="login" id="login-screen">
+<div class="box">
+<div class="icon">🎛️</div>
+<h1>Mission Control</h1>
+<p style="color: var(--muted); margin-bottom: 2rem;">NRJ Morgen Dashboard</p>
+<input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key=='Enter')doLogin()">
+<button class="full" onclick="doLogin()">Logg inn</button>
+<p id="login-error" style="color: var(--c3); display: none; margin-top: 1rem;">Feil passord</p>
+</div>
+</div>
 
-    <!-- App -->
-    <div class="app" id="app">
-        <header class="header">
-            <div class="brand">
-                <div class="brand-icon" style="width: 45px; height: 45px; font-size: 1.5rem; margin: 0;">🎛️</div>
-                <div>
-                    <div style="font-weight: 700;">Mission Control</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">NRJ Morgen</div>
-                </div>
-            </div>
-            <nav class="nav">
-                <button class="active" onclick="showSection('dashboard')" data-section="dashboard">📊 Dashboard</button>
-                <button onclick="showSection('saksliste')" data-section="saksliste">📋 Saksliste</button>
-                <button onclick="showSection('podcast')" data-section="podcast">🎧 Podcast</button>
-                <button onclick="showSection('stats')" data-section="stats">📈 Statistikk</button>
-                <button onclick="showSection('tools')" data-section="tools">🛠️ Verktøy</button>
-                <button onclick="doLogout()">🚪 Logg ut</button>
-            </nav>
-        </header>
+<div class="app" id="app">
+<header class="header">
+<div>
+<div style="font-weight: 700;">Mission Control</div>
+<div style="font-size: 0.75rem; color: var(--muted);">NRJ Morgen</div>
+</div>
+<nav class="nav">
+<button class="active" onclick="showSection('dashboard')" data-section="dashboard">📊 Dashboard</button>
+<button onclick="showSection('saksliste')" data-section="saksliste">📋 Saksliste</button>
+<button onclick="showSection('stats')" data-section="stats">📈 Statistikk</button>
+<button onclick="doLogout()">🚪 Logg ut</button>
+</nav>
+</header>
 
-        <main class="container">
-            <!-- Dashboard -->
-            <section class="section active" id="dashboard">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="dash-saker">-</div>
-                        <div class="stat-label">Saker i dag</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="dash-radio">-</div>
-                        <div class="stat-label">Radio lyttere</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="dash-podcast">-</div>
-                        <div class="stat-label">Podcast ranking</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="dash-week">-</div>
-                        <div class="stat-label">Uke</div>
-                    </div>
-                </div>
+<main class="container">
+<section class="section active" id="dashboard">
+<div class="stats">
+<div class="stat"><div class="val" id="dash-saker">-</div><div class="lbl">Saker</div></div>
+<div class="stat"><div class="val" id="dash-radio">-</div><div class="lbl">Radio lyttere</div></div>
+<div class="stat"><div class="val" id="dash-podcast">-</div><div class="lbl">Podcast rank</div></div>
+</div>
+<div class="card"><h2>📊 Status</h2><div id="dash-status">Laster...</div></div>
+</section>
 
-                <div class="grid-2">
-                    <div class="card">
-                        <h2>📊 System Status</h2>
-                        <div id="dash-status">Laster...</div>
-                    </div>
-                    <div class="card">
-                        <h2>⚡ Hurtighandlinger</h2>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                            <button onclick="refreshAll()">🔄 Oppdater alt</button>
-                            <button onclick="testConnection()">🔌 Test tilkobling</button>
-                            <button class="btn-success" onclick="runMorningRoutine()">🌅 Kjør Morning Routine</button>
-                        </div>
-                    </div>
-                </div>
+<section class="section" id="saksliste">
+<div class="card">
+<div class="flex between" style="margin-bottom: 1rem;">
+<h2>📋 Saksliste</h2>
+<div class="flex">
+<input type="date" id="saksliste-date" onchange="loadSaker()" style="width: auto; margin: 0;">
+<button onclick="loadSaker()">🔄</button>
+</div>
+</div>
+<div id="saksliste-content"><div class="loading">Laster...</div></div>
+</div>
+</section>
 
-                <div class="card">
-                    <h2>📰 Siste saker</h2>
-                    <div id="dash-latest">Laster...</div>
-                </div>
-            </section>
+<section class="section" id="stats">
+<div class="card"><h2>📻 Radio (Nielsen)</h2><div id="radio-stats">Laster...</div></div>
+<div class="card"><h2>🎙️ Podcast (Podtoppen)</h2><div id="podcast-stats">Laster...</div></div>
+</section>
+</main>
+</div>
 
-            <!-- Saksliste -->
-            <section class="section" id="saksliste">
-                <div class="card">
-                    <div class="flex flex-between flex-wrap gap-1 mb-1">
-                        <h2>📋 Saksliste</h2>
-                        <div>
-                            <button onclick="loadSaker()">🔄 Oppdater</button>
-                            <button class="btn-success" onclick="addNewSak()">➕ Legg til sak</button>
-                        </div>
-                    </div>
-                    <div id="saksliste-content">
-                        <div class="loading"><div class="spinner"></div><p>Laster saker...</p></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Podcast -->
-            <section class="section" id="podcast">
-                <div class="card">
-                    <h2>🎧 Podcast Episoder</h2>
-                    <div id="podcast-content">
-                        <div class="loading"><div class="spinner"></div><p>Laster episoder...</p></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Stats -->
-            <section class="section" id="stats">
-                <div class="grid-2">
-                    <div class="card">
-                        <h2>📻 Radio Statistikk</h2>
-                        <div id="radio-stats">Laster...</div>
-                    </div>
-                    <div class="card">
-                        <h2>🎙️ Podcast Statistikk</h2>
-                        <div id="podcast-stats">Laster...</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Tools -->
-            <section class="section" id="tools">
-                <div class="grid-2">
-                    <div class="card">
-                        <h2>🌅 Morning Routine</h2>
-                        <p class="text-muted mb-1">Kjør morgenrutinen for å hente nye saker fra nyhetskilder.</p>
-                        <button class="btn-success btn-full" onclick="runMorningRoutine()">🚀 Start Morning Routine</button>
-                        <div id="routine-status"></div>
-                    </div>
-                    <div class="card">
-                        <h2>🗑️ Vedlikehold</h2>
-                        <p class="text-muted mb-1">Slett gamle saker for å rydde opp i databasen.</p>
-                        <button class="btn-danger" onclick="deleteOldSaker()">🗑️ Slett saker eldre enn 7 dager</button>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <script>
-        // Konfigurasjon
-        const PASSWORD = 'kloakontroll2026';
-        const SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzNjcyMzQsImV4cCI6MjA2Njk0MzIzNH0._24RuF95RnxxHj3sjGswdd36VVYlX_jKxut8dvELfSA';
-        const TENANT_ID = 'a0000000-0000-0000-0000-000000000001';
-        const CREATED_BY = '10aa1508-6d52-490c-8ae5-fa3da9a152c4';
-
-        // State
-        let currentDate = null;
-        let allSaker = [];
-
-        // Auth
-        function doLogin() {
-            const input = document.getElementById('password-input').value;
-            if (input === PASSWORD) {
-                localStorage.setItem('mc_auth', 'true');
-                showApp();
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-            }
-        }
-
-        function doLogout() {
-            localStorage.removeItem('mc_auth');
-            location.reload();
-        }
-
-        function showApp() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-            initApp();
-        }
-
-        function showSection(section) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById(section).classList.add('active');
-            document.querySelector(`[data-section="${section}"]`).classList.add('active');
-            
-            if (section === 'saksliste') loadSaker();
-            if (section === 'podcast') loadPodcast();
-            if (section === 'stats') loadStats();
-        }
-
-        // Supabase API
-        async function supabaseRequest(endpoint, options = {}) {
-            const url = `${SUPABASE_URL}/rest/v1${endpoint}`;
-            const headers = {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Content-Type': 'application/json',
-                ...options.headers
-            };
-            
-            const response = await fetch(url, { ...options, headers });
-            if (!response.ok) {
-                const error = await response.text();
-                throw new Error(`HTTP ${response.status}: ${error}`);
-            }
-            return response.json();
-        }
-
-        // Init
-        async function initApp() {
-            await loadDashboard();
-        }
-
-        // Dashboard
-        async function loadDashboard() {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-                
-                // Hent saker for begge datoer
-                const [sakerToday, sakerTomorrow] = await Promise.all([
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`),
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${tomorrow}`)
-                ]);
-                
-                const saker = sakerToday.length > 0 ? sakerToday : sakerTomorrow;
-                currentDate = sakerToday.length > 0 ? today : tomorrow;
-                allSaker = saker;
-                
-                document.getElementById('dash-saker').textContent = saker.length;
-                document.getElementById('dash-week').textContent = getWeekNumber(new Date());
-                
-                // Hent stats
-                const [radioStats, podcastStats] = await Promise.all([
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.STATS&order=created_at.desc&limit=1`),
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.PODCAST_RANKING&order=created_at.desc&limit=1`)
-                ]);
-                
-                if (radioStats[0]?.link_metadata) {
-                    const meta = JSON.parse(radioStats[0].link_metadata);
-                    const listeners = meta.dailyListeners || meta.daily_listeners || 0;
-                    document.getElementById('dash-radio').textContent = listeners ? (listeners / 1000).toFixed(1) + 'k' : '-';
-                }
-                
-                if (podcastStats[0]?.link_metadata) {
-                    const meta = JSON.parse(podcastStats[0].link_metadata);
-                    const ranking = meta.ranking || meta.podcast_ranking || 0;
-                    document.getElementById('dash-podcast').textContent = ranking ? '#' + ranking : '-';
-                }
-                
-                document.getElementById('dash-status').innerHTML = `
-                    <div class="alert alert-success">
-                        ✅ Tilkoblet til Supabase<br>
-                        ✅ ${saker.length} saker for ${currentDate}<br>
-                        ✅ Sist oppdatert: ${new Date().toLocaleTimeString('nb-NO')}
-                    </div>
-                `;
-                
-                // Vis siste 5 saker
-                document.getElementById('dash-latest').innerHTML = saker.slice(0, 5).map((sak, i) => `
-                    <div class="sak-item" style="padding: 0.75rem;">
-                        <div class="sak-number" style="width: 28px; height: 28px; font-size: 0.75rem;">${i + 1}</div>
-                        <div class="sak-content">
-                            <div style="font-weight: 600; font-size: 0.9rem;">${sak.title}</div>
-                        </div>
-                    </div>
-                `).join('') || '<p class="text-muted">Ingen saker</p>';
-                
-            } catch (error) {
-                document.getElementById('dash-status').innerHTML = `
-                    <div class="alert alert-error">❌ Feil: ${error.message}</div>
-                `;
-            }
-        }
-
-        // Saksliste
-        async function loadSaker() {
-            const container = document.getElementById('saksliste-content');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Laster saker...</p></div>';
-            
-            try {
-                if (!currentDate) {
-                    const today = new Date().toISOString().split('T')[0];
-                    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-                    const [sakerToday, sakerTomorrow] = await Promise.all([
-                        supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}&order=order_index.asc`),
-                        supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${tomorrow}&order=order_index.asc`)
-                    ]);
-                    allSaker = sakerToday.length > 0 ? sakerToday : sakerTomorrow;
-                    currentDate = sakerToday.length > 0 ? today : tomorrow;
-                }
-                
-                if (allSaker.length === 0) {
-                    container.innerHTML = '<p class="text-center text-muted" style="padding: 3rem;">Ingen saker funnet. Kjør Morning Routine for å legge til saker.</p>';
-                    return;
-                }
-                
-                container.innerHTML = allSaker.map((sak, i) => {
-                    const catClass = getCategoryClass(sak.category);
-                    const notes = sak.notes ? sak.notes.split('\n\n')[0].substring(0, 200) : '';
-                    
-                    return `
-                        <div class="sak-item">
-                            <div class="sak-number">${i + 1}</div>
-                            <div class="sak-content">
-                                <div class="sak-title">${escapeHtml(sak.title)}</div>
-                                <div class="sak-meta">
-                                    <span class="sak-category ${catClass}">${sak.category || 'TALK'}</span>
-                                    ${sak.link_url ? `<a href="${escapeHtml(sak.link_url)}" target="_blank" class="sak-link">🔗 Les mer</a>` : ''}
-                                </div>
-                                ${notes ? `<div class="sak-notes">${escapeHtml(notes)}</div>` : ''}
-                            </div>
-                            <div class="sak-actions">
-                                <button class="btn-sm btn-danger" onclick="deleteSak('${sak.id}')">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-            } catch (error) {
-                container.innerHTML = `<div class="alert alert-error">❌ Feil: ${error.message}</div>`;
-            }
-        }
-
-        async function deleteSak(id) {
-            if (!confirm('Er du sikker på at du vil slette denne saken?')) return;
-            
-            try {
-                await supabaseRequest(`/agenda_items?id=eq.${id}`, { method: 'DELETE' });
-                loadSaker();
-                loadDashboard();
-            } catch (error) {
-                alert('Kunne ikke slette: ' + error.message);
-            }
-        }
-
-        async function addNewSak() {
-            const title = prompt('Tittel på sak:');
-            if (!title) return;
-            
-            const category = prompt('Kategori (TALK/REALITY_TV/KJENDIS_DRAMA/FILM_TV/MUSIKK/INTERNASJONALT):', 'TALK');
-            const link = prompt('Lenke (valgfritt):', '');
-            
-            try {
-                await supabaseRequest('/agenda_items', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        tenant_id: TENANT_ID,
-                        title: title,
-                        category: category || 'TALK',
-                        show_date: currentDate || new Date().toISOString().split('T')[0],
-                        link_url: link || null,
-                        created_by: CREATED_BY,
-                        is_pinned: false
-                    })
-                });
-                loadSaker();
-                loadDashboard();
-            } catch (error) {
-                alert('Kunne ikke legge til: ' + error.message);
-            }
-        }
-
-        // Podcast
-        async function loadPodcast() {
-            const container = document.getElementById('podcast-content');
-            
-            try {
-                const episodes = await supabaseRequest('/podcast_episodes?order=published_at.desc&limit=20');
-                
-                if (episodes.length === 0) {
-                    container.innerHTML = '<p class="text-center text-muted" style="padding: 3rem;">Ingen episoder funnet.</p>';
-                    return;
-                }
-                
-                container.innerHTML = episodes.map(ep => `
-                    <div class="sak-item">
-                        <div class="sak-content">
-                            <div class="sak-title">${ep.title}</div>
-                            <div class="sak-meta">
-                                ${ep.published_at ? new Date(ep.published_at).toLocaleDateString('nb-NO') : ''}
-                                ${ep.duration ? `• ${ep.duration}` : ''}
-                                ${ep.podcast_name ? `• ${ep.podcast_name}` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
-            } catch (error) {
-                container.innerHTML = `<div class="alert alert-error">❌ Feil: ${error.message}</div>`;
-            }
-        }
-
-        // Stats
-        async function loadStats() {
-            try {
-                const [radio, podcast] = await Promise.all([
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.STATS&order=created_at.desc&limit=1`),
-                    supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.PODCAST_RANKING&order=created_at.desc&limit=1`)
-                ]);
-                
-                if (radio[0]?.link_metadata) {
-                    const meta = JSON.parse(radio[0].link_metadata);
-                    document.getElementById('radio-stats').innerHTML = `
-                        <p><strong>Uke:</strong> ${meta.week || '-'}</p>
-                        <p><strong>Daglige lyttere:</strong> ${(meta.dailyListeners || 0).toLocaleString()}</p>
-                        <p><strong>Trend:</strong> <span class="${meta.trend?.includes('+') ? 'success' : 'warning'}">${meta.trend || '-'}</span></p>
-                        <p><strong>Gjennomsnitt 2026:</strong> ${(meta.average2026 || 0).toLocaleString()}</p>
-                    `;
-                } else {
-                    document.getElementById('radio-stats').innerHTML = '<p class="text-muted">Ingen data</p>';
-                }
-                
-                if (podcast[0]?.link_metadata) {
-                    const meta = JSON.parse(podcast[0].link_metadata);
-                    document.getElementById('podcast-stats').innerHTML = `
-                        <p><strong>Uke:</strong> ${meta.week || '-'}</p>
-                        <p><strong>Ranking:</strong> #${meta.ranking || '-'}</p>
-                        <p><strong>Unike lyttere:</strong> ${(meta.uniqueListeners || 0).toLocaleString()}</p>
-                        <p><strong>Downloads:</strong> ${(meta.downloads || 0).toLocaleString()}</p>
-                    `;
-                } else {
-                    document.getElementById('podcast-stats').innerHTML = '<p class="text-muted">Ingen data</p>';
-                }
-                
-            } catch (error) {
-                document.getElementById('radio-stats').innerHTML = `<div class="alert alert-error">❌ ${error.message}</div>`;
-            }
-        }
-
-        // Tools
-        async function runMorningRoutine() {
-            const statusEl = document.getElementById('routine-status');
-            statusEl.innerHTML = '<div class="alert alert-warning">⏳ Morning Routine kjører... Dette tar 2-3 minutter.</div>';
-            
-            try {
-                // Simulert - i praksis ville dette kalt et API
-                await new Promise(r => setTimeout(r, 2000));
-                statusEl.innerHTML = '<div class="alert alert-success">✅ Morning Routine fullført! Saker er lagt til.</div>';
-                loadDashboard();
-                
-            } catch (error) {
-                statusEl.innerHTML = `<div class="alert alert-error">❌ Feil: ${error.message}</div>`;
-            }
-        }
-
-        async function deleteOldSaker() {
-            if (!confirm('Dette vil slette alle saker eldre enn 7 dager. Er du sikker?')) return;
-            
-            try {
-                const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
-                await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=lt.${sevenDaysAgo}`, {
-                    method: 'DELETE'
-                });
-                alert('✅ Gamle saker slettet');
-                loadDashboard();
-            } catch (error) {
-                alert('❌ Feil: ' + error.message);
-            }
-        }
-
-        // Utilities
-        async function refreshAll() {
-            await loadDashboard();
-            if (document.getElementById('saksliste').classList.contains('active')) loadSaker();
-            if (document.getElementById('podcast').classList.contains('active')) loadPodcast();
-            if (document.getElementById('stats').classList.contains('active')) loadStats();
-        }
-
-        async function testConnection() {
-            try {
-                const result = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&limit=1`);
-                alert(`✅ Tilkobling OK! Fant ${result.length} test-rad.`);
-            } catch (error) {
-                alert(`❌ Tilkobling feilet: ${error.message}`);
-            }
-        }
-
-        function getCategoryClass(cat) {
-            const map = {
-                'REALITY_TV': 'cat-reality',
-                'KJENDIS_DRAMA': 'cat-kjendis',
-                'FILM_TV': 'cat-film',
-                'MUSIKK': 'cat-musikk',
-                'INTERNASJONALT': 'cat-internasjonalt'
-            };
-            return map[cat] || 'cat-talk';
-        }
-
-        function getWeekNumber(date) {
-            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-            const dayNum = d.getUTCDay() || 7;
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Auto-login
-        if (localStorage.getItem('mc_auth') === 'true') {
-            showApp();
-        }
-
-        // Auto-refresh hvert 5. minutt
-        setInterval(() => {
-            if (document.getElementById('app').style.display === 'block') {
-                loadDashboard();
-            }
-        }, 300000);
-    </script>
+<script>
+const P='kloakontroll2026',U='https://kvniauxokdtmpvjtfnej.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM2NzIzNCwiZXhwIjoyMDY2OTQzMjM0fQ.OkhTtq9QAQ3xMzZYKyWyCjj7PiqMZJKSvpA0jcBJqpE',T='a0000000-0000-0000-0000-000000000001';
+function doLogin(){const i=document.getElementById('password-input').value;if(i===P){localStorage.setItem('mc_auth','true');showApp()}else{document.getElementById('login-error').style.display='block'}}
+function doLogout(){localStorage.removeItem('mc_auth');location.reload()}
+function showApp(){document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';const t=new Date();t.setDate(t.getDate()+1);document.getElementById('saksliste-date').value=t.toISOString().split('T')[0];initApp()}
+function showSection(s){document.querySelectorAll('.section').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.nav button').forEach(e=>e.classList.remove('active'));document.getElementById(s).classList.add('active');document.querySelector('[data-section="'+s+'"]').classList.add('active');if(s==='saksliste')loadSaker();if(s==='stats')loadStats()}
+async function sup(e,o={}){const u=U+'/rest/v1'+e,h={apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json',...o.headers},r=await fetch(u,{...o,headers:h});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+async function initApp(){await loadDashboard()}
+async function loadDashboard(){try{const t=new Date();t.setDate(t.getDate()+1);const d=t.toISOString().split('T')[0],s=await sup('/agenda_items?tenant_id=eq.'+T+'&show_date=eq.'+d);document.getElementById('dash-saker').textContent=s.length;const n=await sup('/nielsen_weekly_metrics?channel=eq.NRJ&order=created_at.desc&limit=1');document.getElementById('dash-radio').textContent=n[0]?(n[0].value/1000).toFixed(1)+'k':'-';const p=await sup('/podtoppen_weekly_data?podcast_title=eq.NRJ%20Morgen%20Podkast&order=created_at.desc&limit=1');document.getElementById('dash-podcast').textContent=p[0]?'#'+p[0].rank:'-';document.getElementById('dash-status').innerHTML='<div class="alert ok">✅ Tilkoblet! '+s.length+' saker for '+d+'</div>'}catch(e){document.getElementById('dash-status').innerHTML='<div class="alert err">❌ '+e.message+'</div>'}}
+async function loadSaker(){const c=document.getElementById('saksliste-content'),d=document.getElementById('saksliste-date').value;c.innerHTML='<div class="loading">Laster...</div>';try{const s=await sup('/agenda_items?tenant_id=eq.'+T+'&show_date=eq.'+d+'&order=order_index.asc');if(s.length===0){c.innerHTML='<p style="text-align:center;color:var(--muted)">Ingen saker for '+d+'</p>';return}c.innerHTML=s.map((a,i)=>'<div style="display:flex;gap:1rem;padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;"><div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;">'+(i+1)+'</div><div style="flex:1"><div style="font-weight:600;">'+a.title+'</div><div style="font-size:0.875rem;color:var(--muted)">'+(a.category||'TALK')+'</div></div></div>').join('')}catch(e){c.innerHTML='<div class="alert err">❌ '+e.message+'</div>'}}
+async function loadStats(){try{const r=await sup('/nielsen_weekly_metrics?channel=eq.NRJ&order=created_at.desc&limit=5');document.getElementById('radio-stats').innerHTML=r.length>0?r.map(x=>'<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke '+x.week_number+', '+x.year+'</strong>: '+x.value.toLocaleString()+' lyttere</div>').join(''):'<p style="color:var(--muted)">Ingen data</p>';const p=await sup('/podtoppen_weekly_data?podcast_title=eq.NRJ%20Morgen%20Podkast&order=created_at.desc&limit=5');document.getElementById('podcast-stats').innerHTML=p.length>0?p.map(x=>'<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke '+x.week_number+'</strong>: Rank #'+x.rank+' • '+(x.unique_units||0).toLocaleString()+' unike</div>').join(''):'<p style="color:var(--muted)">Ingen data</p>'}catch(e){document.getElementById('radio-stats').innerHTML='<div class="alert err">❌ '+e.message+'</div>'}}
+if(localStorage.getItem('mc_auth')==='true')showApp();
+setInterval(()=>{if(document.getElementById('app').style.display==='block')loadDashboard()},300000);
+</script>
 </body>
 </html>
