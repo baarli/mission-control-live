@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="no" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mission Control - NRJ Morgen Dashboard">
+    <title>Mission Control | NRJ Morgen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #6366f1;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.8);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        .login-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-box {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .login-box h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .login-box p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .login-box button:hover {
+            opacity: 0.9;
+        }
+        .app { display: none; }
+        .app.authenticated { display: block; }
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav button:hover, .nav button.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        .sak-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+        .sak-number {
+            width: 32px;
+            height: 32px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+        .sak-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .sak-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .sak-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        .sak-category {
+            padding: 0.125rem 0.5rem;
+            background: var(--color-primary);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            color: white;
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .btn:hover { opacity: 0.9; }
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <div class="brand-icon" style="margin: 0 auto 1rem;">🎛️</div>
+            <h1>Mission Control</h1>
+            <p>NRJ Morgen Dashboard</p>
+            <input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key==='Enter')login()">
+            <button onclick="login()">Logg inn</button>
+            <p id="login-error" style="color: var(--color-danger); margin-top: 1rem; display: none;">Feil passord</p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app" id="app">
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">🎛️</div>
+                <div>
+                    <div style="font-weight: 700;">Mission Control</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">NRJ Morgen</div>
+                </div>
+            </div>
+            <nav class="nav">
+                <button class="active" onclick="showSection('dashboard')" data-section="dashboard">Dashboard</button>
+                <button onclick="showSection('saksliste')" data-section="saksliste">Saksliste</button>
+                <button onclick="showSection('podcast')" data-section="podcast">Podcast</button>
+                <button onclick="logout()">Logg ut</button>
+            </nav>
+        </header>
+
+        <main class="container">
+            <!-- Dashboard Section -->
+            <section class="section active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-saker">-</div>
+                        <div class="stat-label">Saker i dag</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-radio">-</div>
+                        <div class="stat-label">Radio lyttere</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-podcast">-</div>
+                        <div class="stat-label">Podcast ranking</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>📊 System Status</h2>
+                    <div id="system-status">Laster...</div>
+                </div>
+            </section>
+
+            <!-- Saksliste Section -->
+            <section class="section" id="saksliste">
+                <div class="card">
+                    <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>📋 Saksliste</span>
+                        <button class="btn" onclick="refreshSaker()">🔄 Oppdater</button>
+                    </h2>
+                    <div id="saksliste-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Laster saker...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Podcast Section -->
+            <section class="section" id="podcast">
+                <div class="card">
+                    <h2>🎧 Podcast Episoder</h2>
+                    <div id="podcast-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Laster episoder...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Konfigurasjon
+        const SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzNjcyMzQsImV4cCI6MjA2Njk0MzIzNH0._24RuF95RnxxHj3sjGswdd36VVYlX_jKxut8dvELfSA';
+        const TENANT_ID = 'a0000000-0000-0000-0000-000000000001';
+        const PASSWORD = 'kloakontroll2026';
+
+        // Sjekk om allerede logget inn
+        if (localStorage.getItem('mc_authenticated') === 'true') {
+            showApp();
+        }
+
+        function login() {
+            const input = document.getElementById('password-input').value;
+            if (input === PASSWORD) {
+                localStorage.setItem('mc_authenticated', 'true');
+                showApp();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('mc_authenticated');
+            location.reload();
+        }
+
+        function showApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').classList.add('authenticated');
+            initApp();
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+            
+            if (sectionId === 'saksliste') loadSaker();
+            if (sectionId === 'podcast') loadPodcast();
+        }
+
+        // Supabase Client
+        async function supabaseRequest(endpoint, options = {}) {
+            const url = `${SUPABASE_URL}/rest/v1${endpoint}`;
+            const headers = {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            
+            const response = await fetch(url, { ...options, headers });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        }
+
+        async function initApp() {
+            await loadDashboard();
+        }
+
+        async function loadDashboard() {
+            try {
+                // Hent dagens saker
+                const today = new Date().toISOString().split('T')[0];
+                const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
+                document.getElementById('stat-saker').textContent = saker.length;
+
+                // Hent stats
+                const stats = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.STATS&order=created_at.desc&limit=1`);
+                const podcast = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.PODCAST_RANKING&order=created_at.desc&limit=1`);
+                
+                if (stats[0] && stats[0].link_metadata) {
+                    const meta = JSON.parse(stats[0].link_metadata);
+                    document.getElementById('stat-radio').textContent = meta.dailyListeners ? (meta.dailyListeners / 1000).toFixed(1) + 'k' : '-';
+                }
+                
+                if (podcast[0] && podcast[0].link_metadata) {
+                    const meta = JSON.parse(podcast[0].link_metadata);
+                    document.getElementById('stat-podcast').textContent = '#' + (meta.ranking || '-');
+                }
+
+                document.getElementById('system-status').innerHTML = `
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <span style="color: var(--color-success);">✅ Supabase tilkoblet</span>
+                        <span style="color: var(--color-success);">✅ ${saker.length} saker i dag</span>
+                        <span style="color: var(--color-success);">✅ Dashboard aktivt</span>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('system-status').innerHTML = `
+                    <div class="error">❌ Feil: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function loadSaker() {
+            const container = document.getElementById('saksliste-content');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Laster saker...</p></div>';
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}&order=order_index.asc`);
+                
+                if (saker.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Ingen saker for i dag.</p>';
+                    return;
+                }
+
+                container.innerHTML = saker.map((sak, i) => `
+                    <div class="sak-item">
+                        <div class="sak-number">${i + 1}</div>
+                        <div class="sak-content">
+                            <div class="sak-title">${sak.title}</div>
+                            <div class="sak-meta">
+                                <span class="sak-category">${sak.category || 'TALK'}</span>
+                                ${sak.link_url ? `<a href="${sak.link_url}" target="_blank" style="color: var(--color-primary);">🔗 Lenke</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = `<div class="error">❌ Kunne ikke laste saker: ${error.message}</div>`;
+            }
+        }
+
+        async function loadPodcast() {
+            const container = document.getElementById('podcast-content');
+            
+            try {
+                // Prøv å hente fra podcast_episodes
+                const episodes = await supabaseRequest('/podcast_episodes?order=published_at.desc&limit=10');
+                
+                if (episodes.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Ingen episoder funnet.</p>';
+                    return;
+                }
+
+                container.innerHTML = episodes.map(ep => `
+                    <div class="sak-item">
+                        <div class="sak-content">
+                            <div class="sak-title">${ep.title}</div>
+                            <div class="sak-meta">${ep.published_at ? new Date(ep.published_at).toLocaleDateString('nb-NO') : ''}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = `<div class="error">❌ Kunne ikke laste episoder: ${error.message}</div>`;
+            }
+        }
+
+        function refreshSaker() {
+            loadSaker();
+        }
+
+        // Auto-refresh hver 5. minutt
+        setInterval(() => {
+            if (document.getElementById('app').classList.contains('authenticated')) {
+                loadDashboard();
+            }
+        }, 300000);
+    </script>
+</body>
+</html>
