@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mission Control - Test Login</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .box {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover { background: #4f46e5; }
+        .error { color: #ef4444; margin-top: 1rem; display: none; }
+        .success { color: #10b981; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="box" id="login-box">
+        <h1>🎛️ Mission Control</h1>
+        <p>NRJ Morgen Dashboard</p>
+        <input type="password" id="pwd" placeholder="Passord" onkeypress="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()">Logg inn</button>
+        <div class="error" id="error">Feil passord</div>
+    </div>
+    
+    <div class="box" id="success-box" style="display: none;">
+        <h1 class="success">✅ Innlogget!</h1>
+        <p>Du kan nå gå til hovedsiden:</p>
+        <a href="index.html" style="color: #6366f1;">Gå til Mission Control →</a>
+        <br><br>
+        <button onclick="doLogout()">Logg ut</button>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = 'kloakontroll2026';
+        
+        function doLogin() {
+            const input = document.getElementById('pwd').value;
+            console.log('Login attempt:', input);
+            
+            if (input === CORRECT_PASSWORD) {
+                console.log('Login successful');
+                localStorage.setItem('mc_auth', 'true');
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('success-box').style.display = 'block';
+            } else {
+                console.log('Login failed');
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+        
+        function doLogout() {
+            localStorage.removeItem('mc_auth');
+            location.reload();
+        }
+        
+        // Auto-login hvis allerede autentisert
+        if (localStorage.getItem('mc_auth') === 'true') {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('success-box').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
