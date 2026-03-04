@@ -616,6 +616,16 @@ input:focus, select:focus, textarea:focus {
           Filtrerer automatisk etter underholdningsverdi.
         </p>
 
+        <!-- Brave Search Prompt (NY) -->
+        <div style="margin-bottom: 1rem;">
+          <div class="flex between" style="margin-bottom: 0.5rem;">
+            <label style="font-size: 0.875rem; font-weight: 500;">🔍 Brave søkeprompt (valgfritt)</label>
+            <button onclick="resetBravePrompt()" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Reset</button>
+          </div>
+          <input type="text" id="brave-prompt" placeholder="F.eks: site:vg.no OR site:dagbladet.no..." style="margin: 0; font-family: monospace; font-size: 0.875rem;">
+          <p style="font-size: 0.75rem; color: var(--muted); margin: 0.25rem 0 0 0;">Tips: Bruk site: for å søke i spesifikke kilder</p>
+        </div>
+
         <!-- Search Form -->
         <div class="flex wrap" style="gap: 0.75rem; margin-bottom: 1rem;">
           <input type="text" id="search-query" placeholder="Søkeord..." style="flex: 1; min-width: 200px; margin: 0;">
@@ -1104,6 +1114,92 @@ async function loadStats() {
 
 // Brave News API Search
 async function doSearch() {
+  const query = document.getElementById('search-query').value.trim();
+  const category = document.getElementById('search-category').value;
+  const freshness = document.getElementById('search-freshness').value;
+  const customPrompt = document.getElementById('brave-prompt').value.trim();
+  const container = document.getElementById('search-results');
+  
+  if (!query) {
+    showToast('Vennligst skriv inn søkeord', 'warn');
+    return;
+  }
+  
+  // Save to history (FASE 2)
+  saveSearchToHistory(query, category);
+  
+  setLoading('search-btn', true);
+  container.innerHTML = '<div class="loading">Søker etter nyheter...</div>';
+  selectedResults.clear();
+  updateSelectedCount();
+  
+  try {
+    // Build search query with custom prompt
+    let searchQuery = query;
+    
+    // Add custom prompt if provided
+    if (customPrompt) {
+      searchQuery = customPrompt + ' ' + searchQuery;
+    } else {
+      // Default category-based enhancements
+      if (category === 'REALITY_TV') searchQuery += ' reality TV Norge';
+      else if (category === 'KJENDIS_DRAMA') searchQuery += ' kjendis drama Norge';
+      else if (category === 'FILM_TV') searchQuery += ' film TV premiere Norge';
+      else if (category === 'MUSIKK') searchQuery += ' musikk Norge';
+      else if (category === 'INTERNASJONALT') searchQuery += ' celebrity news';
+    }
+    
+    const response = await fetch('https://api.search.brave.com/res/v1/news/search?q=' + encodeURIComponent(searchQuery) + '&count=20&search_lang=nb&country=no&freshness=' + freshness, {
+      headers: {
+        'X-Subscription-Token': BRAVE_KEY,
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Brave API error:', response.status, errorText);
+      throw new Error('Søk feilet: ' + response.status);
+    }
+    
+    const data = await response.json();
+    const results = data.results || [];
+    
+    searchResults = results.map((r, i) => ({
+      id: i,
+      title: r.title,
+      description: r.description,
+      url: r.url,
+      source: r.source || 'Ukjent',
+      published: r.published || 'Ukjent',
+      score: calculateEntertainmentScore(r.title, r.description),
+      category: category || 'TALK'
+    }));
+    
+    searchResults.sort((a, b) => b.score - a.score);
+    
+    if (searchResults.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>Ingen resultater</h3><p>Prøv et annet søkeord eller kategori.</p></div>';
+      document.getElementById('search-actions').style.display = 'none';
+    } else {
+      renderSearchResults();
+      document.getElementById('search-actions').style.display = 'block';
+      showToast('Fant ' + searchResults.length + ' resultater', 'success');
+    }
+    
+  } catch (e) {
+    console.error('Search error:', e);
+    container.innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
+    document.getElementById('search-actions').style.display = 'none';
+    showToast('Søk feilet', 'error');
+  }
+  setLoading('search-btn', false);
+}
+
+function resetBravePrompt() {
+  document.getElementById('brave-prompt').value = '';
+  showToast('Søkeprompt tilbakestilt', 'info');
+}
 
 // ===== FASE 4: CHART FUNCTIONS =====
 function renderLineChart(data, containerId, color, label) {
