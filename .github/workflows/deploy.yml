@@ -79,7 +79,7 @@ jobs:
           test -f dist/404.html && echo "✓ 404.html exists" || echo "✗ 404.html missing"
 
       - name: Upload build artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist/
 
