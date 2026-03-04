@@ -54,7 +54,7 @@ export const TaskList: React.FC = () => {
                 </span>
               </div>
               <p className={styles.taskData}>
-                {(cmd.command_data as Record<string, unknown>).message as string || JSON.stringify(cmd.command_data).substring(0, 100)}
+                {String((cmd.command_data as Record<string, unknown>)?.message ?? '') || JSON.stringify(cmd.command_data).substring(0, 100)}
               </p>
               <span className={styles.taskTime}>
                 {new Date(cmd.created_at).toLocaleTimeString()}
