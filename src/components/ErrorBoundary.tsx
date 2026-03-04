@@ -61,6 +61,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             </pre>
             <button
               onClick={() => window.location.reload()}
+              aria-label="Last inn siden på nytt"
               style={{
                 backgroundColor: '#06b6d4',
                 color: '#0f172a',
