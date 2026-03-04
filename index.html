@@ -197,6 +197,87 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   font-family: monospace;
 }
 
+/* ===== FASE 2: INLINE EDITING ===== */
+.sak-item {
+  transition: all 0.2s ease;
+}
+.sak-item:hover {
+  border-color: var(--c1);
+  box-shadow: 0 0 0 1px var(--c1);
+}
+.edit-form {
+  background: var(--bg);
+  border: 1px solid var(--c1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+  margin-bottom: 0.75rem;
+}
+.edit-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.edit-btn {
+  background: transparent;
+  border: 1px solid var(--b);
+  color: var(--muted);
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+.edit-btn:hover {
+  border-color: var(--c1);
+  color: var(--tx);
+}
+
+/* Search history */
+.search-history {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--b);
+}
+.search-history h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--bg2);
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.history-item:hover {
+  background: var(--b);
+}
+.history-item .query {
+  font-size: 0.875rem;
+}
+.history-item .time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.history-item .delete {
+  background: transparent;
+  border: none;
+  color: var(--c3);
+  padding: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) { 
   .header { padding: 1rem; } 
   .container { padding: 1rem; }
@@ -297,6 +378,13 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
             <option value="pw">Siste uke</option>
           </select>
           <button onclick="doSearch()" id="search-btn">🔍 Søk</button>
+        </div>
+
+        <!-- Search History (FASE 2) -->
+        <div id="search-history-container" class="search-history" style="display: none;">
+          <h4>📜 Siste søk</h4>
+          <div id="search-history-list"></div>
+          <button onclick="clearSearchHistory()" style="background: transparent; border: 1px solid var(--b); color: var(--muted); font-size: 0.75rem; padding: 0.25rem 0.5rem; margin-top: 0.5rem;">Tøm historikk</button>
         </div>
 
         <!-- Prompt Editor -->
@@ -482,6 +570,7 @@ async function sup(e, o = {}) {
 
 async function initApp() {
   await loadDashboard();
+  renderSearchHistory(); // FASE 2: Load search history
 }
 
 async function loadDashboard() {
@@ -523,24 +612,167 @@ async function loadSaker() {
         '<button onclick="showSection(\'search\')">🔍 Søk etter saker</button>' +
       '</div>';
     } else {
-      c.innerHTML = s.map((a, i) => {
-        const catClass = getCatClass(a.category);
-        return '<div style="display:flex;gap:1rem;padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;" class="sak-item" data-id="' + a.id + '">' +
-          '<div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;">' + (i + 1) + '</div>' +
-          '<div style="flex:1">' +
-            '<div style="font-weight:600;">' + escapeHtml(a.title) + '</div>' +
-            '<div style="font-size:0.875rem;color:var(--muted)">' + (a.category ? '<span class="cat ' + catClass + '">' + a.category + '</span>' : 'TALK') + '</div>' +
-          '</div>' +
-          // ===== QUICK WIN #2: DELETE CONFIRMATION =====
-          '<button onclick="confirmDeleteSak(\'' + a.id + '\')" style="background:var(--c3);padding:0.5rem;" title="Slett">🗑️</button>' +
-        '</div>';
-      }).join('');
+      c.innerHTML = s.map((a, i) => renderSakItem(a, i)).join('');
     }
   } catch (e) {
     c.innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
     showToast('Feil ved lasting av saker', 'error');
   }
   setLoading('refresh-btn', false);
+}
+
+// ===== FASE 2: RENDER SAK ITEM (View/Edit modes) =====
+function renderSakItem(a, i) {
+  const catClass = getCatClass(a.category);
+  const isEditing = window.editingSak === a.id;
+  
+  if (isEditing) {
+    return renderEditForm(a, i);
+  }
+  
+  return '<div style="display:flex;gap:1rem;padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;border:1px solid transparent;" class="sak-item" data-id="' + a.id + '">' +
+    '<div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;">' + (i + 1) + '</div>' +
+    '<div style="flex:1;min-width:0;">' +
+      '<div style="font-weight:600;cursor:pointer;" onclick="startEdit(\'' + a.id + '\')" title="Klikk for å redigere">' + escapeHtml(a.title) + '</div>' +
+      '<div style="font-size:0.875rem;color:var(--muted);margin-top:0.25rem;">' + (a.category ? '<span class="cat ' + catClass + '">' + a.category + '</span>' : '<span class="cat cat-talk">TALK</span>') + '</div>' +
+      (a.link_url ? '<div style="font-size:0.75rem;margin-top:0.5rem;"><a href="' + escapeHtml(a.link_url) + '" target="_blank" style="color:var(--c1);">🔗 ' + escapeHtml(a.link_url.substring(0, 50)) + (a.link_url.length > 50 ? '...' : '') + '</a></div>' : '') +
+    '</div>' +
+    '<div style="display:flex;gap:0.5rem;flex-direction:column;">' +
+      '<button onclick="startEdit(\'' + a.id + '\')" class="edit-btn" title="Rediger">✏️</button>' +
+      '<button onclick="confirmDeleteSak(\'' + a.id + '\')" style="background:var(--c3);padding:0.5rem;font-size:0.875rem;" title="Slett">🗑️</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderEditForm(a, i) {
+  return '<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.75rem;border:2px solid var(--c1);" class="edit-form" data-id="' + a.id + '">' +
+    '<div style="display:flex;gap:1rem;margin-bottom:0.75rem;">' +
+      '<div style="width:32px;height:32px;background:var(--c1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;">' + (i + 1) + '</div>' +
+      '<div style="flex:1;">' +
+        '<input type="text" id="edit-title-' + a.id + '" value="' + escapeHtml(a.title) + '" placeholder="Tittel" style="margin-bottom:0.5rem;">' +
+        '<textarea id="edit-desc-' + a.id + '" placeholder="Beskrivelse" style="margin-bottom:0.5rem;">' + escapeHtml(a.description || '') + '</textarea>' +
+        '<select id="edit-cat-' + a.id + '" style="width:auto;margin-bottom:0;">' +
+          '<option value="TALK" ' + (a.category === 'TALK' ? 'selected' : '') + '>TALK</option>' +
+          '<option value="REALITY_TV" ' + (a.category === 'REALITY_TV' ? 'selected' : '') + '>Reality TV</option>' +
+          '<option value="KJENDIS_DRAMA" ' + (a.category === 'KJENDIS_DRAMA' ? 'selected' : '') + '>Kjendis Drama</option>' +
+          '<option value="FILM_TV" ' + (a.category === 'FILM_TV' ? 'selected' : '') + '>Film & TV</option>' +
+          '<option value="MUSIKK" ' + (a.category === 'MUSIKK' ? 'selected' : '') + '>Musikk</option>' +
+          '<option value="INTERNASJONALT" ' + (a.category === 'INTERNASJONALT' ? 'selected' : '') + '>Internasjonalt</option>' +
+        '</select>' +
+      '</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:0.5rem;justify-content:flex-end;">' +
+      '<button onclick="cancelEdit()" style="background:var(--b);">Avbryt</button>' +
+      '<button onclick="saveEdit(\'' + a.id + '\')" style="background:var(--c2);">💾 Lagre</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function startEdit(id) {
+  window.editingSak = id;
+  loadSaker();
+}
+
+function cancelEdit() {
+  window.editingSak = null;
+  loadSaker();
+}
+
+async function saveEdit(id) {
+  const title = document.getElementById('edit-title-' + id).value.trim();
+  const description = document.getElementById('edit-desc-' + id).value.trim();
+  const category = document.getElementById('edit-cat-' + id).value;
+  
+  if (!title) {
+    showToast('Tittel er påkrevd', 'error');
+    return;
+  }
+  
+  try {
+    await sup('/agenda_items?id=eq.' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        category: category,
+        updated_at: new Date().toISOString()
+      })
+    });
+    window.editingSak = null;
+    showToast('✅ Sak oppdatert!', 'success');
+    loadSaker();
+  } catch (e) {
+    showToast('❌ Kunne ikke lagre: ' + e.message, 'error');
+  }
+}
+
+// ===== FASE 2: SEARCH HISTORY =====
+function saveSearchToHistory(query, category) {
+  if (!query) return;
+  
+  const history = JSON.parse(localStorage.getItem('mc_search_history') || '[]');
+  const newItem = {
+    query: query,
+    category: category,
+    timestamp: Date.now()
+  };
+  
+  // Remove duplicates
+  const filtered = history.filter(h => h.query !== query);
+  filtered.unshift(newItem);
+  
+  // Keep only last 10
+  localStorage.setItem('mc_search_history', JSON.stringify(filtered.slice(0, 10)));
+  renderSearchHistory();
+}
+
+function renderSearchHistory() {
+  const history = JSON.parse(localStorage.getItem('mc_search_history') || '[]');
+  const container = document.getElementById('search-history-container');
+  const list = document.getElementById('search-history-list');
+  
+  if (history.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  list.innerHTML = history.map((h, i) => {
+    const timeAgo = getTimeAgo(h.timestamp);
+    const catLabel = h.category ? '[' + h.category + ']' : '';
+    return '<div class="history-item" onclick="runHistorySearch(' + i + ')" style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem;background:var(--bg2);border-radius:0.375rem;margin-bottom:0.5rem;cursor:pointer;">' +
+      '<span style="font-size:0.875rem;">' + escapeHtml(h.query) + ' ' + catLabel + '</span>' +
+      '<span style="font-size:0.75rem;color:var(--muted);">' + timeAgo + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function runHistorySearch(index) {
+  const history = JSON.parse(localStorage.getItem('mc_search_history') || '[]');
+  const item = history[index];
+  if (item) {
+    document.getElementById('search-query').value = item.query;
+    document.getElementById('search-category').value = item.category;
+    doSearch();
+  }
+}
+
+function clearSearchHistory() {
+  if (confirm('Er du sikker på at du vil tømme søkehistorikken?')) {
+    localStorage.removeItem('mc_search_history');
+    renderSearchHistory();
+    showToast('Søkehistorikk tømt', 'info');
+  }
+}
+
+function getTimeAgo(timestamp) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return 'akkurat nå';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return minutes + ' min siden';
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return hours + ' t siden';
+  return Math.floor(hours / 24) + ' d siden';
 }
 
 // ===== QUICK WIN #2: DELETE CONFIRMATION =====
@@ -579,6 +811,9 @@ async function doSearch() {
     showToast('Vennligst skriv inn søkeord', 'warn');
     return;
   }
+  
+  // Save to history (FASE 2)
+  saveSearchToHistory(query, category);
   
   setLoading('search-btn', true);
   container.innerHTML = '<div class="loading">Søker etter nyheter...</div>';
