@@ -322,6 +322,4 @@ export default {
   sanitizeInput,
   isEmpty,
   createValidator,
-  type ValidationResult,
-  type FieldValidator
 };
