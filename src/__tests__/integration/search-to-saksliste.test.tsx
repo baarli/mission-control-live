@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SearchPanel } from '@/components/Search/SearchPanel';
+import SearchPanel from '@/components/Search/SearchPanel';
 import { SakItem } from '@/components/Saksliste/SakItem';
 import type { SearchResult, Sak } from '@/types';
-import { calculateEntertainmentScore } from '@/services/brave';
+import { calculateScore } from '@/services/brave';
 import React, { useState } from 'react';
 
 const mockSearchResults: SearchResult[] = [
@@ -46,21 +46,18 @@ const SearchToSaksliste: React.FC = () => {
   const handleAddToSaksliste = (result: SearchResult) => {
     const newSak: Sak = {
       id: `sak_${Date.now()}`,
+      tenant_id: 'tenant_1',
       title: result.title,
       description: result.description,
       status: 'draft',
       priority: 'medium',
-      category: 'Search Result',
+      category: 'TALK',
       tags: ['from-search'],
-      createdBy: {
-        id: 'user_1',
-        email: 'test@example.com',
-        name: 'Test User',
-        role: 'admin',
-        createdAt: new Date().toISOString(),
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      created_by: 'user_1',
+      show_date: new Date().toISOString(),
+      order_index: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       entertainmentScore: result.entertainmentScore,
     };
     setSaker(prev => [...prev, newSak]);
@@ -71,7 +68,8 @@ const SearchToSaksliste: React.FC = () => {
       <div data-testid="search-section">
         <SearchPanel 
           onSearch={handleSearch}
-          onAddToSaksliste={handleAddToSaksliste}
+          results={[]}
+          onAddSingle={handleAddToSaksliste}
         />
       </div>
       
@@ -191,22 +189,22 @@ describe('Search to Saksliste Integration', () => {
   
   describe('entertainment score calculation', () => {
     it('calculates score based on title keywords', () => {
-      const score1 = calculateEntertainmentScore('Normal Title', '');
-      const score2 = calculateEntertainmentScore('Premiere Video', '');
+      const score1 = calculateScore('Normal Title', '');
+      const score2 = calculateScore('Premiere Video', '');
       
       expect(score2).toBeGreaterThan(score1);
     });
     
     it('calculates score based on description keywords', () => {
-      const score1 = calculateEntertainmentScore('Title', 'Normal description');
-      const score2 = calculateEntertainmentScore('Title', 'Exclusive behind the scenes content');
+      const score1 = calculateScore('Title', 'Normal description');
+      const score2 = calculateScore('Title', 'Exclusive behind the scenes content');
       
       expect(score2).toBeGreaterThan(score1);
     });
     
     it('calculates score based on source', () => {
-      const score1 = calculateEntertainmentScore('Title', 'Description', 'https://example.com');
-      const score2 = calculateEntertainmentScore('Title', 'Description', 'https://youtube.com');
+      const score1 = calculateScore('Title', 'Description');
+      const score2 = calculateScore('Title', 'Description youtube');
       
       expect(score2).toBeGreaterThan(score1);
     });

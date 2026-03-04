@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LoginScreen } from '@/components/Auth/LoginScreen';
+import LoginScreen from '@/components/Auth/LoginScreen';
 import { useAuthStore, initializeAuth } from '@/stores/authStore';
 import { localStorageMock } from '@/__mocks__/localStorage';
 
@@ -159,9 +159,9 @@ describe('Auth Flow Integration', () => {
       
       await login('kloakontroll2026');
       
-      const user = localStorageMock.getParsedItem('mission_control_user', null);
+      const user = localStorageMock.getParsedItem('mission_control_user', null) as Record<string, string> | null;
       expect(user).not.toBeNull();
-      expect(user.email).toBe('admin@mission-control.no');
+      expect(user!.email).toBe('admin@mission-control.no');
     });
     
     it('clears storage on logout', async () => {

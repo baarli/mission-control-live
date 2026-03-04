@@ -2,8 +2,18 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StatCard } from '@/components/UI/StatCard';
 import { GlassCard } from '@/components/UI/GlassCard';
-import type { DashboardStats } from '@/types';
 import React from 'react';
+
+// Local type for test dashboard stats
+interface DashboardStats {
+  totalSaker: number;
+  pendingSaker: number;
+  approvedSaker: number;
+  rejectedSaker: number;
+  averageEntertainmentScore: number;
+  sakerThisWeek: number;
+  sakerLastWeek: number;
+}
 
 // Stats view component
 const StatsView: React.FC<{ stats: DashboardStats; loading?: boolean }> = ({ 

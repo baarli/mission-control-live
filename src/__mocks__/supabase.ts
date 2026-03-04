@@ -56,7 +56,6 @@ export const mockUser: User = {
   email: 'test@example.com',
   name: 'Test User',
   role: 'admin',
-  avatar: 'https://example.com/avatar.jpg',
   createdAt: '2024-01-01T00:00:00Z',
 };
 
@@ -65,16 +64,19 @@ export const mockUser: User = {
  */
 export const mockSak: Sak = {
   id: 'sak_123',
+  tenant_id: 'tenant_1',
   title: 'Test Sak',
   description: 'This is a test sak for testing purposes',
   status: 'pending',
   priority: 'high',
-  category: 'Test Category',
+  category: 'TALK',
   tags: ['test', 'mock'],
-  assignee: mockUser,
-  createdBy: mockUser,
-  createdAt: '2024-01-01T00:00:00Z',
-  updatedAt: '2024-01-01T00:00:00Z',
+  assignee: mockUser.id,
+  created_by: mockUser.id,
+  show_date: '2024-01-15',
+  order_index: 0,
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
   entertainmentScore: 75,
 };
 

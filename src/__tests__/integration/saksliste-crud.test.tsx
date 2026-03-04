@@ -23,21 +23,18 @@ const MockSaksliste: React.FC<{
   const handleCreate = () => {
     const newSak: Sak = {
       id: `sak_${Date.now()}`,
+      tenant_id: 'tenant_1',
       title: 'New Test Sak',
       description: 'New description',
       status: 'draft',
       priority: 'medium',
-      category: 'Test',
+      category: 'TALK',
       tags: [],
-      createdBy: {
-        id: 'user_1',
-        email: 'test@example.com',
-        name: 'Test User',
-        role: 'admin',
-        createdAt: new Date().toISOString(),
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      created_by: 'user_1',
+      show_date: new Date().toISOString(),
+      order_index: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     setSaker(prev => [...prev, newSak]);
     onCreate?.(newSak);
@@ -71,15 +68,18 @@ const mockCreator = {
 
 const createMockSak = (id: string, overrides: Partial<Sak> = {}): Sak => ({
   id,
+  tenant_id: 'tenant_1',
   title: `Sak ${id}`,
   description: `Description for ${id}`,
   status: 'pending',
   priority: 'medium',
-  category: 'Test',
+  category: 'TALK',
   tags: [],
-  createdBy: mockCreator,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
+  created_by: mockCreator.id,
+  show_date: '2024-01-15',
+  order_index: 0,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
   ...overrides,
 });
 
@@ -145,7 +145,7 @@ describe('Saksliste CRUD Integration', () => {
       render(<MockSaksliste initialSaker={mockSaker} />);
       
       // Find first sak and delete it
-      const firstSakDeleteBtn = screen.getAllByTestId('delete-btn')[0];
+      const firstSakDeleteBtn = screen.getAllByTestId('delete-btn')[0]!;
       await user.click(firstSakDeleteBtn);
       
       expect(screen.queryByText('First Sak')).not.toBeInTheDocument();
@@ -158,7 +158,7 @@ describe('Saksliste CRUD Integration', () => {
       
       // Delete the second sak
       const deleteBtns = screen.getAllByTestId('delete-btn');
-      await user.click(deleteBtns[1]);
+      await user.click(deleteBtns[1]!);
       
       // First and third should still exist
       expect(screen.getByText('First Sak')).toBeInTheDocument();
@@ -173,7 +173,7 @@ describe('Saksliste CRUD Integration', () => {
       render(<MockSaksliste initialSaker={mockSaker} />);
       
       // First sak is pending and should have approve button
-      const approveBtn = screen.getAllByTestId('approve-btn')[0];
+      const approveBtn = screen.getAllByTestId('approve-btn')[0]!;
       await user.click(approveBtn);
       
       // Status should be updated to approved
@@ -205,12 +205,12 @@ describe('Saksliste CRUD Integration', () => {
       expect(screen.getByTestId('sak-count')).toHaveTextContent('4 saker');
       
       // 2. Approve the first sak
-      const approveBtn = screen.getAllByTestId('approve-btn')[0];
+      const approveBtn = screen.getAllByTestId('approve-btn')[0]!;
       await user.click(approveBtn);
       
       // 3. Delete the second sak
       const deleteBtns = screen.getAllByTestId('delete-btn');
-      await user.click(deleteBtns[1]);
+      await user.click(deleteBtns[1]!);
       
       // Verify final state
       expect(screen.getByTestId('sak-count')).toHaveTextContent('3 saker');
@@ -223,10 +223,10 @@ describe('Saksliste CRUD Integration', () => {
       render(<MockSaksliste initialSaker={mockSaker} />);
       
       // Approve first sak
-      await user.click(screen.getAllByTestId('approve-btn')[0]);
+      await user.click(screen.getAllByTestId('approve-btn')[0]!);
       
       // Delete second sak
-      await user.click(screen.getAllByTestId('delete-btn')[1]);
+      await user.click(screen.getAllByTestId('delete-btn')[1]!);
       
       // Create new sak
       await user.click(screen.getByTestId('create-sak-btn'));

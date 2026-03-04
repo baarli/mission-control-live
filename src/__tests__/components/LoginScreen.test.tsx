@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LoginScreen } from '@/components/Auth/LoginScreen';
+import LoginScreen from '@/components/Auth/LoginScreen';
 
 describe('LoginScreen', () => {
   const mockOnLogin = vi.fn();
@@ -140,19 +140,21 @@ describe('LoginScreen', () => {
   describe('custom password', () => {
     it('uses custom expected password', async () => {
       const user = userEvent.setup();
-      render(<LoginScreen onLogin={mockOnLogin} expectedPassword="custom123" />);
+      const customOnLogin = vi.fn((password: string) => password === 'custom123');
+      render(<LoginScreen onLogin={customOnLogin} />);
       
       await user.type(screen.getByPlaceholderText('Skriv passord...'), 'custom123');
       await user.click(screen.getByRole('button', { name: 'Logg inn' }));
       
       await screen.findByRole('button', { name: 'Logg inn' });
       
-      expect(mockOnLogin).toHaveBeenCalledTimes(1);
+      expect(customOnLogin).toHaveBeenCalledTimes(1);
     });
     
     it('rejects wrong password with custom expected', async () => {
       const user = userEvent.setup();
-      render(<LoginScreen onLogin={mockOnLogin} expectedPassword="custom123" />);
+      const customOnLogin = vi.fn((password: string) => password === 'custom123');
+      render(<LoginScreen onLogin={customOnLogin} />);
       
       await user.type(screen.getByPlaceholderText('Skriv passord...'), 'kloakontroll2026');
       await user.click(screen.getByRole('button', { name: 'Logg inn' }));

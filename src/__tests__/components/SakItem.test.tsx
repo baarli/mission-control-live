@@ -6,21 +6,18 @@ import type { Sak } from '@/types';
 
 const mockSak: Sak = {
   id: 'sak_1',
+  tenant_id: 'tenant_1',
   title: 'Test Sak Title',
   description: 'This is a test description for the sak item.',
   status: 'pending',
   priority: 'high',
-  category: 'Test',
+  category: 'TALK',
   tags: ['tag1', 'tag2'],
-  createdBy: {
-    id: 'user_1',
-    email: 'test@example.com',
-    name: 'Test User',
-    role: 'admin',
-    createdAt: '2024-01-01T00:00:00Z',
-  },
-  createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-  updatedAt: new Date().toISOString(),
+  created_by: 'user_1',
+  show_date: '2024-01-15',
+  order_index: 0,
+  created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+  updated_at: new Date().toISOString(),
   entertainmentScore: 75,
 };
 
@@ -122,13 +119,7 @@ describe('SakItem', () => {
     it('renders assignee name when provided', () => {
       const assignedSak = {
         ...mockSak,
-        assignee: {
-          id: 'user_2',
-          email: 'assignee@example.com',
-          name: 'Assignee Name',
-          role: 'editor' as const,
-          createdAt: '2024-01-01T00:00:00Z',
-        },
+        assignee: 'Assignee Name',
       };
       render(<SakItem sak={assignedSak} />);
       expect(screen.getByText('Assignee Name')).toBeInTheDocument();
