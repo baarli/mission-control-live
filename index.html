@@ -4,244 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control | NRJ Morgen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --color-primary: #6366f1;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-danger: #ef4444;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.8);
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.1);
-        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
             min-height: 100vh;
         }
+        /* Login */
         .login-screen {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--bg-primary);
+            background: #0f172a;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
         .login-box {
-            background: var(--bg-secondary);
+            background: #1e293b;
             padding: 2rem;
             border-radius: 1rem;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid var(--border-color);
         }
-        .login-box h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .login-box p { color: var(--text-muted); margin-bottom: 1.5rem; }
-        .brand-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
-        }
+        .login-box h1 { margin-bottom: 0.5rem; }
+        .login-box p { color: #94a3b8; margin-bottom: 1.5rem; }
         input[type="password"] {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            color: var(--text-primary);
-            font-size: 1rem;
+            padding: 0.75rem;
             margin-bottom: 1rem;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
         }
         button {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--color-primary);
+            padding: 0.75rem 1.5rem;
+            background: #6366f1;
             color: white;
             border: none;
             border-radius: 0.5rem;
             font-size: 1rem;
             cursor: pointer;
         }
-        button:hover { opacity: 0.9; }
-        .error { color: var(--color-danger); margin-top: 1rem; }
+        button:hover { background: #4f46e5; }
+        .error { color: #ef4444; margin-top: 1rem; display: none; }
+        /* App */
         .app { display: none; }
         .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
+            background: #1e293b;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            border-bottom: 1px solid #334155;
         }
-        .brand { display: flex; align-items: center; gap: 0.75rem; }
-        .nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .nav button {
-            width: auto;
-            padding: 0.5rem 1rem;
             background: transparent;
-            border: 1px solid var(--border-color);
+            border: 1px solid #334155;
+            color: #94a3b8;
+            margin-left: 0.5rem;
         }
         .nav button.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
+            background: #6366f1;
+            border-color: #6366f1;
+            color: white;
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
         .section { display: none; }
         .section.active { display: block; }
         .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
+            background: #1e293b;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
             border-radius: 0.75rem;
-            padding: 1.5rem;
-            text-align: center;
+            margin-bottom: 1rem;
+            border: 1px solid #334155;
         }
-        .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--color-primary); }
-        .stat-label { color: var(--text-muted); font-size: 0.875rem; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .stat-box {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+        .stat-num { font-size: 2rem; font-weight: bold; color: #6366f1; }
+        .stat-label { color: #94a3b8; font-size: 0.875rem; }
         .sak-item {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #334155;
             display: flex;
             gap: 1rem;
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border-color);
         }
-        .sak-number {
-            width: 32px;
-            height: 32px;
-            background: var(--color-primary);
+        .sak-num {
+            width: 28px;
+            height: 28px;
+            background: #6366f1;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
             font-size: 0.875rem;
+            font-weight: bold;
             flex-shrink: 0;
         }
-        .sak-content { flex: 1; }
         .sak-title { font-weight: 600; margin-bottom: 0.25rem; }
-        .sak-meta { display: flex; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted); flex-wrap: wrap; }
-        .sak-category { padding: 0.25rem 0.75rem; background: var(--color-primary); border-radius: 0.25rem; font-size: 0.75rem; color: white; }
-        .loading { text-align: center; padding: 3rem; color: var(--text-muted); }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+        .sak-meta { color: #94a3b8; font-size: 0.875rem; }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #6366f1;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .btn { width: auto; padding: 0.5rem 1rem; }
-        .success { color: var(--color-success); }
+        .loading { text-align: center; padding: 2rem; color: #94a3b8; }
+        .success { color: #10b981; }
     </style>
 </head>
 <body>
-    <!-- Login -->
+    <!-- Login Screen -->
     <div class="login-screen" id="login-screen">
         <div class="login-box">
-            <div class="brand-icon">🎛️</div>
-            <h1>Mission Control</h1>
+            <h1>🎛️ Mission Control</h1>
             <p>NRJ Morgen Dashboard</p>
-            <input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key==='Enter')doLogin()">
-            <button onclick="doLogin()">Logg inn</button>
-            <p class="error" id="login-error" style="display: none;">Feil passord</p>
+            <input type="password" id="pwd" placeholder="Passord" onkeypress="if(event.key==='Enter')login()">
+            <button onclick="login()">Logg inn</button>
+            <div class="error" id="login-error">Feil passord</div>
         </div>
     </div>
 
-    <!-- App -->
+    <!-- Main App -->
     <div class="app" id="app">
         <header class="header">
-            <div class="brand">
-                <div class="brand-icon" style="width: 40px; height: 40px; font-size: 1.25rem; margin: 0;">🎛️</div>
-                <div>
-                    <div style="font-weight: 700;">Mission Control</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">NRJ Morgen</div>
-                </div>
+            <div>
+                <strong>🎛️ Mission Control</strong>
+                <span style="color: #94a3b8; margin-left: 1rem;">NRJ Morgen</span>
             </div>
             <nav class="nav">
-                <button class="active" onclick="showSection('dashboard')" data-section="dashboard">Dashboard</button>
-                <button onclick="showSection('saksliste')" data-section="saksliste">Saksliste</button>
-                <button onclick="doLogout()">Logg ut</button>
+                <button class="active" onclick="showTab('dashboard')" id="btn-dashboard">Dashboard</button>
+                <button onclick="showTab('saker')" id="btn-saker">Saksliste</button>
+                <button onclick="logout()">Logg ut</button>
             </nav>
         </header>
 
-        <main class="container">
-            <section class="section active" id="dashboard">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-saker">-</div>
+        <div class="container">
+            <!-- Dashboard -->
+            <div class="section active" id="dashboard">
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-num" id="stat-count">-</div>
                         <div class="stat-label">Saker</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-radio">-</div>
-                        <div class="stat-label">Radio lyttere</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-podcast">-</div>
-                        <div class="stat-label">Podcast ranking</div>
+                    <div class="stat-box">
+                        <div class="stat-num" id="stat-date">-</div>
+                        <div class="stat-label">Dato</div>
                     </div>
                 </div>
                 <div class="card">
-                    <h2>📊 Status</h2>
-                    <div id="status-content">Laster...</div>
+                    <h3 style="margin-bottom: 1rem;">📊 Status</h3>
+                    <div id="status-msg">Laster...</div>
                 </div>
-            </section>
+            </div>
 
-            <section class="section" id="saksliste">
+            <!-- Saksliste -->
+            <div class="section" id="saker">
                 <div class="card">
-                    <h2 style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>📋 Saksliste</span>
-                        <button class="btn" onclick="loadSaker()">🔄 Oppdater</button>
-                    </h2>
-                    <div id="saksliste-content">
-                        <div class="loading"><div class="spinner"></div><p>Laster saker...</p></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>📋 Saksliste</h3>
+                        <button onclick="loadSaker()">🔄 Oppdater</button>
                     </div>
+                    <div id="saker-list">Laster...</div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Config
         const PASSWORD = 'kloakontroll2026';
         const SUPABASE_URL = 'https://kvniauxokdtmpvjtfnej.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2bmlhdXhva2R0bXB2anRmbmVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzNjcyMzQsImV4cCI6MjA2Njk0MzIzNH0._24RuF95RnxxHj3sjGswdd36VVYlX_jKxut8dvELfSA';
         const TENANT_ID = 'a0000000-0000-0000-0000-000000000001';
 
-        function doLogin() {
-            const input = document.getElementById('password-input').value;
-            if (input === PASSWORD) {
+        // Login
+        function login() {
+            const val = document.getElementById('pwd').value;
+            if (val === PASSWORD) {
                 localStorage.setItem('mc_auth', 'true');
                 showApp();
             } else {
@@ -249,7 +210,7 @@
             }
         }
 
-        function doLogout() {
+        function logout() {
             localStorage.removeItem('mc_auth');
             location.reload();
         }
@@ -257,70 +218,71 @@
         function showApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            initApp();
+            loadData();
         }
 
-        function showSection(section) {
+        function showTab(tab) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById(section).classList.add('active');
-            document.querySelector(`[data-section="${section}"]`).classList.add('active');
-            if (section === 'saksliste') loadSaker();
+            document.getElementById(tab).classList.add('active');
+            document.getElementById('btn-' + tab).classList.add('active');
+            if (tab === 'saker') loadSaker();
         }
 
-        async function supabaseRequest(endpoint) {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1${endpoint}`, {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
+        // Supabase
+        async function db(query) {
+            const res = await fetch(SUPABASE_URL + '/rest/v1' + query, {
+                headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
             });
-            return response.json();
+            return res.json();
         }
 
-        async function initApp() {
+        async function loadData() {
             const today = new Date().toISOString().split('T')[0];
             const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
             
-            // Sjekk begge datoer
-            const sakerToday = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
-            const sakerTomorrow = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${tomorrow}`);
+            const sToday = await db(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
+            const sTomorrow = await db(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${tomorrow}`);
             
-            const saker = sakerToday.length > 0 ? sakerToday : sakerTomorrow;
-            const date = sakerToday.length > 0 ? today : tomorrow;
+            const saker = sToday.length > 0 ? sToday : sTomorrow;
+            const date = sToday.length > 0 ? today : tomorrow;
             
-            document.getElementById('stat-saker').textContent = saker.length;
-            document.getElementById('status-content').innerHTML = `
-                <p class="success">✅ Tilkoblet! ${saker.length} saker for ${date}</p>
-            `;
+            document.getElementById('stat-count').textContent = saker.length;
+            document.getElementById('stat-date').textContent = date.slice(5);
+            document.getElementById('status-msg').innerHTML = `<span class="success">✅ ${saker.length} saker for ${date}</span>`;
             
             window.currentDate = date;
+            window.sakerData = saker;
         }
 
         async function loadSaker() {
-            const container = document.getElementById('saksliste-content');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Laster...</p></div>';
+            const list = document.getElementById('saker-list');
+            if (!window.sakerData) {
+                await loadData();
+            }
             
-            const date = window.currentDate || new Date().toISOString().split('T')[0];
-            const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${date}&order=order_index.asc`);
-            
-            if (saker.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Ingen saker.</p>';
+            if (window.sakerData.length === 0) {
+                list.innerHTML = '<p>Ingen saker funnet.</p>';
                 return;
             }
             
-            container.innerHTML = saker.map((sak, i) => `
+            list.innerHTML = window.sakerData.map((s, i) => `
                 <div class="sak-item">
-                    <div class="sak-number">${i + 1}</div>
-                    <div class="sak-content">
-                        <div class="sak-title">${sak.title}</div>
+                    <div class="sak-num">${i + 1}</div>
+                    <div>
+                        <div class="sak-title">${escapeHtml(s.title)}</div>
                         <div class="sak-meta">
-                            <span class="sak-category">${sak.category || 'TALK'}</span>
-                            ${sak.link_url ? `<a href="${sak.link_url}" target="_blank" style="color: var(--color-primary);">🔗 Les mer</a>` : ''}
+                            <span class="tag">${s.category || 'TALK'}</span>
+                            ${s.link_url ? `<a href="${escapeHtml(s.link_url)}" target="_blank" style="color: #6366f1;">🔗 Les mer</a>` : ''}
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
         // Auto-login
