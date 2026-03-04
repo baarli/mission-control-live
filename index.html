@@ -401,11 +401,6 @@
             }
         }
 
-        // Sjekk om allerede logget inn
-        if (localStorage.getItem('mc_authenticated') === 'true') {
-            showApp();
-        }
-
         function login() {
             const input = document.getElementById('password-input').value;
             if (input === PASSWORD) {
@@ -717,6 +712,11 @@
             if (document.getElementById('podcast').classList.contains('active')) {
                 loadPodcast();
             }
+        }
+
+        // Sjekk om allerede logget inn (etter at alle funksjoner er definert)
+        if (localStorage.getItem('mc_authenticated') === 'true') {
+            showApp();
         }
 
         // Auto-refresh hvert 5. minutt
