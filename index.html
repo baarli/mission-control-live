@@ -376,13 +376,17 @@ Returner KUN et tall (0-100).`;
 // ===== QUICK WIN #3: TOAST NOTIFICATIONS =====
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
+  if (!container) return; // Safety check
+  
   const toast = document.createElement('div');
   toast.className = 'toast toast-' + type;
   toast.textContent = message;
   container.appendChild(toast);
   
   // Trigger animation
-  setTimeout(() => toast.classList.add('show'), 10);
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
   
   // Auto remove
   setTimeout(() => {
@@ -405,17 +409,28 @@ function setLoading(buttonId, isLoading) {
 
 // Auth
 function doLogin() {
-  setLoading('login-btn', true);
-  const i = document.getElementById('password-input').value;
-  if (i === P) {
+  const btn = document.getElementById('login-btn');
+  const input = document.getElementById('password-input');
+  
+  if (!btn || !input) return;
+  
+  // Set loading state
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+  
+  const password = input.value;
+  
+  if (password === P) {
     localStorage.setItem('mc_auth', 'true');
     showToast('✅ Logget inn!', 'success');
     showApp();
   } else {
     document.getElementById('login-error').style.display = 'block';
     showToast('❌ Feil passord', 'error');
+    // Remove loading state on error
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
   }
-  setLoading('login-btn', false);
 }
 
 function doLogout() {
