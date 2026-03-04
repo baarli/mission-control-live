@@ -3,10 +3,12 @@
    ============================================ */
 
 import React, { useState, useEffect } from 'react';
+
+import type { Sak, NielsenMetric, PodcastMetric } from '../../types';
+
+import styles from './Dashboard.module.css';
 import StatCard from './StatCard';
 import StatusPanel from './StatusPanel';
-import type { Sak, NielsenMetric, PodcastMetric } from '../../types';
-import styles from './Dashboard.module.css';
 
 interface DashboardProps {
   saker?: Sak[];

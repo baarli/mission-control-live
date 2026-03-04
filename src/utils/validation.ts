@@ -2,7 +2,6 @@
    VALIDATION UTILITIES
    ============================================ */
 
-import type { Category } from '../types';
 import { isValidCategory } from '../constants/categories';
 
 /**

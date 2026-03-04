@@ -3,8 +3,10 @@
    ============================================ */
 
 import React from 'react';
-import { Button } from '../UI';
+
 import type { SearchHistoryItem } from '../../types';
+import { Button } from '../UI';
+
 import styles from './SearchHistory.module.css';
 
 interface SearchHistoryProps {
@@ -43,7 +45,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
       </h4>
       
       <ul className={styles.list} role="list">
-        {visibleItems.map((item, index) => (
+        {visibleItems.map((item, _index) => (
           <li key={`${item.query}-${item.timestamp}`}>
             <button
               onClick={() => onSelect(item)}

@@ -1,8 +1,10 @@
+import { render, RenderOptions, RenderResult, screen, fireEvent, waitFor, act, within, cleanup } from '@testing-library/react';
 import { ReactElement } from 'react';
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
-
 import type { ReactNode } from 'react';
 
+export { screen, fireEvent, waitFor, act, within, cleanup };
+
+/* eslint-disable react-refresh/only-export-components */
 // Custom provider wrapper
 function AllTheProviders({ children }: { children: ReactNode }) {
   return (
@@ -23,6 +25,4 @@ function customRender(
   return render(ui, { wrapper: AllTheProviders, ...options });
 }
 
-// Re-export everything from testing-library
-export * from '@testing-library/react';
 export { customRender as render };

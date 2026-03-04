@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+
 import { getItem, setItem, StorageKeys } from '@/services/storage';
 import type { Theme } from '@/types';
 

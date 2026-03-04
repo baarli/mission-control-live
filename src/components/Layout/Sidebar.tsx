@@ -3,7 +3,9 @@
    ============================================ */
 
 import React from 'react';
+
 import type { NavItem } from '../../types';
+
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {

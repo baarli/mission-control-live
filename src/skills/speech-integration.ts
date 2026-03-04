@@ -3,8 +3,9 @@
    Text-to-speech for audio briefings
    ============================================ */
 
-import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 import type { Sak } from '../types';
+
+import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
 export type SpeechVoice = 
   | 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer'  // TTS-1 voices

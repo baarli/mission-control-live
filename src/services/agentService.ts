@@ -1,10 +1,17 @@
 import { supabase as supabaseService } from '@/lib/supabase';
 import { useAgentStore } from '@stores/agentStore';
 import { useToastStore } from '@stores/toastStore';
+
 import type { 
-  AgentCommand, CommandType, Priority,
-  ApprovalStatus, SystemStatus, ActivityLog 
+  CommandType, Priority,
+  AgentCommand, AgentResponse, ApprovalRequest, SystemStatus, ActivityLog
 } from '../types/agent';
+
+type RealtimePayload = {
+  eventType: string;
+  new: Record<string, unknown>;
+  old: Record<string, unknown>;
+};
 
 class AgentService {
   private subscriptions: (() => void)[] = [];
@@ -23,7 +30,7 @@ class AgentService {
       .channel('agent_commands')
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'agent_commands' },
-        (payload: any) => this.handleCommandChange(payload)
+        (payload: RealtimePayload) => this.handleCommandChange(payload)
       )
       .subscribe();
     
@@ -32,7 +39,7 @@ class AgentService {
       .channel('agent_responses')
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'agent_responses' },
-        (payload: any) => this.handleResponseInsert(payload)
+        (payload: RealtimePayload) => this.handleResponseInsert(payload)
       )
       .subscribe();
     
@@ -41,7 +48,7 @@ class AgentService {
       .channel('approval_requests')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'approval_requests' },
-        (payload: any) => this.handleApprovalChange(payload)
+        (payload: RealtimePayload) => this.handleApprovalChange(payload)
       )
       .subscribe();
     
@@ -50,7 +57,7 @@ class AgentService {
       .channel('system_status')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'system_status' },
-        (payload: any) => this.handleStatusChange(payload)
+        (payload: RealtimePayload) => this.handleStatusChange(payload)
       )
       .subscribe();
     
@@ -59,7 +66,7 @@ class AgentService {
       .channel('activity_log')
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'activity_log' },
-        (payload: any) => this.handleLogInsert(payload)
+        (payload: RealtimePayload) => this.handleLogInsert(payload)
       )
       .subscribe();
     
@@ -91,7 +98,7 @@ class AgentService {
         .limit(50);
       
       if (commands) {
-        commands.forEach((cmd: any) => store.addCommand(cmd));
+        commands.forEach((cmd: AgentCommand) => store.addCommand(cmd));
       }
       
       // Fetch pending approvals
@@ -184,18 +191,18 @@ class AgentService {
   }
   
   // Handle realtime changes
-  private handleCommandChange(payload: any) {
+  private handleCommandChange(payload: RealtimePayload) {
     const store = useAgentStore.getState();
     if (payload.eventType === 'INSERT') {
-      store.addCommand(payload.new);
+      store.addCommand(payload.new as unknown as AgentCommand);
     } else if (payload.eventType === 'UPDATE') {
-      store.updateCommand(payload.new.id, payload.new);
+      store.updateCommand(payload.new.id as string, payload.new as unknown as AgentCommand);
     }
   }
   
-  private handleResponseInsert(payload: any) {
+  private handleResponseInsert(payload: RealtimePayload) {
     const store = useAgentStore.getState();
-    store.addResponse(payload.new);
+    store.addResponse(payload.new as unknown as AgentResponse);
     
     // Show notification
     useToastStore.getState().showToast(
@@ -204,10 +211,10 @@ class AgentService {
     );
   }
   
-  private handleApprovalChange(payload: any) {
+  private handleApprovalChange(payload: RealtimePayload) {
     const store = useAgentStore.getState();
     if (payload.eventType === 'INSERT') {
-      store.setApprovalRequests([payload.new, ...store.approvalRequests]);
+      store.setApprovalRequests([payload.new as unknown as ApprovalRequest, ...store.approvalRequests]);
       useToastStore.getState().showToast(
         `Approval needed: ${payload.new.title}`,
         'warning'
@@ -215,17 +222,17 @@ class AgentService {
     }
   }
   
-  private handleStatusChange(payload: any) {
+  private handleStatusChange(payload: RealtimePayload) {
     const store = useAgentStore.getState();
     const current = store.systemStatus;
     const updated = current.map(s => 
-      s.id === payload.new.id ? payload.new : s
+      s.id === payload.new.id ? payload.new as unknown as SystemStatus : s
     );
     store.setSystemStatus(updated);
   }
   
-  private handleLogInsert(payload: any) {
-    useAgentStore.getState().addActivityLog(payload.new);
+  private handleLogInsert(payload: RealtimePayload) {
+    useAgentStore.getState().addActivityLog(payload.new as unknown as ActivityLog);
   }
   
   // Heartbeat to check connection
@@ -235,7 +242,7 @@ class AgentService {
       this.client.from('system_status')
         .select('count')
         .limit(1)
-        .then(({ error }: { error: any }) => {
+        .then(({ error }: { error: Error | null }) => {
           useAgentStore.getState().setIsConnected(!error);
         });
     }, 30000);

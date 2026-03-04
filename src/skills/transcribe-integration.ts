@@ -3,8 +3,9 @@
    Audio transcription with diarization
    ============================================ */
 
-import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 import type { Sak } from '../types';
+
+import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
 export interface TranscriptionOptions {
   model?: 'gpt-4o-mini-transcribe' | 'gpt-4o-transcribe' | 'gpt-4o-transcribe-diarize';

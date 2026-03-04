@@ -3,8 +3,8 @@
    ============================================ */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
+import { persist, createJSONStorage, devtools } from 'zustand/middleware';
+
 import type { SearchResult, SearchHistoryItem, Category } from '../types';
 
 interface SearchState {
@@ -31,7 +31,7 @@ interface SearchState {
   addToHistory: (query: string, category?: string) => void;
   removeFromHistory: (timestamp: number) => void;
   clearHistory: () => void;
-  setFilter: (key: keyof SearchState['activeFilters'], value: any) => void;
+  setFilter: (key: keyof SearchState['activeFilters'], value: SearchState['activeFilters'][keyof SearchState['activeFilters']]) => void;
   clearFilters: () => void;
   selectResult: (id: string | null) => void;
   reset: () => void;
@@ -121,7 +121,7 @@ export const useSearchStore = create<SearchState>()(
           set({ history: [] });
         },
 
-        setFilter: (key: keyof SearchState['activeFilters'], value: any) => {
+        setFilter: (key: keyof SearchState['activeFilters'], value: SearchState['activeFilters'][keyof SearchState['activeFilters']]) => {
           set((state) => ({
             activeFilters: { ...state.activeFilters, [key]: value }
           }));

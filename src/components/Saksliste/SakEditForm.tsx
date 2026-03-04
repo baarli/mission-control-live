@@ -3,8 +3,10 @@
    ============================================ */
 
 import React, { useState } from 'react';
-import { Button, Input, Select } from '../UI';
+
 import type { Sak, Category } from '../../types';
+import { Button, Input, Select } from '../UI';
+
 import styles from './SakEditForm.module.css';
 
 interface SakEditFormProps {

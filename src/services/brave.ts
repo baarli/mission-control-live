@@ -3,9 +3,10 @@
  * @module services/brave
  */
 
+import type { NewsSearchResult as SearchResult, SearchOptions, ApiResponseWrapper as ApiResponse, AgendaCategory } from '../types/mission';
+
 import { ApiClient } from './api-client';
 
-import type { NewsSearchResult as SearchResult, SearchOptions, ApiResponseWrapper as ApiResponse, AgendaCategory } from '../types/mission';
 
 /**
  * Environment variable names

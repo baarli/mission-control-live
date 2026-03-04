@@ -3,8 +3,8 @@
    ============================================ */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
+import { persist, createJSONStorage, devtools } from 'zustand/middleware';
+
 import type { NielsenMetric, PodcastMetric, ChartDataPoint } from '../types';
 
 type StatsTimeRange = 'week' | 'month' | 'quarter' | 'year';

@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
+import type { Metric, Mission } from '@/types';
 import { missionsApi } from '@services/api/missions';
 
-import type { Metric, Mission, DashboardData } from '@/types';
 
 interface DashboardState {
   // Data

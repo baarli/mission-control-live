@@ -164,6 +164,7 @@ export class ApiClient {
    * @returns Cancel token source
    */
   createCancelToken(): CancelTokenSource {
+    // eslint-disable-next-line import/no-named-as-default-member
     this.cancelTokenSource = axios.CancelToken.source();
     return this.cancelTokenSource;
   }

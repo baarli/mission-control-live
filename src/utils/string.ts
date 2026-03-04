@@ -71,8 +71,8 @@ export function slugify(text: string | null | undefined): string {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w\-]+/g, '') // Remove non-word chars
-    .replace(/\-\-+/g, '-'); // Replace multiple - with single -
+    .replace(/[^\w-]+/g, '') // Remove non-word chars
+    .replace(/--+/g, '-'); // Replace multiple - with single -
 }
 
 /**

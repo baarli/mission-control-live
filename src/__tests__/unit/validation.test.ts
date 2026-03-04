@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { isEmpty, sanitizeInput } from '@/utils/validation';
+
+import { isEmpty } from '@/utils/validation';
 
 // Local validation helper functions (not individually exported from the module)
 function isValidEmail(value: string | null | undefined): boolean {

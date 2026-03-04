@@ -3,8 +3,9 @@
    .docx document generation
    ============================================ */
 
-import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 import type { Sak } from '../types';
+
+import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
 export interface DocGenerationOptions {
   title?: string;

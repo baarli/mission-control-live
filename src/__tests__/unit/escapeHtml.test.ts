@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { escapeHtml, unescapeHtml } from '@/utils/escapeHtml';
 
 describe('escapeHtml', () => {

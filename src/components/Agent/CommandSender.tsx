@@ -3,9 +3,12 @@
    ============================================ */
 
 import React, { useState } from 'react';
+
+import { useAgentStore } from '@/stores/agentStore';
+
 import { GlassCard } from '../Layout';
 import { Button } from '../UI';
-import { useAgentStore } from '@/stores/agentStore';
+
 import styles from './styles.module.css';
 
 export const CommandSender: React.FC = () => {

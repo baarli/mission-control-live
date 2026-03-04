@@ -3,7 +3,9 @@
    ============================================ */
 
 import React, { useState, useCallback } from 'react';
+
 import { Button } from '../UI';
+
 import styles from './PromptEditor.module.css';
 
 interface PromptEditorProps {

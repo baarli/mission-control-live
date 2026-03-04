@@ -3,9 +3,12 @@
    ============================================ */
 
 import React from 'react';
+
+import { useAgentStore } from '@/stores/agentStore';
+
 import { GlassCard } from '../Layout';
 import { Button } from '../UI';
-import { useAgentStore } from '@/stores/agentStore';
+
 import styles from './styles.module.css';
 
 const riskLevelStyles: Record<string, string | undefined> = {

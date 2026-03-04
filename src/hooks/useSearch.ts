@@ -3,6 +3,7 @@
    ============================================ */
 
 import { useCallback, useEffect, useRef, useMemo } from 'react';
+
 import { 
   useSearchStore, 
   useSearchQuery, 
@@ -13,6 +14,7 @@ import {
   useSearchFilters
 } from '../stores/searchStore';
 import type { SearchResult, Category } from '../types';
+
 import { useToast } from './useToast';
 
 interface UseSearchReturn {
@@ -49,7 +51,7 @@ interface UseSearchReturn {
 const SEARCH_DEBOUNCE_MS = 300;
 
 // Mock search API - replace with actual Brave Search API
-const mockSearch = async (query: string, filters: any): Promise<SearchResult[]> => {
+const mockSearch = async (query: string, _filters: Record<string, unknown>): Promise<SearchResult[]> => {
   await new Promise((resolve) => setTimeout(resolve, 800));
   
   // Return mock results

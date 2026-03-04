@@ -2,9 +2,11 @@
    PROTECTED ROUTE COMPONENT
    ============================================ */
 
-import React, { useState, useEffect } from 'react';
-import LoginScreen from './LoginScreen';
+import React, { useState, useEffect, isValidElement, cloneElement } from 'react';
+
 import { emitToast } from '../../hooks/useToast';
+
+import LoginScreen from './LoginScreen';
 import styles from './ProtectedRoute.module.css';
 
 interface ProtectedRouteProps {
@@ -102,8 +104,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Pass logout handler to children via cloneElement if it's a single element
-  if (React.isValidElement(children) && typeof children.type !== 'string') {
-    return React.cloneElement(children, { onLogout: handleLogout } as any);
+  if (isValidElement(children) && typeof children.type !== 'string') {
+    return cloneElement(children, { onLogout: handleLogout } as Record<string, unknown>);
   }
 
   return <>{children}</>;

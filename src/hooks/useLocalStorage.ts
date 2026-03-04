@@ -149,22 +149,4 @@ export function useLocalStorageValue<T>(
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-/**
- * Hook for multiple localStorage values
- */
-export function useLocalStorageMultiple<T extends Record<string, unknown>>(
-  keysAndDefaults: { [K in keyof T]: { key: string; defaultValue: T[K] } }
-): { [K in keyof T]: [T[K], (value: T[K] | ((prev: T[K]) => T[K])) => void] } {
-  const entries = Object.entries(keysAndDefaults) as [keyof T, { key: string; defaultValue: T[keyof T] }][];
-  
-  const hooks = entries.map(([, { key, defaultValue }]) => {
-    const [value, setValue] = useLocalStorage(key, defaultValue);
-    return [value, setValue] as const;
-  });
-
-  return Object.fromEntries(
-    entries.map(([objKey], index) => [objKey, hooks[index]])
-  ) as { [K in keyof T]: [T[K], (value: T[K] | ((prev: T[K]) => T[K])) => void] };
-}
-
 export default useLocalStorage;

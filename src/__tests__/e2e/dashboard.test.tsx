@@ -1,12 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React, { useState, useEffect } from 'react';
+import { describe, it, expect, beforeEach } from 'vitest';
+
+import LoginScreen from '@/components/Auth/LoginScreen';
+import { Button } from '@/components/UI/Button';
 import { GlassCard } from '@/components/UI/GlassCard';
 import { StatCard } from '@/components/UI/StatCard';
-import { Button } from '@/components/UI/Button';
-import LoginScreen from '@/components/Auth/LoginScreen';
 import { useAuthStore } from '@/stores/authStore';
-import React, { useState, useEffect } from 'react';
+
 
 // Local type for test dashboard stats
 interface DashboardStats {
@@ -23,7 +25,7 @@ interface DashboardStats {
 const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const { isAuthenticated, checkAuth } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   
   useEffect(() => {
     // Simulate data loading

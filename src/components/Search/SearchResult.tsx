@@ -3,8 +3,10 @@
    ============================================ */
 
 import React from 'react';
-import { Badge } from '../UI';
+
 import type { SearchResult as SearchResultType, Category } from '../../types';
+import { Badge } from '../UI';
+
 import styles from './SearchResult.module.css';
 
 interface SearchResultProps {

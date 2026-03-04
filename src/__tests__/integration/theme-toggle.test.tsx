@@ -1,9 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useThemeStore, initializeTheme } from '@/stores/themeStore';
+import React from 'react';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { localStorageMock } from '@/__mocks__/localStorage';
-import { setupDefaultMatchMedia, triggerMatchMediaChange } from '@/__mocks__/matchMedia';
+import { setupDefaultMatchMedia } from '@/__mocks__/matchMedia';
+import { useThemeStore, initializeTheme } from '@/stores/themeStore';
 import type { Theme } from '@/types';
 
 // Simple theme toggle component for testing
@@ -21,8 +23,6 @@ const ThemeToggle: React.FC = () => {
     </div>
   );
 };
-
-import React from 'react';
 
 describe('Theme Toggle Integration', () => {
   beforeEach(() => {
