@@ -532,7 +532,7 @@ async function loadSaker() {
             '<div style="font-size:0.875rem;color:var(--muted)">' + (a.category ? '<span class="cat ' + catClass + '">' + a.category + '</span>' : 'TALK') + '</div>' +
           '</div>' +
           // ===== QUICK WIN #2: DELETE CONFIRMATION =====
-          '<button onclick="confirmDeleteSak('' + a.id + '')" style="background:var(--c3);padding:0.5rem;" title="Slett">🗑️</button>' +
+          '<button onclick="confirmDeleteSak(\'' + a.id + '\')" style="background:var(--c3);padding:0.5rem;" title="Slett">🗑️</button>' +
         '</div>';
       }).join('');
     }
