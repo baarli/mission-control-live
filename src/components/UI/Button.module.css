@@ -78,7 +78,9 @@
 }
 
 .primary:hover {
-  box-shadow: 0 6px 30px var(--accent-primary-glow), var(--shadow-glow-primary);
+  box-shadow:
+    0 6px 30px var(--accent-primary-glow),
+    var(--shadow-glow-primary);
 }
 
 .success {
@@ -89,7 +91,9 @@
 }
 
 .success:hover {
-  box-shadow: 0 6px 30px var(--accent-secondary-glow), var(--shadow-glow-success);
+  box-shadow:
+    0 6px 30px var(--accent-secondary-glow),
+    var(--shadow-glow-success);
 }
 
 .danger {

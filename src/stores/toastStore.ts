@@ -19,29 +19,30 @@ interface ToastState {
 /**
  * Toast store for managing notification messages
  */
-export const useToastStore = create<ToastState>((set) => ({
+export const useToastStore = create<ToastState>(set => ({
   toasts: [],
-  
+
   showToast: (message, type, duration = 5000) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    set((state) => ({
-      toasts: [...state.toasts, { id, message, type, duration }]
+
+    set(state => ({
+      toasts: [...state.toasts, { id, message, type, duration }],
     }));
-    
+
     // Auto-remove after duration
     if (duration > 0) {
       setTimeout(() => {
-        set((state) => ({
-          toasts: state.toasts.filter(t => t.id !== id)
+        set(state => ({
+          toasts: state.toasts.filter(t => t.id !== id),
         }));
       }, duration);
     }
   },
-  
-  removeToast: (id) => set((state) => ({
-    toasts: state.toasts.filter(t => t.id !== id)
-  })),
-  
+
+  removeToast: id =>
+    set(state => ({
+      toasts: state.toasts.filter(t => t.id !== id),
+    })),
+
   clearAll: () => set({ toasts: [] }),
 }));

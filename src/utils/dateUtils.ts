@@ -4,31 +4,26 @@ import { nb } from 'date-fns/locale';
 /**
  * Format a date string or Date object to a readable format
  */
-export function formatDate(
-  date: string | Date | null | undefined,
-  pattern = 'PPP'
-): string {
+export function formatDate(date: string | Date | null | undefined, pattern = 'PPP'): string {
   if (!date) return '-';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : date;
-  
+
   if (!isValid(parsedDate)) return '-';
-  
+
   return format(parsedDate, pattern, { locale: nb });
 }
 
 /**
  * Format a date to relative time (e.g., "2 hours ago")
  */
-export function formatRelativeTime(
-  date: string | Date | null | undefined
-): string {
+export function formatRelativeTime(date: string | Date | null | undefined): string {
   if (!date) return '-';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : date;
-  
+
   if (!isValid(parsedDate)) return '-';
-  
+
   return formatDistanceToNow(parsedDate, { addSuffix: true, locale: nb });
 }
 
@@ -37,9 +32,9 @@ export function formatRelativeTime(
  */
 export function formatDateTimeInput(date: string | Date): string {
   const parsedDate = typeof date === 'string' ? parseISO(date) : date;
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, "yyyy-MM-dd'T'HH:mm");
 }
 

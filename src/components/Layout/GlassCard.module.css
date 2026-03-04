@@ -8,13 +8,17 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    var(--shadow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all var(--transition-normal);
 }
 
 .hover:hover {
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
@@ -24,7 +28,9 @@
 
 .clickable:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--accent-primary-glow), var(--shadow-lg);
+  box-shadow:
+    0 0 0 3px var(--accent-primary-glow),
+    var(--shadow-lg);
 }
 
 /* Padding variants */
@@ -64,6 +70,8 @@
 }
 
 /* Light mode adjustments */
-[data-theme="light"] .card {
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+[data-theme='light'] .card {
+  box-shadow:
+    var(--shadow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }

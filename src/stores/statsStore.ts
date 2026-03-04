@@ -22,7 +22,7 @@ interface StatsState {
   selectedChannels: string[];
   selectedPodcasts: string[];
   chartType: 'line' | 'bar' | 'area' | 'pie';
-  
+
   // Actions
   setNielsenData: (data: NielsenMetric[]) => void;
   setPodcastData: (data: PodcastMetric[]) => void;
@@ -39,7 +39,7 @@ interface StatsState {
   setChartType: (type: StatsState['chartType']) => void;
   refreshData: (dataType: 'nielsen' | 'podcast') => void;
   reset: () => void;
-  
+
   // Computed
   getNielsenChartData: () => ChartDataPoint[];
   getPodcastChartData: () => ChartDataPoint[];
@@ -71,30 +71,30 @@ export const useStatsStore = create<StatsState>()(
 
         // Actions
         setNielsenData: (data: NielsenMetric[]) => {
-          set((state) => ({
+          set(state => ({
             nielsenData: data,
             lastFetchedAt: { ...state.lastFetchedAt, nielsen: new Date().toISOString() },
-            error: null
+            error: null,
           }));
         },
 
         setPodcastData: (data: PodcastMetric[]) => {
-          set((state) => ({
+          set(state => ({
             podcastData: data,
             lastFetchedAt: { ...state.lastFetchedAt, podcast: new Date().toISOString() },
-            error: null
+            error: null,
           }));
         },
 
         addNielsenMetric: (metric: NielsenMetric) => {
-          set((state) => ({
-            nielsenData: [...state.nielsenData, metric]
+          set(state => ({
+            nielsenData: [...state.nielsenData, metric],
           }));
         },
 
         addPodcastMetric: (metric: PodcastMetric) => {
-          set((state) => ({
-            podcastData: [...state.podcastData, metric]
+          set(state => ({
+            podcastData: [...state.podcastData, metric],
           }));
         },
 
@@ -115,18 +115,18 @@ export const useStatsStore = create<StatsState>()(
         },
 
         toggleChannel: (channel: string) => {
-          set((state) => ({
+          set(state => ({
             selectedChannels: state.selectedChannels.includes(channel)
-              ? state.selectedChannels.filter((c) => c !== channel)
-              : [...state.selectedChannels, channel]
+              ? state.selectedChannels.filter(c => c !== channel)
+              : [...state.selectedChannels, channel],
           }));
         },
 
         togglePodcast: (podcast: string) => {
-          set((state) => ({
+          set(state => ({
             selectedPodcasts: state.selectedPodcasts.includes(podcast)
-              ? state.selectedPodcasts.filter((p) => p !== podcast)
-              : [...state.selectedPodcasts, podcast]
+              ? state.selectedPodcasts.filter(p => p !== podcast)
+              : [...state.selectedPodcasts, podcast],
           }));
         },
 
@@ -143,8 +143,8 @@ export const useStatsStore = create<StatsState>()(
         },
 
         refreshData: (dataType: 'nielsen' | 'podcast') => {
-          set((state) => ({
-            lastFetchedAt: { ...state.lastFetchedAt, [dataType]: new Date().toISOString() }
+          set(state => ({
+            lastFetchedAt: { ...state.lastFetchedAt, [dataType]: new Date().toISOString() },
           }));
         },
 
@@ -159,20 +159,20 @@ export const useStatsStore = create<StatsState>()(
             currentView: 'overview',
             selectedChannels: [],
             selectedPodcasts: [],
-            chartType: 'line'
+            chartType: 'line',
           });
         },
 
         // Computed
         getNielsenChartData: () => {
           const { nielsenData, selectedChannels, timeRange } = get();
-          
+
           // Filter by selected channels
           let filtered = nielsenData;
           if (selectedChannels.length > 0) {
-            filtered = filtered.filter((m) => selectedChannels.includes(m.channel));
+            filtered = filtered.filter(m => selectedChannels.includes(m.channel));
           }
-          
+
           // Filter by time range
           const now = new Date();
           const cutoffDate = new Date();
@@ -190,34 +190,37 @@ export const useStatsStore = create<StatsState>()(
               cutoffDate.setFullYear(now.getFullYear() - 1);
               break;
           }
-          
-          filtered = filtered.filter((m) => new Date(m.week_start) >= cutoffDate);
-          
+
+          filtered = filtered.filter(m => new Date(m.week_start) >= cutoffDate);
+
           // Group by week and aggregate
-          const grouped = filtered.reduce((acc, metric) => {
-            const key = metric.week_start;
-            if (!acc[key]) {
-              acc[key] = { label: key, value: 0, count: 0 };
-            }
-            acc[key].value += metric.value;
-            acc[key].count += 1;
-            return acc;
-          }, {} as Record<string, { label: string; value: number; count: number }>);
-          
+          const grouped = filtered.reduce(
+            (acc, metric) => {
+              const key = metric.week_start;
+              if (!acc[key]) {
+                acc[key] = { label: key, value: 0, count: 0 };
+              }
+              acc[key].value += metric.value;
+              acc[key].count += 1;
+              return acc;
+            },
+            {} as Record<string, { label: string; value: number; count: number }>
+          );
+
           return Object.values(grouped)
-            .map((g) => ({ label: g.label, value: Math.round(g.value / g.count) }))
+            .map(g => ({ label: g.label, value: Math.round(g.value / g.count) }))
             .sort((a, b) => new Date(a.label).getTime() - new Date(b.label).getTime());
         },
 
         getPodcastChartData: () => {
           const { podcastData, selectedPodcasts, timeRange } = get();
-          
+
           // Filter by selected podcasts
           let filtered = podcastData;
           if (selectedPodcasts.length > 0) {
-            filtered = filtered.filter((m) => selectedPodcasts.includes(m.podcast_title));
+            filtered = filtered.filter(m => selectedPodcasts.includes(m.podcast_title));
           }
-          
+
           // Filter by time range
           const now = new Date();
           const cutoffDate = new Date();
@@ -235,58 +238,61 @@ export const useStatsStore = create<StatsState>()(
               cutoffDate.setFullYear(now.getFullYear() - 1);
               break;
           }
-          
-          filtered = filtered.filter((m) => new Date(m.week_start) >= cutoffDate);
-          
+
+          filtered = filtered.filter(m => new Date(m.week_start) >= cutoffDate);
+
           // Return top 10 by rank
-          return filtered
-            .slice(0, 10)
-            .map((m) => ({
-              label: m.podcast_title,
-              value: m.rank,
-              date: m.week_start
-            }));
+          return filtered.slice(0, 10).map(m => ({
+            label: m.podcast_title,
+            value: m.rank,
+            date: m.week_start,
+          }));
         },
 
         getAvailableChannels: () => {
-          const channels = new Set(get().nielsenData.map((m) => m.channel));
+          const channels = new Set(get().nielsenData.map(m => m.channel));
           return Array.from(channels).sort();
         },
 
         getAvailablePodcasts: () => {
-          const podcasts = new Set(get().podcastData.map((m) => m.podcast_title));
+          const podcasts = new Set(get().podcastData.map(m => m.podcast_title));
           return Array.from(podcasts).sort();
         },
 
         getStatsSummary: () => {
           const { nielsenData, podcastData } = get();
-          
+
           const totalNielsenPoints = nielsenData.length;
           const totalPodcasts = podcastData.length;
-          const avgNielsenValue = totalNielsenPoints > 0
-            ? nielsenData.reduce((sum, m) => sum + m.value, 0) / totalNielsenPoints
-            : 0;
+          const avgNielsenValue =
+            totalNielsenPoints > 0
+              ? nielsenData.reduce((sum, m) => sum + m.value, 0) / totalNielsenPoints
+              : 0;
           const first = podcastData[0];
-          const topPodcast: PodcastMetric | null = podcastData.length > 0 && first
-            ? podcastData.reduce((top, current) => (current.rank < top.rank ? current : top), first)
-            : null;
-          
+          const topPodcast: PodcastMetric | null =
+            podcastData.length > 0 && first
+              ? podcastData.reduce(
+                  (top, current) => (current.rank < top.rank ? current : top),
+                  first
+                )
+              : null;
+
           return {
             totalNielsenPoints,
             totalPodcasts,
             avgNielsenValue: Math.round(avgNielsenValue * 100) / 100,
-            topPodcast
+            topPodcast,
           };
-        }
+        },
       }),
       {
         name: 'mc-stats-storage',
         storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({
+        partialize: state => ({
           timeRange: state.timeRange,
           currentView: state.currentView,
-          chartType: state.chartType
-        })
+          chartType: state.chartType,
+        }),
       }
     ),
     { name: 'StatsStore' }
@@ -294,11 +300,11 @@ export const useStatsStore = create<StatsState>()(
 );
 
 // Selector hooks
-export const useNielsenData = () => useStatsStore((state) => state.nielsenData);
-export const usePodcastData = () => useStatsStore((state) => state.podcastData);
-export const useStatsLoading = () => useStatsStore((state) => state.isLoading);
-export const useStatsError = () => useStatsStore((state) => state.error);
-export const useStatsTimeRange = () => useStatsStore((state) => state.timeRange);
-export const useStatsView = () => useStatsStore((state) => state.currentView);
+export const useNielsenData = () => useStatsStore(state => state.nielsenData);
+export const usePodcastData = () => useStatsStore(state => state.podcastData);
+export const useStatsLoading = () => useStatsStore(state => state.isLoading);
+export const useStatsError = () => useStatsStore(state => state.error);
+export const useStatsTimeRange = () => useStatsStore(state => state.timeRange);
+export const useStatsView = () => useStatsStore(state => state.currentView);
 
 export default useStatsStore;

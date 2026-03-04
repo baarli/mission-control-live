@@ -18,9 +18,7 @@ export function ConnectionIndicator() {
 
   return (
     <div
-      className={`${styles.connectionIndicator} ${
-        isConnected ? styles.online : styles.offline
-      }`}
+      className={`${styles.connectionIndicator} ${isConnected ? styles.online : styles.offline}`}
       role="status"
       aria-live="polite"
     >

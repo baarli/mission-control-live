@@ -14,11 +14,7 @@ interface DataTableProps {
   onExport?: () => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({
-  data,
-  type,
-  onExport,
-}) => {
+const DataTable: React.FC<DataTableProps> = ({ data, type, onExport }) => {
   const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('nb-NO', {
@@ -49,7 +45,7 @@ const DataTable: React.FC<DataTableProps> = ({
           </button>
         </div>
       )}
-      
+
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -71,7 +67,7 @@ const DataTable: React.FC<DataTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {data.map(item => (
               <tr key={item.id}>
                 <td>{formatDate(item.created_at)}</td>
                 {type === 'radio' ? (

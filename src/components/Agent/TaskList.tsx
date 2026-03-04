@@ -47,7 +47,7 @@ export const TaskList: React.FC = () => {
             <p className={styles.emptyHint}>Send a command to create a task</p>
           </div>
         ) : (
-          sortedCommands.slice(0, 10).map((cmd) => (
+          sortedCommands.slice(0, 10).map(cmd => (
             <div key={cmd.id} className={styles.taskItem}>
               <div className={styles.taskHeader}>
                 <span className={styles.taskIcon}>{statusIcons[cmd.status] || '○'}</span>
@@ -57,7 +57,8 @@ export const TaskList: React.FC = () => {
                 </span>
               </div>
               <p className={styles.taskData}>
-                {String((cmd.command_data as Record<string, unknown>)?.message ?? '') || JSON.stringify(cmd.command_data).substring(0, 100)}
+                {String((cmd.command_data as Record<string, unknown>)?.message ?? '') ||
+                  JSON.stringify(cmd.command_data).substring(0, 100)}
               </p>
               <span className={styles.taskTime}>
                 {new Date(cmd.created_at).toLocaleTimeString()}

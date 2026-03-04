@@ -3,10 +3,14 @@
  * @module services/brave
  */
 
-import type { NewsSearchResult as SearchResult, SearchOptions, ApiResponseWrapper as ApiResponse, AgendaCategory } from '../types/mission';
+import type {
+  NewsSearchResult as SearchResult,
+  SearchOptions,
+  ApiResponseWrapper as ApiResponse,
+  AgendaCategory,
+} from '../types/mission';
 
 import { ApiClient } from './api-client';
-
 
 /**
  * Environment variable names
@@ -141,8 +145,8 @@ export function calculateScore(title: string, description: string): number {
   }
 
   // Bonus for multiple entertainment terms
-  const entertainmentTerms = Object.keys(ENTERTAINMENT_KEYWORDS).filter(
-    (keyword) => new RegExp(`\\b${keyword}\\w*\\b`, 'i').test(text)
+  const entertainmentTerms = Object.keys(ENTERTAINMENT_KEYWORDS).filter(keyword =>
+    new RegExp(`\\b${keyword}\\w*\\b`, 'i').test(text)
   );
   if (entertainmentTerms.length >= 3) {
     score += 15;
@@ -365,10 +369,7 @@ class BraveService {
    * @param category - Optional category filter
    * @returns API response with search results
    */
-  async quickSearch(
-    query: string,
-    category?: string
-  ): Promise<ApiResponse<SearchResult[]>> {
+  async quickSearch(query: string, category?: string): Promise<ApiResponse<SearchResult[]>> {
     return this.searchNews(query, {
       category,
       count: 5,
@@ -382,11 +383,7 @@ class BraveService {
    * @returns API response with trending results
    */
   async getTrendingNews(count: number = 10): Promise<ApiResponse<SearchResult[]>> {
-    const trendingQueries = [
-      'kjendisnyheter Norge',
-      'underholdning TV',
-      'reality TV Norge',
-    ];
+    const trendingQueries = ['kjendisnyheter Norge', 'underholdning TV', 'reality TV Norge'];
 
     const allResults: SearchResult[] = [];
 
@@ -403,8 +400,7 @@ class BraveService {
 
     // Remove duplicates based on URL
     const uniqueResults = allResults.filter(
-      (result, index, self) =>
-        index === self.findIndex((r) => r.url === result.url)
+      (result, index, self) => index === self.findIndex(r => r.url === result.url)
     );
 
     // Sort by score and take top results

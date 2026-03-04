@@ -12,12 +12,12 @@
     --color-dark: #0f172a;
     --color-panel: #1e293b;
     --color-accent: #06b6d4;
-    
+
     /* Status colors */
     --color-success: #10b981;
     --color-warning: #f59e0b;
     --color-error: #ef4444;
-    
+
     /* Text colors */
     --color-text-primary: #f8fafc;
     --color-text-secondary: #94a3b8;
@@ -34,7 +34,9 @@
 
   body {
     @apply bg-mission-dark text-slate-50 antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 
   /* Custom scrollbar */
@@ -58,7 +60,7 @@
 @layer components {
   /* Mission Control specific components */
   .mission-panel {
-    @apply rounded-xl border border-slate-800 bg-mission-panel p-6;
+    @apply bg-mission-panel rounded-xl border border-slate-800 p-6;
   }
 
   .mission-card {
@@ -66,11 +68,11 @@
   }
 
   .mission-button {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-mission-accent px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-mission-accent focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50;
+    @apply bg-mission-accent focus:ring-mission-accent inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-cyan-400 focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none disabled:opacity-50;
   }
 
   .mission-input {
-    @apply rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:border-mission-accent focus:outline-none focus:ring-1 focus:ring-mission-accent;
+    @apply focus:border-mission-accent focus:ring-mission-accent rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder:text-slate-500 focus:ring-1 focus:outline-none;
   }
 
   .mission-badge {
@@ -102,7 +104,7 @@
 
   /* Focus utilities */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-mission-accent focus:ring-offset-2 focus:ring-offset-slate-900;
+    @apply focus:ring-mission-accent focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none;
   }
 
   /* Glass effect */

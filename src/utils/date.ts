@@ -2,12 +2,12 @@
    DATE UTILITIES
    ============================================ */
 
-import { 
-  format, 
-  formatDistance, 
-  isValid, 
-  parseISO, 
-  isToday, 
+import {
+  format,
+  formatDistance,
+  isValid,
+  parseISO,
+  isToday,
   isYesterday,
   isThisWeek,
   isThisMonth,
@@ -20,7 +20,7 @@ import {
   subDays,
   differenceInDays,
   differenceInHours,
-  differenceInMinutes
+  differenceInMinutes,
 } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
@@ -29,11 +29,11 @@ import { nb } from 'date-fns/locale';
  */
 export function formatDate(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, 'dd.MM.yyyy', { locale: nb });
 }
 
@@ -42,11 +42,11 @@ export function formatDate(date: Date | string | number | null | undefined): str
  */
 export function formatDateTime(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, 'dd.MM.yyyy HH:mm', { locale: nb });
 }
 
@@ -55,14 +55,14 @@ export function formatDateTime(date: Date | string | number | null | undefined):
  */
 export function formatRelativeTime(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
-  return formatDistance(parsedDate, new Date(), { 
-    addSuffix: true, 
-    locale: nb 
+
+  return formatDistance(parsedDate, new Date(), {
+    addSuffix: true,
+    locale: nb,
   });
 }
 
@@ -71,19 +71,19 @@ export function formatRelativeTime(date: Date | string | number | null | undefin
  */
 export function formatFriendlyDate(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   if (isToday(parsedDate)) {
     return `I dag, ${format(parsedDate, 'HH:mm', { locale: nb })}`;
   }
-  
+
   if (isYesterday(parsedDate)) {
     return `I går, ${format(parsedDate, 'HH:mm', { locale: nb })}`;
   }
-  
+
   return formatDateTime(parsedDate);
 }
 
@@ -92,11 +92,11 @@ export function formatFriendlyDate(date: Date | string | number | null | undefin
  */
 export function formatDateInput(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, 'yyyy-MM-dd');
 }
 
@@ -105,11 +105,11 @@ export function formatDateInput(date: Date | string | number | null | undefined)
  */
 export function formatDateTimeInput(date: Date | string | number | null | undefined): string {
   if (!date) return '';
-  
+
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, "yyyy-MM-dd'T'HH:mm");
 }
 
@@ -118,7 +118,7 @@ export function formatDateTimeInput(date: Date | string | number | null | undefi
  */
 export function parseDateInput(value: string): Date | null {
   if (!value) return null;
-  
+
   const date = parseISO(value);
   return isValid(date) ? date : null;
 }
@@ -129,7 +129,7 @@ export function parseDateInput(value: string): Date | null {
 export function getWeekRange(date: Date = new Date()): { start: Date; end: Date } {
   return {
     start: startOfWeek(date, { weekStartsOn: 1 }), // Monday
-    end: endOfWeek(date, { weekStartsOn: 1 })
+    end: endOfWeek(date, { weekStartsOn: 1 }),
   };
 }
 
@@ -139,7 +139,7 @@ export function getWeekRange(date: Date = new Date()): { start: Date; end: Date 
 export function getMonthRange(date: Date = new Date()): { start: Date; end: Date } {
   return {
     start: startOfMonth(date),
-    end: endOfMonth(date)
+    end: endOfMonth(date),
   };
 }
 
@@ -151,22 +151,22 @@ export function getDateRangeLabel(
   endDate: Date | string | null | undefined
 ): string {
   if (!startDate && !endDate) return 'Alle datoer';
-  
+
   const start = startDate ? formatDate(startDate) : null;
   const end = endDate ? formatDate(endDate) : null;
-  
+
   if (start && end) {
     return `${start} - ${end}`;
   }
-  
+
   if (start) {
     return `Fra ${start}`;
   }
-  
+
   if (end) {
     return `Til ${end}`;
   }
-  
+
   return 'Alle datoer';
 }
 
@@ -179,19 +179,19 @@ export function isDateInRange(
   endDate?: Date | string | null
 ): boolean {
   const parsedDate = typeof date === 'string' ? parseISO(date) : date;
-  
+
   if (!isValid(parsedDate)) return false;
-  
+
   if (startDate) {
     const start = typeof startDate === 'string' ? parseISO(startDate) : startDate;
     if (isValid(start) && parsedDate < start) return false;
   }
-  
+
   if (endDate) {
     const end = typeof endDate === 'string' ? parseISO(endDate) : endDate;
     if (isValid(end) && parsedDate > end) return false;
   }
-  
+
   return true;
 }
 
@@ -200,14 +200,14 @@ export function isDateInRange(
  */
 export function getTimeDescription(date: Date | string | number): string {
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   const now = new Date();
   const diffMinutes = differenceInMinutes(now, parsedDate);
   const diffHours = differenceInHours(now, parsedDate);
   const diffDays = differenceInDays(now, parsedDate);
-  
+
   if (diffMinutes < 1) return 'Akkurat nå';
   if (diffMinutes < 60) return `${diffMinutes} minutter siden`;
   if (diffHours < 24) return `${diffHours} timer siden`;
@@ -216,7 +216,7 @@ export function getTimeDescription(date: Date | string | number): string {
   if (isThisWeek(parsedDate)) return 'Denne uken';
   if (isThisMonth(parsedDate)) return 'Denne måneden';
   if (isThisYear(parsedDate)) return 'I år';
-  
+
   return formatDate(parsedDate);
 }
 
@@ -241,9 +241,9 @@ export function subtractDaysFromDate(date: Date | string, days: number): Date {
  */
 export function getWeekdayName(date: Date | string | number): string {
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, 'EEEE', { locale: nb });
 }
 
@@ -252,9 +252,9 @@ export function getWeekdayName(date: Date | string | number): string {
  */
 export function getShortWeekdayName(date: Date | string | number): string {
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return '';
-  
+
   return format(parsedDate, 'EEE', { locale: nb });
 }
 
@@ -263,22 +263,18 @@ export function getShortWeekdayName(date: Date | string | number): string {
  */
 export function formatDuration(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;
-  
+
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  
+
   if (minutes < 60) {
-    return remainingSeconds > 0 
-      ? `${minutes}m ${remainingSeconds}s` 
-      : `${minutes}m`;
+    return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
   }
-  
+
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
-  
-  return remainingMinutes > 0 
-    ? `${hours}t ${remainingMinutes}m` 
-    : `${hours}t`;
+
+  return remainingMinutes > 0 ? `${hours}t ${remainingMinutes}m` : `${hours}t`;
 }
 
 /**
@@ -286,10 +282,12 @@ export function formatDuration(seconds: number): string {
  */
 export function getWeekNumber(date: Date | string | number): number {
   const parsedDate = typeof date === 'string' ? parseISO(date) : new Date(date);
-  
+
   if (!isValid(parsedDate)) return 0;
-  
-  const d = new Date(Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()));
+
+  const d = new Date(
+    Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+  );
   const dayNum = d.getUTCDay() || 7;
   d.setUTCDate(d.getUTCDate() + 4 - dayNum);
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
@@ -314,5 +312,5 @@ export default {
   getWeekdayName,
   getShortWeekdayName,
   formatDuration,
-  getWeekNumber
+  getWeekNumber,
 };

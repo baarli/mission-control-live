@@ -11,7 +11,7 @@ const SKILL_PATHS = {
   pdf: null, // PDF uses reportlab directly, no CLI
   transcribe: 'skills/transcribe/scripts/transcribe_diarize.py',
   imagegen: 'skills/imagegen/scripts/image_gen.py',
-  speech: 'skills/speech/scripts/text_to_speech.py'
+  speech: 'skills/speech/scripts/text_to_speech.py',
 };
 
 // Skill types
@@ -50,9 +50,11 @@ interface BridgeConfig {
 
 // Default configuration
 const DEFAULT_CONFIG: BridgeConfig = {
-  codexHome: import.meta.env.VITE_CODEX_HOME || `${window.location.protocol}//${window.location.host}/.codex`,
+  codexHome:
+    import.meta.env.VITE_CODEX_HOME ||
+    `${window.location.protocol}//${window.location.host}/.codex`,
   outputDir: 'output',
-  timeoutMs: 300000 // 5 minutes
+  timeoutMs: 300000, // 5 minutes
 };
 
 class SkillBridge {
@@ -92,10 +94,10 @@ class SkillBridge {
       message: 'Initializing...',
       startTime: Date.now(),
     };
-    
+
     this.jobs.set(job.id, job);
     this.progressListeners.set(job.id, []);
-    
+
     return job;
   }
 
@@ -110,7 +112,7 @@ class SkillBridge {
 
     // Notify listeners
     const listeners = this.progressListeners.get(jobId) || [];
-    listeners.forEach((callback) => callback(job.progress, job.message));
+    listeners.forEach(callback => callback(job.progress, job.message));
   }
 
   /**
@@ -155,15 +157,15 @@ class SkillBridge {
       const result: SkillResult<T> = {
         success: true,
         outputPath: `${this.config.outputDir}/${skill}/${job.id}`,
-        logs: [`${skill} execution completed`]
+        logs: [`${skill} execution completed`],
       };
 
-      this.updateJob(job.id, { 
-        status: 'completed', 
-        progress: 100, 
+      this.updateJob(job.id, {
+        status: 'completed',
+        progress: 100,
         message: 'Completed',
         result,
-        endTime: Date.now()
+        endTime: Date.now(),
       });
 
       emitToast(`${skill} skill executed successfully`, 'success');
@@ -173,14 +175,14 @@ class SkillBridge {
       const result: SkillResult<T> = {
         success: false,
         error: errorMessage,
-        logs: [errorMessage]
+        logs: [errorMessage],
       };
 
-      this.updateJob(job.id, { 
-        status: 'failed', 
+      this.updateJob(job.id, {
+        status: 'failed',
         message: errorMessage,
         result,
-        endTime: Date.now()
+        endTime: Date.now(),
       });
 
       emitToast(`${skill} skill failed: ${errorMessage}`, 'error');
@@ -192,12 +194,12 @@ class SkillBridge {
    * Simulate progress updates (for demo purposes)
    */
   private simulateProgress(jobId: string): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const steps = [
         { progress: 25, message: 'Processing...', delay: 500 },
         { progress: 50, message: 'Generating output...', delay: 1000 },
         { progress: 75, message: 'Finalizing...', delay: 800 },
-        { progress: 100, message: 'Complete', delay: 200 }
+        { progress: 100, message: 'Complete', delay: 200 },
       ];
 
       let currentStep = 0;
@@ -242,7 +244,7 @@ class SkillBridge {
    * Get jobs by skill
    */
   getJobsBySkill(skill: SkillType): SkillJob[] {
-    return this.getAllJobs().filter((job) => job.skill === skill);
+    return this.getAllJobs().filter(job => job.skill === skill);
   }
 
   /**

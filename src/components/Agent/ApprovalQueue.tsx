@@ -70,11 +70,13 @@ export const ApprovalQueue: React.FC = () => {
             <p className={styles.emptyHint}>Approval requests will appear here</p>
           </div>
         ) : (
-          pendingRequests.map((request) => (
+          pendingRequests.map(request => (
             <div key={request.id} className={styles.approvalItem}>
               <div className={styles.approvalHeader}>
                 <span className={styles.approvalType}>{request.request_type}</span>
-                <span className={`${styles.riskLevel} ${riskLevelStyles[request.risk_level] || ''}`}>
+                <span
+                  className={`${styles.riskLevel} ${riskLevelStyles[request.risk_level] || ''}`}
+                >
                   {riskIcons[request.risk_level]} {request.risk_level}
                 </span>
               </div>

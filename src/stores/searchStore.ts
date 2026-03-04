@@ -20,7 +20,7 @@ interface SearchState {
     dateRange: 'all' | 'day' | 'week' | 'month' | 'year';
   };
   selectedResultId: string | null;
-  
+
   // Actions
   setQuery: (query: string) => void;
   setResults: (results: SearchResult[]) => void;
@@ -31,11 +31,14 @@ interface SearchState {
   addToHistory: (query: string, category?: string) => void;
   removeFromHistory: (timestamp: number) => void;
   clearHistory: () => void;
-  setFilter: (key: keyof SearchState['activeFilters'], value: SearchState['activeFilters'][keyof SearchState['activeFilters']]) => void;
+  setFilter: (
+    key: keyof SearchState['activeFilters'],
+    value: SearchState['activeFilters'][keyof SearchState['activeFilters']]
+  ) => void;
   clearFilters: () => void;
   selectResult: (id: string | null) => void;
   reset: () => void;
-  
+
   // Computed
   getFilteredResults: () => SearchResult[];
   getRecentHistory: (limit?: number) => SearchHistoryItem[];
@@ -46,7 +49,7 @@ const MAX_HISTORY_ITEMS = 20;
 const initialFilters = {
   category: null as Category | null,
   source: null as string | null,
-  dateRange: 'all' as 'all' | 'day' | 'week' | 'month' | 'year'
+  dateRange: 'all' as 'all' | 'day' | 'week' | 'month' | 'year',
 };
 
 export const useSearchStore = create<SearchState>()(
@@ -72,8 +75,8 @@ export const useSearchStore = create<SearchState>()(
         },
 
         addResult: (result: SearchResult) => {
-          set((state) => ({
-            results: [...state.results, result]
+          set(state => ({
+            results: [...state.results, result],
           }));
         },
 
@@ -91,29 +94,29 @@ export const useSearchStore = create<SearchState>()(
 
         addToHistory: (query: string, category?: string) => {
           if (!query.trim()) return;
-          
-          set((state) => {
+
+          set(state => {
             // Remove duplicate if exists
             const filtered = state.history.filter(
-              (item) => item.query.toLowerCase() !== query.toLowerCase()
+              item => item.query.toLowerCase() !== query.toLowerCase()
             );
-            
+
             // Add new item at the beginning
             const newItem: SearchHistoryItem = {
               query: query.trim(),
               category,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             };
-            
+
             return {
-              history: [newItem, ...filtered].slice(0, MAX_HISTORY_ITEMS)
+              history: [newItem, ...filtered].slice(0, MAX_HISTORY_ITEMS),
             };
           });
         },
 
         removeFromHistory: (timestamp: number) => {
-          set((state) => ({
-            history: state.history.filter((item) => item.timestamp !== timestamp)
+          set(state => ({
+            history: state.history.filter(item => item.timestamp !== timestamp),
           }));
         },
 
@@ -121,9 +124,12 @@ export const useSearchStore = create<SearchState>()(
           set({ history: [] });
         },
 
-        setFilter: (key: keyof SearchState['activeFilters'], value: SearchState['activeFilters'][keyof SearchState['activeFilters']]) => {
-          set((state) => ({
-            activeFilters: { ...state.activeFilters, [key]: value }
+        setFilter: (
+          key: keyof SearchState['activeFilters'],
+          value: SearchState['activeFilters'][keyof SearchState['activeFilters']]
+        ) => {
+          set(state => ({
+            activeFilters: { ...state.activeFilters, [key]: value },
           }));
         },
 
@@ -142,32 +148,32 @@ export const useSearchStore = create<SearchState>()(
             isSearching: false,
             error: null,
             activeFilters: initialFilters,
-            selectedResultId: null
+            selectedResultId: null,
           });
         },
 
         // Computed
         getFilteredResults: () => {
           const { results, activeFilters } = get();
-          
-          return results.filter((result) => {
+
+          return results.filter(result => {
             // Category filter
             if (activeFilters.category && result.category !== activeFilters.category) {
               return false;
             }
-            
+
             // Source filter
             if (activeFilters.source && result.source !== activeFilters.source) {
               return false;
             }
-            
+
             // Date range filter
             if (activeFilters.dateRange !== 'all' && result.published_at) {
               const resultDate = new Date(result.published_at);
               const now = new Date();
               const diffMs = now.getTime() - resultDate.getTime();
               const diffDays = diffMs / (1000 * 60 * 60 * 24);
-              
+
               switch (activeFilters.dateRange) {
                 case 'day':
                   if (diffDays > 1) return false;
@@ -183,19 +189,19 @@ export const useSearchStore = create<SearchState>()(
                   break;
               }
             }
-            
+
             return true;
           });
         },
 
         getRecentHistory: (limit = 5) => {
           return get().history.slice(0, limit);
-        }
+        },
       }),
       {
         name: 'mc-search-storage',
         storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({ history: state.history })
+        partialize: state => ({ history: state.history }),
       }
     ),
     { name: 'SearchStore' }
@@ -203,11 +209,11 @@ export const useSearchStore = create<SearchState>()(
 );
 
 // Selector hooks
-export const useSearchQuery = () => useSearchStore((state) => state.query);
-export const useSearchResults = () => useSearchStore((state) => state.results);
-export const useSearchLoading = () => useSearchStore((state) => state.isSearching);
-export const useSearchError = () => useSearchStore((state) => state.error);
-export const useSearchHistory = () => useSearchStore((state) => state.history);
-export const useSearchFilters = () => useSearchStore((state) => state.activeFilters);
+export const useSearchQuery = () => useSearchStore(state => state.query);
+export const useSearchResults = () => useSearchStore(state => state.results);
+export const useSearchLoading = () => useSearchStore(state => state.isSearching);
+export const useSearchError = () => useSearchStore(state => state.error);
+export const useSearchHistory = () => useSearchStore(state => state.history);
+export const useSearchFilters = () => useSearchStore(state => state.activeFilters);
 
 export default useSearchStore;

@@ -32,7 +32,7 @@ const DEFAULT_OPTIONS: PdfGenerationOptions = {
   includeTimestamp: true,
   pageSize: 'A4',
   orientation: 'portrait',
-  includeCharts: true
+  includeCharts: true,
 };
 
 /**
@@ -63,13 +63,13 @@ export async function exportStatsToPdf(
       type: 'stats-report',
       nielsen: {
         data: nielsenData,
-        summary: nielsenSummary
+        summary: nielsenSummary,
       },
       podcast: {
         data: podcastData,
-        summary: podcastSummary
-      }
-    }
+        summary: podcastSummary,
+      },
+    },
   };
 
   return bridge.execute(
@@ -78,7 +78,7 @@ export async function exportStatsToPdf(
       action: 'generate',
       format: 'pdf',
       data: reportData,
-      outputName: `stats-report-${new Date().toISOString().split('T')[0]}`
+      outputName: `stats-report-${new Date().toISOString().split('T')[0]}`,
     },
     onProgress
   );
@@ -111,8 +111,8 @@ export async function generateWeeklySummary(
       highlights: data.highlights,
       nielsenStats: data.nielsenStats,
       podcastStats: data.podcastStats,
-      topSaker: data.topSaker
-    }
+      topSaker: data.topSaker,
+    },
   };
 
   return bridge.execute(
@@ -121,7 +121,7 @@ export async function generateWeeklySummary(
       action: 'generate',
       format: 'pdf',
       data: reportData,
-      outputName: `weekly-summary-uke${data.weekNumber}-${data.year}`
+      outputName: `weekly-summary-uke${data.weekNumber}-${data.year}`,
     },
     onProgress
   );
@@ -147,15 +147,15 @@ export async function generatePrintableSaksliste(
     orientation: opts.orientation,
     content: {
       type: 'saksliste',
-      items: saker.map((sak) => ({
+      items: saker.map(sak => ({
         title: sak.title,
         description: sak.description,
         category: sak.category,
         link: sak.link_url,
-        showDate: sak.show_date
+        showDate: sak.show_date,
       })),
-      categoryCounts: getCategoryCounts(saker)
-    }
+      categoryCounts: getCategoryCounts(saker),
+    },
   };
 
   return bridge.execute(
@@ -164,7 +164,7 @@ export async function generatePrintableSaksliste(
       action: 'generate',
       format: 'pdf',
       data: reportData,
-      outputName: `saksliste-${new Date().toISOString().split('T')[0]}`
+      outputName: `saksliste-${new Date().toISOString().split('T')[0]}`,
     },
     onProgress
   );
@@ -193,8 +193,8 @@ export async function generateChartPdf(
     content: {
       type: 'chart',
       chartType,
-      data: chartData
-    }
+      data: chartData,
+    },
   };
 
   return bridge.execute(
@@ -203,7 +203,7 @@ export async function generateChartPdf(
       action: 'generate',
       format: 'pdf',
       data: reportData,
-      outputName: `chart-${chartType}-${Date.now()}`
+      outputName: `chart-${chartType}-${Date.now()}`,
     },
     onProgress
   );
@@ -215,7 +215,7 @@ function calculateNielsenSummary(data: NielsenMetric[]) {
     return { total: 0, average: 0, max: 0, min: 0 };
   }
 
-  const values = data.map((d) => d.value);
+  const values = data.map(d => d.value);
   const total = values.reduce((a, b) => a + b, 0);
   const average = total / values.length;
   const max = Math.max(...values);
@@ -231,18 +231,19 @@ function calculatePodcastSummary(data: PodcastMetric[]) {
 
   const total = data.length;
   const averageRank = data.reduce((sum, d) => sum + d.rank, 0) / total;
-  const topRanked = data.reduce((best, current) => 
-    current.rank < best.rank ? current : best
-  );
+  const topRanked = data.reduce((best, current) => (current.rank < best.rank ? current : best));
 
   return { total, averageRank, topRanked };
 }
 
 function getCategoryCounts(saker: Sak[]): Record<string, number> {
-  return saker.reduce((acc, sak) => {
-    acc[sak.category] = (acc[sak.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  return saker.reduce(
+    (acc, sak) => {
+      acc[sak.category] = (acc[sak.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 }
 
 /**
@@ -254,7 +255,7 @@ export async function previewPdf(
 ): Promise<string> {
   // In a real implementation, this would use a library like pdfmake or jsPDF
   // to generate a preview data URL
-  
+
   // For now, return a placeholder
   return 'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO...';
 }
@@ -264,12 +265,12 @@ export async function previewPdf(
  */
 export function getPdfStatus(): { available: boolean; message: string } {
   const hasPdfLib = typeof window !== 'undefined' && 'pdfMake' in window;
-  
+
   return {
     available: hasPdfLib,
-    message: hasPdfLib 
-      ? 'PDF generation ready' 
-      : 'PDF library not loaded. Some features may be unavailable.'
+    message: hasPdfLib
+      ? 'PDF generation ready'
+      : 'PDF library not loaded. Some features may be unavailable.',
   };
 }
 
@@ -280,5 +281,5 @@ export default {
   generatePrintableSaksliste,
   generateChartPdf,
   previewPdf,
-  getPdfStatus
+  getPdfStatus,
 };

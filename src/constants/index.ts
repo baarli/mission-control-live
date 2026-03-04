@@ -21,7 +21,7 @@ export {
   getDefaultCategory,
   groupByCategory,
   countByCategory,
-  type CategoryMeta
+  type CategoryMeta,
 } from './categories';
 
 // Prompts
@@ -34,7 +34,7 @@ export {
   CONFIRM_MESSAGES,
   PLACEHOLDERS,
   LABELS,
-  getSearchPrompt
+  getSearchPrompt,
 } from './prompts';
 
 // Config
@@ -52,7 +52,7 @@ export {
   NAV_ITEMS,
   FEATURES,
   KEYBOARD_SHORTCUTS,
-  getConfig
+  getConfig,
 } from './config';
 
 // Routes
@@ -71,5 +71,5 @@ export {
   extractParams,
   getBreadcrumbs,
   getPageTitle,
-  type RouteMeta
+  type RouteMeta,
 } from './routes';

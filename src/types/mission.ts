@@ -58,17 +58,12 @@ export interface AgendaItem {
 /**
  * Input type for creating a new agenda item (omits auto-generated fields)
  */
-export type CreateAgendaItemInput = Omit<
-  AgendaItem,
-  'id' | 'created_at' | 'updated_at'
->;
+export type CreateAgendaItemInput = Omit<AgendaItem, 'id' | 'created_at' | 'updated_at'>;
 
 /**
  * Input type for updating an agenda item
  */
-export type UpdateAgendaItemInput = Partial<
-  Omit<AgendaItem, 'id' | 'created_at' | 'updated_at'>
->;
+export type UpdateAgendaItemInput = Partial<Omit<AgendaItem, 'id' | 'created_at' | 'updated_at'>>;
 
 // ==========================================
 // Nielsen Metrics Types

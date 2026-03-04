@@ -7,38 +7,46 @@
  */
 export function escapeHtml(text: string | null | undefined): string {
   if (!text) return '';
-  
+
   const htmlEscapes: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
     "'": '&#x27;',
-    '/': '&#x2F;'
+    '/': '&#x2F;',
   };
-  
-  return text.replace(/[&<>"'/]/g, (char) => htmlEscapes[char] || char);
+
+  return text.replace(/[&<>"'/]/g, char => htmlEscapes[char] || char);
 }
 
 /**
  * Truncate text to specified length
  */
-export function truncate(text: string | null | undefined, maxLength: number, suffix = '...'): string {
+export function truncate(
+  text: string | null | undefined,
+  maxLength: number,
+  suffix = '...'
+): string {
   if (!text) return '';
   if (text.length <= maxLength) return text;
-  
+
   return text.slice(0, maxLength - suffix.length).trim() + suffix;
 }
 
 /**
  * Truncate at word boundary
  */
-export function truncateWords(text: string | null | undefined, maxWords: number, suffix = '...'): string {
+export function truncateWords(
+  text: string | null | undefined,
+  maxWords: number,
+  suffix = '...'
+): string {
   if (!text) return '';
-  
+
   const words = text.trim().split(/\s+/);
   if (words.length <= maxWords) return text;
-  
+
   return words.slice(0, maxWords).join(' ') + suffix;
 }
 
@@ -63,7 +71,7 @@ export function capitalizeWords(text: string | null | undefined): string {
  */
 export function slugify(text: string | null | undefined): string {
   if (!text) return '';
-  
+
   return text
     .toString()
     .normalize('NFD')
@@ -96,7 +104,7 @@ export function stripHtml(html: string | null | undefined): string {
  */
 export function extractExcerpt(html: string | null | undefined, maxLength: number = 150): string {
   if (!html) return '';
-  
+
   const text = stripHtml(html);
   return truncate(text, maxLength);
 }
@@ -110,10 +118,10 @@ export function highlightText(
   tag = 'mark'
 ): string {
   if (!text || !query) return text || '';
-  
+
   const escapedQuery = escapeRegExp(query);
   const regex = new RegExp(`(${escapedQuery})`, 'gi');
-  
+
   return text.replace(regex, `<${tag}>$1</${tag}>`);
 }
 
@@ -137,10 +145,10 @@ export function containsIgnoreCase(text: string | null | undefined, substring: s
  */
 export function getInitials(name: string | null | undefined, maxInitials = 2): string {
   if (!name) return '';
-  
+
   return name
     .split(/\s+/)
-    .map((word) => word.charAt(0).toUpperCase())
+    .map(word => word.charAt(0).toUpperCase())
     .slice(0, maxInitials)
     .join('');
 }
@@ -180,10 +188,10 @@ export function generateUUID(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -193,13 +201,13 @@ export function generateUUID(): string {
  */
 export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  
+
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
@@ -221,7 +229,7 @@ export function pad(
 ): string {
   const string = String(str);
   if (string.length >= length) return string;
-  
+
   const padding = repeat(char, length - string.length);
   return side === 'left' ? padding + string : string + padding;
 }
@@ -232,26 +240,28 @@ export function pad(
 export function parseQueryString(queryString: string): Record<string, string> {
   const params = new URLSearchParams(queryString);
   const result: Record<string, string> = {};
-  
+
   for (const [key, value] of params) {
     result[key] = value;
   }
-  
+
   return result;
 }
 
 /**
  * Build query string
  */
-export function buildQueryString(params: Record<string, string | number | boolean | undefined>): string {
+export function buildQueryString(
+  params: Record<string, string | number | boolean | undefined>
+): string {
   const searchParams = new URLSearchParams();
-  
+
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== '') {
       searchParams.set(key, String(value));
     }
   }
-  
+
   const query = searchParams.toString();
   return query ? `?${query}` : '';
 }
@@ -278,5 +288,5 @@ export default {
   repeat,
   pad,
   parseQueryString,
-  buildQueryString
+  buildQueryString,
 };

@@ -57,7 +57,7 @@ export const ActivityLog: React.FC = () => {
             <p className={styles.emptyHint}>Agent activity will be logged here</p>
           </div>
         ) : (
-          sortedLogs.slice(0, 20).map((log) => (
+          sortedLogs.slice(0, 20).map(log => (
             <div key={log.id} className={styles.logItem}>
               <div className={styles.logHeader}>
                 <span className={`${styles.logLevel} ${levelStyles[log.level] || ''}`}>
@@ -72,9 +72,7 @@ export const ActivityLog: React.FC = () => {
               </div>
               <p className={styles.logMessage}>{log.message}</p>
               {log.details && Object.keys(log.details).length > 0 && (
-                <pre className={styles.logDetails}>
-                  {JSON.stringify(log.details, null, 2)}
-                </pre>
+                <pre className={styles.logDetails}>{JSON.stringify(log.details, null, 2)}</pre>
               )}
             </div>
           ))

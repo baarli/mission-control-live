@@ -18,17 +18,9 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => 
   if (toasts.length === 0) return null;
 
   return (
-    <div
-      className={styles.container}
-      role="region"
-      aria-label="Notifications"
-    >
-      {toasts.map((toast) => (
-        <ToastItem
-          key={toast.id}
-          toast={toast}
-          onClose={onRemove}
-        />
+    <div className={styles.container} role="region" aria-label="Notifications">
+      {toasts.map(toast => (
+        <ToastItem key={toast.id} toast={toast} onClose={onRemove} />
       ))}
     </div>
   );

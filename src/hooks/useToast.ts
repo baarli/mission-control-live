@@ -21,7 +21,7 @@ type ToastListener = (message: string, type: ToastType) => void;
 const toastListeners: ToastListener[] = [];
 
 export const emitToast = (message: string, type: ToastType = 'info'): void => {
-  toastListeners.forEach((listener) => listener(message, type));
+  toastListeners.forEach(listener => listener(message, type));
 };
 
 // Global toast methods for use outside of React components
@@ -30,7 +30,7 @@ export const toast = {
   error: (message: string) => emitToast(message, 'error'),
   warning: (message: string) => emitToast(message, 'warning'),
   info: (message: string) => emitToast(message, 'info'),
-  show: (message: string, type: ToastType = 'info') => emitToast(message, type)
+  show: (message: string, type: ToastType = 'info') => emitToast(message, type),
 };
 
 const DEFAULT_DURATION = 3000;
@@ -42,8 +42,8 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
   const timersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   const removeToast = useCallback((id: string): void => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-    
+    setToasts(prev => prev.filter(t => t.id !== id));
+
     // Clear timer if exists
     const timer = timersRef.current.get(id);
     if (timer) {
@@ -52,30 +52,33 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
     }
   }, []);
 
-  const showToast = useCallback((message: string, type: ToastType = 'info'): void => {
-    const id = `toast-${++idCounter.current}-${Date.now()}`;
-    const newToast: Toast = { id, message, type };
-    
-    setToasts((prev) => {
-      // Remove oldest toast if at max
-      const newToasts = [...prev, newToast];
-      if (newToasts.length > MAX_TOASTS) {
-        const oldest = newToasts[0];
-        if (oldest) {
-          removeToast(oldest.id);
-        }
-        return newToasts.slice(1);
-      }
-      return newToasts;
-    });
+  const showToast = useCallback(
+    (message: string, type: ToastType = 'info'): void => {
+      const id = `toast-${++idCounter.current}-${Date.now()}`;
+      const newToast: Toast = { id, message, type };
 
-    // Auto-remove after duration
-    const timer = setTimeout(() => {
-      removeToast(id);
-    }, duration);
-    
-    timersRef.current.set(id, timer);
-  }, [duration, removeToast]);
+      setToasts(prev => {
+        // Remove oldest toast if at max
+        const newToasts = [...prev, newToast];
+        if (newToasts.length > MAX_TOASTS) {
+          const oldest = newToasts[0];
+          if (oldest) {
+            removeToast(oldest.id);
+          }
+          return newToasts.slice(1);
+        }
+        return newToasts;
+      });
+
+      // Auto-remove after duration
+      const timer = setTimeout(() => {
+        removeToast(id);
+      }, duration);
+
+      timersRef.current.set(id, timer);
+    },
+    [duration, removeToast]
+  );
 
   // Convenience methods
   const success = useCallback((message: string) => showToast(message, 'success'), [showToast]);
@@ -88,30 +91,30 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
     const listener: ToastListener = (message, type) => {
       showToast(message, type);
     };
-    
+
     toastListeners.push(listener);
     const timers = timersRef.current;
-    
+
     return () => {
       const index = toastListeners.indexOf(listener);
       if (index > -1) {
         toastListeners.splice(index, 1);
       }
-      
+
       // Clear all timers on unmount
-      timers.forEach((timer) => clearTimeout(timer));
+      timers.forEach(timer => clearTimeout(timer));
       timers.clear();
     };
   }, [showToast]);
 
-  return { 
-    toasts, 
-    showToast, 
+  return {
+    toasts,
+    showToast,
     removeToast,
     success,
     error,
     warning,
-    info
+    info,
   };
 }
 
@@ -122,15 +125,15 @@ export function useToastContainer(): { toasts: Toast[]; removeToast: (id: string
   useEffect(() => {
     const listener: ToastListener = (message, type) => {
       const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      setToasts((prev) => [...prev.slice(-MAX_TOASTS + 1), { id, message, type }]);
-      
+      setToasts(prev => [...prev.slice(-MAX_TOASTS + 1), { id, message, type }]);
+
       setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
+        setToasts(prev => prev.filter(t => t.id !== id));
       }, DEFAULT_DURATION);
     };
-    
+
     toastListeners.push(listener);
-    
+
     return () => {
       const index = toastListeners.indexOf(listener);
       if (index > -1) {
@@ -140,7 +143,7 @@ export function useToastContainer(): { toasts: Toast[]; removeToast: (id: string
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
   return { toasts, removeToast };

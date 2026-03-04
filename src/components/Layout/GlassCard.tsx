@@ -42,7 +42,7 @@ const GlassCard: React.FC<GlassCardProps> = ({
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={
         onClick
-          ? (e) => {
+          ? e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 onClick();

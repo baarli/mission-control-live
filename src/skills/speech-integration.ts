@@ -7,10 +7,23 @@ import type { Sak } from '../types';
 
 import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
-export type SpeechVoice = 
-  | 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer'  // TTS-1 voices
-  | 'ash' | 'ballad' | 'coral' | 'sage' | 'verse'              // GPT-4o TTS voices
-  | 'marin' | 'coral' | 'ember' | 'juniper' | 'marin';         // GPT-4o mini TTS voices
+export type SpeechVoice =
+  | 'alloy'
+  | 'echo'
+  | 'fable'
+  | 'onyx'
+  | 'nova'
+  | 'shimmer' // TTS-1 voices
+  | 'ash'
+  | 'ballad'
+  | 'coral'
+  | 'sage'
+  | 'verse' // GPT-4o TTS voices
+  | 'marin'
+  | 'coral'
+  | 'ember'
+  | 'juniper'
+  | 'marin'; // GPT-4o mini TTS voices
 
 export type SpeechModel = 'tts-1' | 'tts-1-hd' | 'gpt-4o-mini-tts-2025-12-15';
 
@@ -52,7 +65,7 @@ const DEFAULT_OPTIONS: SpeechOptions = {
   model: 'gpt-4o-mini-tts-2025-12-15',
   voice: 'coral',
   responseFormat: 'mp3',
-  speed: 1.0
+  speed: 1.0,
 };
 
 /**
@@ -72,7 +85,7 @@ export async function textToSpeech(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -81,7 +94,7 @@ export async function textToSpeech(
     return {
       success: false,
       error: 'Text too long (maximum 4096 characters for GPT-4o mini TTS)',
-      logs: ['Input validation failed']
+      logs: ['Input validation failed'],
     };
   }
 
@@ -94,7 +107,7 @@ export async function textToSpeech(
       voice: opts.voice,
       response_format: opts.responseFormat,
       speed: opts.speed,
-      instructions: opts.instructions
+      instructions: opts.instructions,
     },
     onProgress
   );
@@ -118,7 +131,7 @@ export async function generateAudioBriefing(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -147,7 +160,7 @@ Pronunciation: Clear enunciation of Norwegian names and terms.
       voice: opts.voice,
       response_format: opts.responseFormat,
       speed: opts.speed,
-      instructions: opts.instructions || instructions
+      instructions: opts.instructions || instructions,
     },
     onProgress
   );
@@ -164,13 +177,13 @@ Pronunciation: Clear enunciation of Norwegian names and terms.
     createdAt: new Date().toISOString(),
     items: [
       { type: 'intro', content: 'Intro til briefing' },
-      ...saker.map((sak) => ({
+      ...saker.map(sak => ({
         type: 'sak' as const,
         content: sak.title,
-        sakId: sak.id
+        sakId: sak.id,
       })),
-      { type: 'outro', content: 'Outro' }
-    ]
+      { type: 'outro', content: 'Outro' },
+    ],
   };
 
   // Save to storage
@@ -178,7 +191,7 @@ Pronunciation: Clear enunciation of Norwegian names and terms.
 
   return {
     ...result,
-    data: briefing
+    data: briefing,
   };
 }
 
@@ -191,7 +204,7 @@ export async function generateSakAudio(
   onProgress?: ProgressCallback
 ): Promise<SkillResult<{ audioPath: string }>> {
   const text = `${sak.title}. ${sak.description || ''}`;
-  
+
   const instructions = `
 Voice Affect: Clear and professional.
 Tone: Informative and engaging.
@@ -225,7 +238,7 @@ export async function batchGenerateSpeech(
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i]!;
-    
+
     try {
       const result = await bridge.execute(
         'speech',
@@ -235,11 +248,11 @@ export async function batchGenerateSpeech(
           model: options.model || DEFAULT_OPTIONS.model,
           voice: item.voice || options.voice || DEFAULT_OPTIONS.voice,
           response_format: options.responseFormat || DEFAULT_OPTIONS.responseFormat,
-          instructions: item.instructions || options.instructions
+          instructions: item.instructions || options.instructions,
         },
         (progress, message) => {
           if (onProgress) {
-            const overallProgress = (i / items.length) * 100 + (progress / items.length);
+            const overallProgress = (i / items.length) * 100 + progress / items.length;
             onProgress(overallProgress, `Item ${i + 1}/${items.length}: ${message}`);
           }
         }
@@ -259,7 +272,7 @@ export async function batchGenerateSpeech(
   return {
     success: failed === 0,
     data: { generated, failed, outputs },
-    logs: [`Batch complete: ${generated} generated, ${failed} failed`]
+    logs: [`Batch complete: ${generated} generated, ${failed} failed`],
   };
 }
 
@@ -281,7 +294,7 @@ export function getAllBriefings(): AudioBriefing[] {
 export function deleteBriefing(briefingId: string): boolean {
   try {
     const briefings = getAllBriefings();
-    const filtered = briefings.filter((b) => b.id !== briefingId);
+    const filtered = briefings.filter(b => b.id !== briefingId);
     localStorage.setItem('mc-audio-briefings', JSON.stringify(filtered));
     return true;
   } catch {
@@ -296,13 +309,17 @@ export function estimateDuration(text: string, speed: number = 1.0): number {
   // Rough estimate: ~150 words per minute at normal speed
   const wordCount = text.trim().split(/\s+/).length;
   const minutes = wordCount / 150;
-  return Math.round(minutes * 60 / speed); // Return seconds
+  return Math.round((minutes * 60) / speed); // Return seconds
 }
 
 /**
  * Get available voices
  */
-export function getAvailableVoices(): Array<{ id: SpeechVoice; name: string; description: string }> {
+export function getAvailableVoices(): Array<{
+  id: SpeechVoice;
+  name: string;
+  description: string;
+}> {
   return [
     { id: 'coral', name: 'Coral', description: 'Warm, natural female voice (recommended)' },
     { id: 'marin', name: 'Marin', description: 'Clear, professional female voice' },
@@ -313,14 +330,16 @@ export function getAvailableVoices(): Array<{ id: SpeechVoice; name: string; des
     { id: 'fable', name: 'Fable', description: 'British accent, storyteller quality' },
     { id: 'onyx', name: 'Onyx', description: 'Deep, cinematic male voice' },
     { id: 'nova', name: 'Nova', description: 'Professional female voice' },
-    { id: 'shimmer', name: 'Shimmer', description: 'Bright, optimistic female voice' }
+    { id: 'shimmer', name: 'Shimmer', description: 'Bright, optimistic female voice' },
   ];
 }
 
 /**
  * Get recommended voice for content type
  */
-export function getRecommendedVoice(contentType: 'news' | 'briefing' | 'story' | 'ad'): SpeechVoice {
+export function getRecommendedVoice(
+  contentType: 'news' | 'briefing' | 'story' | 'ad'
+): SpeechVoice {
   switch (contentType) {
     case 'news':
       return 'coral';
@@ -338,14 +357,14 @@ export function getRecommendedVoice(contentType: 'news' | 'briefing' | 'story' |
 // Helper functions
 function buildBriefingScript(saker: Sak[]): string {
   const intro = 'God morgen! Her er dagens briefing fra Mission Control.';
-  
+
   const items = saker.map((sak, index) => {
     const category = sak.category.replace('_', ' ').toLowerCase();
     return `Sak nummer ${index + 1}: ${sak.title}. Kategori: ${category}.${sak.description ? ` ${sak.description}` : ''}`;
   });
-  
+
   const outro = 'Det var alt for denne gangen. Ha en fin dag!';
-  
+
   return [intro, ...items, outro].join('\n\n');
 }
 
@@ -358,13 +377,13 @@ async function generateChunkedAudioBriefing(
   // Split into chunks of ~4000 chars each
   const chunks: string[] = [];
   let currentChunk = '';
-  
+
   const intro = 'God morgen! Her er dagens briefing fra Mission Control.\n\n';
   const outro = '\n\nDet var alt for denne gangen. Ha en fin dag!';
-  
+
   for (const sak of saker) {
     const sakText = `${sak.title}. ${sak.description || ''}\n\n`;
-    
+
     if ((currentChunk + sakText).length > 3800) {
       chunks.push(currentChunk);
       currentChunk = sakText;
@@ -372,7 +391,7 @@ async function generateChunkedAudioBriefing(
       currentChunk += sakText;
     }
   }
-  
+
   if (currentChunk) {
     chunks.push(currentChunk);
   }
@@ -384,9 +403,9 @@ async function generateChunkedAudioBriefing(
   for (let i = 0; i < chunks.length; i++) {
     const isFirst = i === 0;
     const isLast = i === chunks.length - 1;
-    
+
     const text = `${isFirst ? intro : ''}${chunks[i]}${isLast ? outro : ''}`;
-    
+
     const result = await bridge.execute(
       'speech',
       {
@@ -395,7 +414,7 @@ async function generateChunkedAudioBriefing(
         model: options.model,
         voice: options.voice,
         response_format: options.responseFormat,
-        speed: options.speed
+        speed: options.speed,
       },
       onProgress
     );
@@ -412,11 +431,11 @@ async function generateChunkedAudioBriefing(
     title: `${title} (chunked)`,
     audioPath: audioPaths[0] || '',
     createdAt: new Date().toISOString(),
-    items: saker.map((sak) => ({
+    items: saker.map(sak => ({
       type: 'sak',
       content: sak.title,
-      sakId: sak.id
-    }))
+      sakId: sak.id,
+    })),
   };
 
   saveBriefingToStorage(briefing);
@@ -425,7 +444,7 @@ async function generateChunkedAudioBriefing(
     success: true,
     data: briefing,
     outputPath: briefing.audioPath,
-    logs: [`Generated ${audioPaths.length} audio chunks`]
+    logs: [`Generated ${audioPaths.length} audio chunks`],
   };
 }
 
@@ -451,5 +470,5 @@ export default {
   deleteBriefing,
   estimateDuration,
   getAvailableVoices,
-  getRecommendedVoice
+  getRecommendedVoice,
 };

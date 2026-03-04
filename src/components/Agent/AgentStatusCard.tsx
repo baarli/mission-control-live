@@ -15,9 +15,10 @@ export const AgentStatusCard: React.FC = () => {
 
   const healthySystems = systemStatus.filter(s => s.status === 'healthy').length;
   const totalSystems = systemStatus.length;
-  const avgHealthScore = totalSystems > 0
-    ? Math.round(systemStatus.reduce((acc, s) => acc + s.health_score, 0) / totalSystems)
-    : 0;
+  const avgHealthScore =
+    totalSystems > 0
+      ? Math.round(systemStatus.reduce((acc, s) => acc + s.health_score, 0) / totalSystems)
+      : 0;
 
   return (
     <GlassCard className={styles.statusCard}>
@@ -48,7 +49,7 @@ export const AgentStatusCard: React.FC = () => {
       {systemStatus.length > 0 && (
         <div className={styles.systemsList}>
           <h4 className={styles.subtitle}>System Status</h4>
-          {systemStatus.slice(0, 3).map((system) => (
+          {systemStatus.slice(0, 3).map(system => (
             <div key={system.id} className={styles.systemItem}>
               <span className={styles.systemName}>{system.system_name}</span>
               <span className={`${styles.systemStatus} ${styles[system.status]}`}>

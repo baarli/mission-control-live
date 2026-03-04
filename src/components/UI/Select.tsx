@@ -22,35 +22,17 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
-    {
-      label,
-      error,
-      options,
-      fullWidth = false,
-      placeholder,
-      className = '',
-      id,
-      ...props
-    },
+    { label, error, options, fullWidth = false, placeholder, className = '', id, ...props },
     ref
   ) => {
     const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
     const hasError = !!error;
 
-    const containerClass = [
-      styles.container,
-      fullWidth && styles.fullWidth,
-      className,
-    ]
+    const containerClass = [styles.container, fullWidth && styles.fullWidth, className]
       .filter(Boolean)
       .join(' ');
 
-    const selectClass = [
-      styles.select,
-      hasError && styles.error,
-    ]
-      .filter(Boolean)
-      .join(' ');
+    const selectClass = [styles.select, hasError && styles.error].filter(Boolean).join(' ');
 
     return (
       <div className={containerClass}>
@@ -73,17 +55,15 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 {placeholder}
               </option>
             )}
-            {options.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-                disabled={option.disabled}
-              >
+            {options.map(option => (
+              <option key={option.value} value={option.value} disabled={option.disabled}>
                 {option.label}
               </option>
             ))}
           </select>
-          <span className={styles.arrow} aria-hidden="true">▼</span>
+          <span className={styles.arrow} aria-hidden="true">
+            ▼
+          </span>
         </div>
         {hasError && (
           <span id={`${selectId}-error`} className={styles.errorMessage} role="alert">

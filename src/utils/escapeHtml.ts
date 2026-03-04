@@ -3,7 +3,7 @@
  */
 export function escapeHtml(unsafe: string): string {
   if (!unsafe) return '';
-  
+
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -17,7 +17,7 @@ export function escapeHtml(unsafe: string): string {
  */
 export function unescapeHtml(safe: string): string {
   if (!safe) return '';
-  
+
   return safe
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 import { ConnectionIndicator } from '@components/Agent';
-import { Dashboard , AgentSection } from '@components/Dashboard';
+import { Dashboard, AgentSection } from '@components/Dashboard';
 import { Layout } from '@components/Layout';
 import { Saksliste } from '@components/Saksliste';
 import { SearchPanel } from '@components/Search';
@@ -42,11 +42,7 @@ function App() {
 
   return (
     <>
-      <Layout
-        activeSection={activeSection}
-        onNavigate={handleNavigate}
-        onLogout={handleLogout}
-      >
+      <Layout activeSection={activeSection} onNavigate={handleNavigate} onLogout={handleLogout}>
         {renderContent()}
       </Layout>
       <ConnectionIndicator />

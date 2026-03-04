@@ -12,7 +12,10 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-import type { ApiResponseWrapper as ApiResponse, ApiErrorDetails as ApiError } from '../types/mission';
+import type {
+  ApiResponseWrapper as ApiResponse,
+  ApiErrorDetails as ApiError,
+} from '../types/mission';
 
 /**
  * Configuration options for the API client
@@ -111,12 +114,12 @@ export class ApiClient {
         }
         return currentConfig as InternalAxiosRequestConfig;
       },
-      (error) => Promise.reject(error)
+      error => Promise.reject(error)
     );
 
     // Response interceptor
     this.client.interceptors.response.use(
-      async (response) => {
+      async response => {
         // Apply custom response interceptors
         for (const interceptor of this.responseInterceptors) {
           response = await interceptor(response);
@@ -146,9 +149,7 @@ export class ApiClient {
    * @param interceptor - Response interceptor function
    */
   addResponseInterceptor<T>(interceptor: ResponseInterceptor<T>): void {
-    this.responseInterceptors.push(
-      interceptor as ResponseInterceptor<unknown>
-    );
+    this.responseInterceptors.push(interceptor as ResponseInterceptor<unknown>);
   }
 
   /**
@@ -261,13 +262,12 @@ export class ApiClient {
       // Determine if we should retry
       const shouldRetry =
         attempt < this.config.retries &&
-        (!axiosError.response ||
-          RETRY_STATUS_CODES.includes(axiosError.response.status));
+        (!axiosError.response || RETRY_STATUS_CODES.includes(axiosError.response.status));
 
       if (shouldRetry) {
         // Calculate exponential backoff delay
         const delay = this.config.retryDelay * Math.pow(2, attempt);
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay));
         return this.executeWithRetry<T>(config, attempt + 1);
       }
 
@@ -284,10 +284,7 @@ export class ApiClient {
    * @param config - Optional request configuration
    * @returns Promise resolving to API response
    */
-  async get<T>(
-    url: string,
-    config: AxiosRequestConfig = {}
-  ): Promise<ApiResponse<T>> {
+  async get<T>(url: string, config: AxiosRequestConfig = {}): Promise<ApiResponse<T>> {
     return this.executeWithRetry<T>({ ...config, method: 'GET', url });
   }
 
@@ -357,10 +354,7 @@ export class ApiClient {
    * @param config - Optional request configuration
    * @returns Promise resolving to API response
    */
-  async delete<T>(
-    url: string,
-    config: AxiosRequestConfig = {}
-  ): Promise<ApiResponse<T>> {
+  async delete<T>(url: string, config: AxiosRequestConfig = {}): Promise<ApiResponse<T>> {
     return this.executeWithRetry<T>({ ...config, method: 'DELETE', url });
   }
 }

@@ -76,13 +76,16 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
     });
   }, []);
 
-  const handleSelectAll = useCallback((select: boolean) => {
-    if (select) {
-      setSelectedIds(new Set(results.map(r => r.id)));
-    } else {
-      setSelectedIds(new Set());
-    }
-  }, [results]);
+  const handleSelectAll = useCallback(
+    (select: boolean) => {
+      if (select) {
+        setSelectedIds(new Set(results.map(r => r.id)));
+      } else {
+        setSelectedIds(new Set());
+      }
+    },
+    [results]
+  );
 
   const handleAddSelected = useCallback(() => {
     const selected = results.filter(r => selectedIds.has(r.id));
@@ -112,49 +115,46 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
         {/* Search Form */}
         <div className={styles.searchForm}>
           <div className={styles.searchInputWrapper}>
-            <span className={styles.searchIcon} aria-hidden="true">🔍</span>
+            <span className={styles.searchIcon} aria-hidden="true">
+              🔍
+            </span>
             <Input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Søk etter nyheter..."
               fullWidth
             />
           </div>
-          
+
           <div className={styles.filters}>
             <Select
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={e => setCategory(e.target.value)}
               options={categoryOptions}
             />
             <Select
               value={freshness}
-              onChange={(e) => setFreshness(e.target.value)}
+              onChange={e => setFreshness(e.target.value)}
               options={freshnessOptions}
             />
-            <Button
-              variant="primary"
-              onClick={handleSearch}
-              isLoading={isLoading}
-            >
+            <Button variant="primary" onClick={handleSearch} isLoading={isLoading}>
               Søk
             </Button>
           </div>
         </div>
 
         {/* Prompt Editor */}
-        {onPromptChange && (
-          <PromptEditor
-            value={prompt}
-            onChange={onPromptChange}
-          />
-        )}
+        {onPromptChange && <PromptEditor value={prompt} onChange={onPromptChange} />}
 
         {/* Selection Actions */}
         {hasResults && onAddToSaksliste && (
-          <div className={[styles.actionsBar, hasSelection && styles.visible].filter(Boolean).join(' ')}>
+          <div
+            className={[styles.actionsBar, hasSelection && styles.visible]
+              .filter(Boolean)
+              .join(' ')}
+          >
             <div className={styles.selectionActions}>
               <Button variant="ghost" size="sm" onClick={() => handleSelectAll(true)}>
                 ✓ Velg alle
@@ -164,14 +164,8 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
               </Button>
             </div>
             <div className={styles.addAction}>
-              <span className={styles.selectedCount}>
-                {selectedIds.size} valgt
-              </span>
-              <Button
-                variant="success"
-                onClick={handleAddSelected}
-                disabled={!hasSelection}
-              >
+              <span className={styles.selectedCount}>{selectedIds.size} valgt</span>
+              <Button variant="success" onClick={handleAddSelected} disabled={!hasSelection}>
                 ➕ Legg til i saksliste
               </Button>
             </div>
@@ -212,11 +206,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
 
         {/* Search History */}
         {onHistorySelect && onHistoryClear && (
-          <SearchHistory
-            items={history}
-            onSelect={onHistorySelect}
-            onClear={onHistoryClear}
-          />
+          <SearchHistory items={history} onSelect={onHistorySelect} onClear={onHistoryClear} />
         )}
       </GlassCard>
     </section>

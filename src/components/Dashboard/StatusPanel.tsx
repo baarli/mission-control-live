@@ -49,7 +49,7 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
   return (
     <GlassCard className={styles.panel}>
       <h2 className={styles.title}>{title}</h2>
-      
+
       {status === 'loading' ? (
         <div className={styles.loading}>
           <SkeletonText lines={2} />

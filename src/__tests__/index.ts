@@ -1,6 +1,6 @@
 /**
  * Test entry point for Mission Control
- * 
+ *
  * This file exports all test utilities and mocks for use across the test suite.
  */
 
@@ -8,31 +8,31 @@
 export { server, handlers, wait } from './setup';
 
 // Export mocks
-export { 
-  mockSupabaseClient, 
-  mockUser, 
-  mockSak, 
-  mockSaker, 
-  resetSupabaseMocks 
+export {
+  mockSupabaseClient,
+  mockUser,
+  mockSak,
+  mockSaker,
+  resetSupabaseMocks,
 } from '@/__mocks__/supabase';
 
-export { 
-  mockSearchResults, 
-  mockSearchBrave, 
-  mockCalculateEntertainmentScore, 
-  resetBraveMocks 
+export {
+  mockSearchResults,
+  mockSearchBrave,
+  mockCalculateEntertainmentScore,
+  resetBraveMocks,
 } from '@/__mocks__/brave-api';
 
-export { 
-  localStorageMock, 
-  setupLocalStorageMock, 
+export {
+  localStorageMock,
+  setupLocalStorageMock,
   resetLocalStorageMock,
   setInitialLocalStorage,
 } from '@/__mocks__/localStorage';
 
-export { 
-  setupMatchMediaMock, 
-  resetMatchMediaMock, 
+export {
+  setupMatchMediaMock,
+  resetMatchMediaMock,
   triggerMatchMediaChange,
   setDarkModePreference,
   setupDefaultMatchMedia,

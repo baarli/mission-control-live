@@ -12,7 +12,7 @@ export const APP_INFO = {
   version: '1.0.0',
   description: 'Real-time mission metrics and analytics for NRJ Morgen',
   author: 'NRJ Morgen Team',
-  repository: 'https://github.com/baarli/mission-control-live'
+  repository: 'https://github.com/baarli/mission-control-live',
 };
 
 /**
@@ -22,13 +22,13 @@ export const ENV = {
   isDevelopment: import.meta.env.DEV || import.meta.env.VITE_APP_ENVIRONMENT === 'development',
   isProduction: import.meta.env.PROD || import.meta.env.VITE_APP_ENVIRONMENT === 'production',
   isTest: import.meta.env.MODE === 'test',
-  
+
   apiTimeout: parseInt(import.meta.env.VITE_API_TIMEOUT || '30000', 10),
-  
+
   features: {
     enableAnalytics: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
-    enableDebugLogging: import.meta.env.VITE_ENABLE_DEBUG_LOGGING === 'true'
-  }
+    enableDebugLogging: import.meta.env.VITE_ENABLE_DEBUG_LOGGING === 'true',
+  },
 };
 
 /**
@@ -38,11 +38,11 @@ export const API_CONFIG = {
   supabase: {
     url: import.meta.env.VITE_SUPABASE_URL || '',
     anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
-    timeout: ENV.apiTimeout
+    timeout: ENV.apiTimeout,
   },
   brave: {
-    apiKey: import.meta.env.VITE_BRAVE_API_KEY || ''
-  }
+    apiKey: import.meta.env.VITE_BRAVE_API_KEY || '',
+  },
 };
 
 /**
@@ -55,7 +55,7 @@ export const UI_CONFIG = {
   animation: {
     fast: 150,
     normal: 300,
-    slow: 500
+    slow: 500,
   },
 
   /**
@@ -63,7 +63,7 @@ export const UI_CONFIG = {
    */
   toast: {
     duration: 3000,
-    maxVisible: 5
+    maxVisible: 5,
   },
 
   /**
@@ -71,7 +71,7 @@ export const UI_CONFIG = {
    */
   pagination: {
     defaultPageSize: 10,
-    pageSizeOptions: [5, 10, 20, 50]
+    pageSizeOptions: [5, 10, 20, 50],
   },
 
   /**
@@ -80,7 +80,7 @@ export const UI_CONFIG = {
   search: {
     debounceMs: 300,
     minQueryLength: 2,
-    maxHistoryItems: 20
+    maxHistoryItems: 20,
   },
 
   /**
@@ -88,7 +88,7 @@ export const UI_CONFIG = {
    */
   table: {
     defaultSortDirection: 'asc' as const,
-    resizeHandleWidth: 4
+    resizeHandleWidth: 4,
   },
 
   /**
@@ -99,7 +99,7 @@ export const UI_CONFIG = {
     displayWithTime: 'dd.MM.yyyy HH:mm',
     input: 'yyyy-MM-dd',
     api: 'yyyy-MM-dd',
-    iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+    iso: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
 
   /**
@@ -113,8 +113,8 @@ export const UI_CONFIG = {
     '#ea580c', // Orange
     '#0891b2', // Cyan
     '#db2777', // Pink
-    '#65a30d'  // Lime
-  ]
+    '#65a30d', // Lime
+  ],
 };
 
 /**
@@ -128,7 +128,7 @@ export const STORAGE_KEYS = {
   stats: 'mc-stats-storage',
   transcriptions: 'mc-transcriptions',
   audioBriefings: 'mc-audio-briefings',
-  settings: 'mc-settings'
+  settings: 'mc-settings',
 };
 
 /**
@@ -136,7 +136,7 @@ export const STORAGE_KEYS = {
  */
 export const STORAGE_LIMITS = {
   maxItemSize: 5 * 1024 * 1024, // 5MB
-  warningThreshold: 4 * 1024 * 1024 // Warn at 4MB
+  warningThreshold: 4 * 1024 * 1024, // Warn at 4MB
 };
 
 /**
@@ -149,8 +149,8 @@ export const UPLOAD_CONFIG = {
   allowedDocumentTypes: [
     'application/pdf',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ]
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
 };
 
 /**
@@ -159,7 +159,7 @@ export const UPLOAD_CONFIG = {
 export const AUTH_CONFIG = {
   maxLoginAttempts: 5,
   lockoutDurationMs: 15 * 60 * 1000, // 15 minutes
-  sessionDurationMs: 24 * 60 * 60 * 1000 // 24 hours
+  sessionDurationMs: 24 * 60 * 60 * 1000, // 24 hours
 };
 
 /**
@@ -168,18 +168,18 @@ export const AUTH_CONFIG = {
 export const EXPORT_CONFIG = {
   csv: {
     delimiter: ';',
-    encoding: 'utf-8-sig' // BOM for Excel compatibility
+    encoding: 'utf-8-sig', // BOM for Excel compatibility
   },
   json: {
-    indent: 2
+    indent: 2,
   },
   pdf: {
     pageSize: 'A4' as const,
-    orientation: 'portrait' as const
+    orientation: 'portrait' as const,
   },
   docx: {
-    defaultTemplate: 'default'
-  }
+    defaultTemplate: 'default',
+  },
 };
 
 /**
@@ -188,26 +188,26 @@ export const EXPORT_CONFIG = {
 export const SKILL_CONFIG = {
   doc: {
     outputDir: 'output/doc',
-    tempDir: 'tmp/docs'
+    tempDir: 'tmp/docs',
   },
   pdf: {
     outputDir: 'output/pdf',
-    tempDir: 'tmp/pdfs'
+    tempDir: 'tmp/pdfs',
   },
   transcribe: {
     outputDir: 'output/transcribe',
     supportedFormats: ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm', 'ogg'],
-    maxFileSize: 100 * 1024 * 1024 // 100MB
+    maxFileSize: 100 * 1024 * 1024, // 100MB
   },
   imagegen: {
     outputDir: 'output/imagegen',
-    supportedSizes: ['1024x1024', '1536x1024', '1024x1536'] as const
+    supportedSizes: ['1024x1024', '1536x1024', '1024x1536'] as const,
   },
   speech: {
     outputDir: 'output/speech',
     maxTextLength: 4096,
-    maxRequestsPerMinute: 50
-  }
+    maxRequestsPerMinute: 50,
+  },
 };
 
 /**
@@ -218,7 +218,7 @@ export const NAV_ITEMS = [
   { id: 'saksliste', label: 'Saksliste', icon: 'List', path: '/saksliste' },
   { id: 'search', label: 'Søk', icon: 'Search', path: '/search' },
   { id: 'stats', label: 'Statistikk', icon: 'BarChart3', path: '/stats' },
-  { id: 'settings', label: 'Innstillinger', icon: 'Settings', path: '/settings' }
+  { id: 'settings', label: 'Innstillinger', icon: 'Settings', path: '/settings' },
 ];
 
 /**
@@ -232,7 +232,7 @@ export const FEATURES = {
   enablePdfExport: true,
   enableDocxExport: true,
   enableDarkMode: true,
-  enableKeyboardShortcuts: true
+  enableKeyboardShortcuts: true,
 };
 
 /**
@@ -244,7 +244,7 @@ export const KEYBOARD_SHORTCUTS = {
   save: { key: 's', ctrl: true, description: 'Lagre' },
   refresh: { key: 'r', ctrl: true, description: 'Oppdater data' },
   toggleTheme: { key: 't', ctrl: true, shift: true, description: 'Bytt tema' },
-  logout: { key: 'q', ctrl: true, shift: true, description: 'Logg ut' }
+  logout: { key: 'q', ctrl: true, shift: true, description: 'Logg ut' },
 };
 
 /**
@@ -253,7 +253,7 @@ export const KEYBOARD_SHORTCUTS = {
 export function getConfig<T>(path: string, fallback: T): T {
   const keys = path.split('.');
   let current: unknown = { APP_INFO, ENV, API_CONFIG, UI_CONFIG, STORAGE_KEYS };
-  
+
   for (const key of keys) {
     if (current && typeof current === 'object' && key in current) {
       current = (current as Record<string, unknown>)[key];
@@ -261,7 +261,7 @@ export function getConfig<T>(path: string, fallback: T): T {
       return fallback;
     }
   }
-  
+
   return current as T;
 }
 
@@ -279,5 +279,5 @@ export default {
   NAV_ITEMS,
   FEATURES,
   KEYBOARD_SHORTCUTS,
-  getConfig
+  getConfig,
 };

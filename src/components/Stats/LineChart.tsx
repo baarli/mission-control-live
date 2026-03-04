@@ -29,7 +29,7 @@ const LineChart: React.FC<LineChartProps> = ({
   showGrid = true,
   showArea = true,
   showPoints = true,
-  yAxisFormatter = (v) => v.toString(),
+  yAxisFormatter = v => v.toString(),
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
@@ -74,14 +74,14 @@ const LineChart: React.FC<LineChartProps> = ({
     // Generate path
     const pathD = points.reduce((acc, point, i) => {
       if (i === 0) return `M ${point.x} ${point.y}`;
-      
+
       // Smooth curve using cubic bezier
       const prev = points[i - 1]!;
       const cpx1 = prev.x + (point.x - prev.x) / 3;
       const cpy1 = prev.y;
       const cpx2 = prev.x + (2 * (point.x - prev.x)) / 3;
       const cpy2 = point.y;
-      
+
       return `${acc} C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${point.x} ${point.y}`;
     }, '');
 
@@ -96,11 +96,11 @@ const LineChart: React.FC<LineChartProps> = ({
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    
+
     // Find closest point
     let closestIndex = 0;
     let closestDistance = Infinity;
-    
+
     points.forEach((point, i) => {
       const distance = Math.abs(point.x - x);
       if (distance < closestDistance) {
@@ -169,48 +169,36 @@ const LineChart: React.FC<LineChartProps> = ({
         )}
 
         {/* Area fill */}
-        {showArea && (
-          <path
-            d={areaD}
-            className={styles.area}
-            style={{ fill: color }}
-          />
-        )}
+        {showArea && <path d={areaD} className={styles.area} style={{ fill: color }} />}
 
         {/* Line */}
-        <path
-          d={pathD}
-          className={styles.line}
-          style={{ stroke: color }}
-        />
+        <path d={pathD} className={styles.line} style={{ stroke: color }} />
 
         {/* Points */}
-        {showPoints && points.map((point, i) => (
-          <circle
-            key={i}
-            cx={point.x}
-            cy={point.y}
-            r={hoveredIndex === i ? 6 : 4}
-            className={[styles.point, hoveredIndex === i && styles.pointActive].filter(Boolean).join(' ')}
-            style={{ 
-              fill: hoveredIndex === i ? color : 'var(--bg-primary)',
-              stroke: color,
-            }}
-          />
-        ))}
+        {showPoints &&
+          points.map((point, i) => (
+            <circle
+              key={i}
+              cx={point.x}
+              cy={point.y}
+              r={hoveredIndex === i ? 6 : 4}
+              className={[styles.point, hoveredIndex === i && styles.pointActive]
+                .filter(Boolean)
+                .join(' ')}
+              style={{
+                fill: hoveredIndex === i ? color : 'var(--bg-primary)',
+                stroke: color,
+              }}
+            />
+          ))}
 
         {/* X-axis labels */}
         {data.map((d, i) => {
           const x = padding.left + (i / (data.length - 1)) * chartWidth;
           const showLabel = data.length <= 8 || i % Math.ceil(data.length / 8) === 0;
-          
+
           return showLabel ? (
-            <text
-              key={i}
-              x={x}
-              y={height - 10}
-              className={styles.xLabel}
-            >
+            <text key={i} x={x} y={height - 10} className={styles.xLabel}>
               {d.label}
             </text>
           ) : null;
@@ -226,12 +214,8 @@ const LineChart: React.FC<LineChartProps> = ({
             top: Math.max(tooltipPos.y - 40, 0),
           }}
         >
-          <div className={styles.tooltipValue}>
-            {yAxisFormatter(points[hoveredIndex]!.value)}
-          </div>
-          <div className={styles.tooltipLabel}>
-            {points[hoveredIndex]!.label}
-          </div>
+          <div className={styles.tooltipValue}>{yAxisFormatter(points[hoveredIndex]!.value)}</div>
+          <div className={styles.tooltipLabel}>{points[hoveredIndex]!.label}</div>
         </div>
       )}
     </div>

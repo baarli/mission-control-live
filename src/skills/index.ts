@@ -3,13 +3,13 @@
    ============================================ */
 
 // Bridge
-export { 
-  getSkillBridge, 
+export {
+  getSkillBridge,
   resetSkillBridge,
   SkillBridge,
   type SkillResult,
   type ProgressCallback,
-  type SkillType
+  type SkillType,
 } from './bridge';
 
 // Doc integration
@@ -22,7 +22,7 @@ export {
   previewDocument,
   type DocGenerationOptions,
   type DailyBriefingData,
-  type MeetingAgendaData
+  type MeetingAgendaData,
 } from './doc-integration';
 
 // PDF integration
@@ -34,7 +34,7 @@ export {
   previewPdf,
   getPdfStatus,
   type PdfGenerationOptions,
-  type WeeklySummaryData
+  type WeeklySummaryData,
 } from './pdf-integration';
 
 // Transcribe integration
@@ -51,7 +51,7 @@ export {
   validateAudioFile,
   type TranscriptionOptions,
   type TranscriptionResult,
-  type LinkedTranscription
+  type LinkedTranscription,
 } from './transcribe-integration';
 
 // ImageGen integration
@@ -70,7 +70,7 @@ export {
   type ImageGenerationOptions,
   type GeneratedImage,
   type PodcastThumbnailData,
-  type SocialMediaGraphicData
+  type SocialMediaGraphicData,
 } from './imagegen-integration';
 
 // Speech integration
@@ -89,5 +89,5 @@ export {
   type SpeechFormat,
   type SpeechOptions,
   type AudioBriefing,
-  type BatchSpeechJob
+  type BatchSpeechJob,
 } from './speech-integration';
