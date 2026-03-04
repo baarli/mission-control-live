@@ -6,7 +6,8 @@ import React, { useState, useCallback } from 'react';
 import SearchResult from './SearchResult';
 import PromptEditor from './PromptEditor';
 import SearchHistory from './SearchHistory';
-import { GlassCard, Button, Input, Select, EmptyState, SkeletonCard } from '../UI';
+import { GlassCard, Button, Input, Select, SkeletonCard } from '../UI';
+import EmptyState from '../Saksliste/EmptyState';
 import type { SearchResult as SearchResultType, SearchHistoryItem, Category } from '../../types';
 import styles from './SearchPanel.module.css';
 

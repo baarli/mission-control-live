@@ -1,10 +1,12 @@
 import { supabase } from '../supabase';
 
-import type { Mission, CreateMissionInput, UpdateMissionInput } from '@types';
+import type { Mission } from '@/types';
+import type { CreateMissionInput, UpdateMissionInput } from '@/types/supabase';
 
 export const missionsApi = {
   async getAll(): Promise<Mission[]> {
-    const { data, error } = await supabase
+    const client = supabase.getClient();
+    const { data, error } = await client
       .from('missions')
       .select('*')
       .order('created_at', { ascending: false });
@@ -14,7 +16,8 @@ export const missionsApi = {
   },
 
   async getById(id: string): Promise<Mission | null> {
-    const { data, error } = await supabase
+    const client = supabase.getClient();
+    const { data, error } = await client
       .from('missions')
       .select('*')
       .eq('id', id)
@@ -25,7 +28,8 @@ export const missionsApi = {
   },
 
   async create(input: CreateMissionInput): Promise<Mission> {
-    const { data, error } = await supabase
+    const client = supabase.getClient();
+    const { data, error } = await client
       .from('missions')
       .insert(input)
       .select()
@@ -36,7 +40,8 @@ export const missionsApi = {
   },
 
   async update(id: string, input: UpdateMissionInput): Promise<Mission> {
-    const { data, error } = await supabase
+    const client = supabase.getClient();
+    const { data, error } = await client
       .from('missions')
       .update({ ...input, updated_at: new Date().toISOString() })
       .eq('id', id)
@@ -48,7 +53,8 @@ export const missionsApi = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase.from('missions').delete().eq('id', id);
+    const client = supabase.getClient();
+    const { error } = await client.from('missions').delete().eq('id', id);
     if (error) throw error;
   },
 };

@@ -59,9 +59,11 @@ export function useToast(duration: number = DEFAULT_DURATION): UseToastReturn {
       // Remove oldest toast if at max
       const newToasts = [...prev, newToast];
       if (newToasts.length > MAX_TOASTS) {
-        const [oldest, ...rest] = newToasts;
-        removeToast(oldest.id);
-        return rest;
+        const oldest = newToasts[0];
+        if (oldest) {
+          removeToast(oldest.id);
+        }
+        return newToasts.slice(1);
       }
       return newToasts;
     });

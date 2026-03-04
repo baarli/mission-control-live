@@ -22,7 +22,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   onAction,
 }) => {
   return (
-    <GlassCard className={styles.container} hover={false}>
+    <GlassCard className={styles.container} hoverable={false}>
       <div className={styles.icon} aria-hidden="true">
         {icon}
       </div>

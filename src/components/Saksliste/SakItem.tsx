@@ -37,28 +37,28 @@ export const SakItem: React.FC<SakItemProps> = ({
     setIsExpanded(prev => !prev);
   }, []);
   
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     draft: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
     pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
     approved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
     rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
   };
   
-  const statusLabels = {
+  const statusLabels: Record<string, string> = {
     draft: 'Utkast',
     pending: 'Venter',
     approved: 'Godkjent',
     rejected: 'Avvist',
   };
   
-  const priorityColors = {
+  const priorityColors: Record<string, string> = {
     low: 'text-blue-600 dark:text-blue-400',
     medium: 'text-yellow-600 dark:text-yellow-400',
     high: 'text-orange-600 dark:text-orange-400',
     critical: 'text-red-600 dark:text-red-400',
   };
   
-  const priorityLabels = {
+  const priorityLabels: Record<string, string> = {
     low: 'Lav',
     medium: 'Medium',
     high: 'Høy',
@@ -80,11 +80,11 @@ export const SakItem: React.FC<SakItemProps> = ({
             <span 
               className={cn(
                 'px-2 py-0.5 rounded-full text-xs font-medium',
-                statusColors[sak.status]
+                sak.status ? statusColors[sak.status] ?? '' : ''
               )}
               data-testid="sak-status"
             >
-              {statusLabels[sak.status]}
+              {sak.status ? statusLabels[sak.status] ?? sak.status : ''}
             </span>
           </div>
           
@@ -100,7 +100,7 @@ export const SakItem: React.FC<SakItemProps> = ({
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              {timeAgo(sak.createdAt)}
+              {timeAgo(sak.created_at)}
             </span>
             
             {sak.assignee && (
@@ -108,15 +108,15 @@ export const SakItem: React.FC<SakItemProps> = ({
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                {sak.assignee.name}
+                {sak.assignee}
               </span>
             )}
             
-            <span className={cn('flex items-center gap-1 font-medium', priorityColors[sak.priority])}>
+            <span className={cn('flex items-center gap-1 font-medium', sak.priority ? priorityColors[sak.priority] ?? '' : '')}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              {priorityLabels[sak.priority]}
+              {sak.priority ? priorityLabels[sak.priority] ?? sak.priority : ''}
             </span>
             
             {sak.entertainmentScore !== undefined && (
@@ -132,7 +132,7 @@ export const SakItem: React.FC<SakItemProps> = ({
             )}
           </div>
           
-          {sak.tags.length > 0 && (
+          {sak.tags && sak.tags.length > 0 && (
             <div className="mt-3 flex gap-2 flex-wrap">
               {sak.tags.map(tag => (
                 <span 
@@ -193,7 +193,7 @@ export const SakItem: React.FC<SakItemProps> = ({
             </div>
           )}
           
-          {sak.description.length > 100 && (
+          {sak.description && sak.description.length > 100 && (
             <button
               onClick={handleToggleExpand}
               className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"

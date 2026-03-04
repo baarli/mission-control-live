@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase as supabaseService } from '@/lib/supabase';
 import { useAgentStore } from '@stores/agentStore';
 import { useToastStore } from '@stores/toastStore';
 import type { 
@@ -9,53 +9,57 @@ import type {
 class AgentService {
   private subscriptions: (() => void)[] = [];
   
+  private get client() {
+    return supabaseService.getClient();
+  }
+  
   // Initialize realtime subscriptions
   async initRealtime() {
     const store = useAgentStore.getState();
     store.setIsConnected(true);
     
     // Subscribe to agent_commands
-    const commandsSub = supabase
+    const commandsSub = this.client
       .channel('agent_commands')
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'agent_commands' },
-        (payload) => this.handleCommandChange(payload)
+        (payload: any) => this.handleCommandChange(payload)
       )
       .subscribe();
     
     // Subscribe to agent_responses
-    const responsesSub = supabase
+    const responsesSub = this.client
       .channel('agent_responses')
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'agent_responses' },
-        (payload) => this.handleResponseInsert(payload)
+        (payload: any) => this.handleResponseInsert(payload)
       )
       .subscribe();
     
     // Subscribe to approval_requests
-    const approvalsSub = supabase
+    const approvalsSub = this.client
       .channel('approval_requests')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'approval_requests' },
-        (payload) => this.handleApprovalChange(payload)
+        (payload: any) => this.handleApprovalChange(payload)
       )
       .subscribe();
     
     // Subscribe to system_status
-    const statusSub = supabase
+    const statusSub = this.client
       .channel('system_status')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'system_status' },
-        (payload) => this.handleStatusChange(payload)
+        (payload: any) => this.handleStatusChange(payload)
       )
       .subscribe();
     
     // Subscribe to activity_log
-    const logsSub = supabase
+    const logsSub = this.client
       .channel('activity_log')
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'activity_log' },
-        (payload) => this.handleLogInsert(payload)
+        (payload: any) => this.handleLogInsert(payload)
       )
       .subscribe();
     
@@ -80,18 +84,18 @@ class AgentService {
     
     try {
       // Fetch commands
-      const { data: commands } = await supabase
+      const { data: commands } = await this.client
         .from('agent_commands')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
       
       if (commands) {
-        commands.forEach(cmd => store.addCommand(cmd));
+        commands.forEach((cmd: any) => store.addCommand(cmd));
       }
       
       // Fetch pending approvals
-      const { data: approvals } = await supabase
+      const { data: approvals } = await this.client
         .from('approval_requests')
         .select('*')
         .eq('status', 'pending')
@@ -102,7 +106,7 @@ class AgentService {
       }
       
       // Fetch system status
-      const { data: status } = await supabase
+      const { data: status } = await this.client
         .from('system_status')
         .select('*')
         .order('last_check', { ascending: false });
@@ -112,7 +116,7 @@ class AgentService {
       }
       
       // Fetch activity logs
-      const { data: logs } = await supabase
+      const { data: logs } = await this.client
         .from('activity_log')
         .select('*')
         .order('created_at', { ascending: false })
@@ -135,7 +139,7 @@ class AgentService {
     data: Record<string, unknown>,
     priority: Priority = 'medium'
   ): Promise<string | null> {
-    const { data: result, error } = await supabase
+    const { data: result, error } = await this.client
       .from('agent_commands')
       .insert({
         command_type: commandType,
@@ -158,7 +162,7 @@ class AgentService {
   
   // Respond to approval request
   async respondToApproval(id: string, decision: 'approved' | 'rejected'): Promise<boolean> {
-    const { error } = await supabase
+    const { error } = await this.client
       .from('approval_requests')
       .update({ 
         status: decision,
@@ -228,10 +232,10 @@ class AgentService {
   private heartbeatInterval?: number;
   private startHeartbeat() {
     this.heartbeatInterval = window.setInterval(() => {
-      supabase.from('system_status')
+      this.client.from('system_status')
         .select('count')
         .limit(1)
-        .then(({ error }) => {
+        .then(({ error }: { error: any }) => {
           useAgentStore.getState().setIsConnected(!error);
         });
     }, 30000);

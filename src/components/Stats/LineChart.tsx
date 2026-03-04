@@ -72,7 +72,7 @@ const LineChart: React.FC<LineChartProps> = ({
       if (i === 0) return `M ${point.x} ${point.y}`;
       
       // Smooth curve using cubic bezier
-      const prev = points[i - 1];
+      const prev = points[i - 1]!;
       const cpx1 = prev.x + (point.x - prev.x) / 3;
       const cpy1 = prev.y;
       const cpx2 = prev.x + (2 * (point.x - prev.x)) / 3;
@@ -82,7 +82,9 @@ const LineChart: React.FC<LineChartProps> = ({
     }, '');
 
     // Generate area path
-    const areaD = `${pathD} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`;
+    const lastPoint = points[points.length - 1]!;
+    const firstPoint = points[0]!;
+    const areaD = `${pathD} L ${lastPoint.x} ${padding.top + chartHeight} L ${firstPoint.x} ${padding.top + chartHeight} Z`;
 
     return { minValue, maxValue, yScale, xScale, points, pathD, areaD };
   }, [data, chartWidth, chartHeight]);
@@ -105,7 +107,10 @@ const LineChart: React.FC<LineChartProps> = ({
 
     if (closestDistance < 50) {
       setHoveredIndex(closestIndex);
-      setTooltipPos({ x: points[closestIndex].x, y: points[closestIndex].y });
+      const closest = points[closestIndex];
+      if (closest) {
+        setTooltipPos({ x: closest.x, y: closest.y });
+      }
     } else {
       setHoveredIndex(null);
       setTooltipPos(null);
@@ -209,7 +214,7 @@ const LineChart: React.FC<LineChartProps> = ({
       </svg>
 
       {/* Tooltip */}
-      {tooltipPos && hoveredIndex !== null && (
+      {tooltipPos && hoveredIndex !== null && points[hoveredIndex] && (
         <div
           className={styles.tooltip}
           style={{
@@ -218,10 +223,10 @@ const LineChart: React.FC<LineChartProps> = ({
           }}
         >
           <div className={styles.tooltipValue}>
-            {yAxisFormatter(points[hoveredIndex].value)}
+            {yAxisFormatter(points[hoveredIndex]!.value)}
           </div>
           <div className={styles.tooltipLabel}>
-            {points[hoveredIndex].label}
+            {points[hoveredIndex]!.label}
           </div>
         </div>
       )}

@@ -437,4 +437,4 @@ export const brave = new BraveService();
 /**
  * Re-export utilities and types
  */
-export { BraveApiError, getConfig, enrichQuery, parseResponse };
+export { getConfig, enrichQuery, parseResponse };

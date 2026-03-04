@@ -266,8 +266,9 @@ export const useStatsStore = create<StatsState>()(
           const avgNielsenValue = totalNielsenPoints > 0
             ? nielsenData.reduce((sum, m) => sum + m.value, 0) / totalNielsenPoints
             : 0;
-          const topPodcast = podcastData.length > 0
-            ? podcastData.reduce((top, current) => (current.rank < top.rank ? current : top), podcastData[0])
+          const first = podcastData[0];
+          const topPodcast: PodcastMetric | null = podcastData.length > 0 && first
+            ? podcastData.reduce((top, current) => (current.rank < top.rank ? current : top), first)
             : null;
           
           return {

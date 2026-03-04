@@ -8,30 +8,24 @@ import { useAuthStore } from '@stores/authStore';
 export function useAuth() {
   const {
     user,
-    session,
+    isAuthenticated,
     isLoading,
-    error,
-    signIn,
-    signOut,
-    initialize,
-    setError,
+    login,
+    logout,
+    checkAuth,
   } = useAuthStore();
 
   // Initialize auth on mount
   useEffect(() => {
-    initialize();
-  }, [initialize]);
-
-  const isAuthenticated = !!session && !!user;
+    checkAuth();
+  }, [checkAuth]);
 
   return {
     user,
-    session,
-    isLoading,
-    error,
     isAuthenticated,
-    signIn,
-    signOut,
-    clearError: () => setError(null),
+    isLoading,
+    login,
+    logout,
+    checkAuth,
   };
 }
