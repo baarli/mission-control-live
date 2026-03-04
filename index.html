@@ -222,7 +222,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
     <h1>Mission Control</h1>
     <p style="color: var(--muted); margin-bottom: 2rem;">NRJ Morgen Dashboard</p>
     <input type="password" id="password-input" placeholder="Passord" onkeypress="if(event.key=='Enter')doLogin()">
-    <button class="full" onclick="doLogin()" id="login-btn">Logg inn</button>
+    <button class="full" onclick="console.log('Login clicked'); doLogin(); return false;" id="login-btn">Logg inn</button>
     <p id="login-error" style="color: var(--c3); display: none; margin-top: 1rem;">Feil passord</p>
   </div>
 </div>
@@ -412,7 +412,10 @@ function doLogin() {
   const btn = document.getElementById('login-btn');
   const input = document.getElementById('password-input');
   
-  if (!btn || !input) return;
+  if (!btn || !input) {
+    console.error('Login elements not found');
+    return;
+  }
   
   // Set loading state
   btn.classList.add('btn-loading');
@@ -422,11 +425,20 @@ function doLogin() {
   
   if (password === P) {
     localStorage.setItem('mc_auth', 'true');
-    showToast('✅ Logget inn!', 'success');
+    // Try to show toast, but don't let it break login
+    try {
+      showToast('✅ Logget inn!', 'success');
+    } catch (e) {
+      console.log('Toast failed, but login succeeded');
+    }
     showApp();
   } else {
     document.getElementById('login-error').style.display = 'block';
-    showToast('❌ Feil passord', 'error');
+    try {
+      showToast('❌ Feil passord', 'error');
+    } catch (e) {
+      console.log('Toast failed');
+    }
     // Remove loading state on error
     btn.classList.remove('btn-loading');
     btn.disabled = false;
