@@ -46,14 +46,8 @@
             text-align: center;
             border: 1px solid var(--border-color);
         }
-        .login-box h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .login-box p {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
+        .login-box h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .login-box p { color: var(--text-muted); margin-bottom: 1.5rem; }
         .login-box input {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -73,11 +67,8 @@
             border-radius: 0.5rem;
             font-size: 1rem;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
-        .login-box button:hover {
-            opacity: 0.9;
-        }
+        .login-box button:hover { opacity: 0.9; }
         .app { display: none; }
         .app.authenticated { display: block; }
         .header {
@@ -87,6 +78,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         .brand {
             display: flex;
@@ -106,6 +99,7 @@
         .nav {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
         .nav button {
             padding: 0.5rem 1rem;
@@ -126,12 +120,8 @@
             margin: 0 auto;
             padding: 2rem;
         }
-        .section {
-            display: none;
-        }
-        .section.active {
-            display: block;
-        }
+        .section { display: none; }
+        .section.active { display: block; }
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -156,12 +146,14 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 0.75rem;
-            padding: 1rem;
+            padding: 1.5rem;
+            text-align: center;
         }
         .stat-value {
-            font-size: 1.75rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--color-primary);
+            margin-bottom: 0.5rem;
         }
         .stat-label {
             color: var(--text-muted);
@@ -175,6 +167,10 @@
             border-radius: 0.5rem;
             margin-bottom: 0.75rem;
             border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .sak-item:hover {
+            border-color: var(--color-primary);
         }
         .sak-number {
             width: 32px;
@@ -194,20 +190,40 @@
         }
         .sak-title {
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
         .sak-meta {
             display: flex;
             gap: 0.75rem;
             font-size: 0.875rem;
             color: var(--text-muted);
+            flex-wrap: wrap;
+            align-items: center;
         }
         .sak-category {
-            padding: 0.125rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             background: var(--color-primary);
             border-radius: 0.25rem;
             font-size: 0.75rem;
             color: white;
+            font-weight: 500;
+        }
+        .sak-category.reality { background: #f59e0b; }
+        .sak-category.kjendis { background: #ec4899; }
+        .sak-category.film { background: #3b82f6; }
+        .sak-category.musikk { background: #10b981; }
+        .sak-category.internasjonalt { background: #8b5cf6; }
+        .sak-link {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        .sak-link:hover { text-decoration: underline; }
+        .sak-notes {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
         .loading {
             text-align: center;
@@ -241,6 +257,28 @@
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 1rem;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .debug-info {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            color: var(--text-muted);
+        }
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -292,18 +330,35 @@
                         <div class="stat-label">Podcast ranking</div>
                     </div>
                 </div>
+                
                 <div class="card">
                     <h2>📊 System Status</h2>
-                    <div id="system-status">Laster...</div>
+                    <div id="system-status">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Kobler til Supabase...</p>
+                        </div>
+                    </div>
+                    <div class="debug-info" id="debug-info" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <h2>🔄 Hurtighandlinger</h2>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn" onclick="refreshAll()">🔄 Oppdater alle data</button>
+                        <button class="btn" onclick="testConnection()">🔌 Test tilkobling</button>
+                    </div>
                 </div>
             </section>
 
             <!-- Saksliste Section -->
             <section class="section" id="saksliste">
                 <div class="card">
-                    <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                         <span>📋 Saksliste</span>
-                        <button class="btn" onclick="refreshSaker()">🔄 Oppdater</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn" onclick="loadSaker()">🔄 Oppdater</button>
+                        </div>
                     </h2>
                     <div id="saksliste-content">
                         <div class="loading">
@@ -336,6 +391,16 @@
         const TENANT_ID = 'a0000000-0000-0000-0000-000000000001';
         const PASSWORD = 'kloakontroll2026';
 
+        // Debug logging
+        function log(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            const debugEl = document.getElementById('debug-info');
+            if (debugEl) {
+                debugEl.style.display = 'block';
+                debugEl.innerHTML += `<div style="color: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#94a3b8'};">${new Date().toLocaleTimeString()}: ${message}</div>`;
+            }
+        }
+
         // Sjekk om allerede logget inn
         if (localStorage.getItem('mc_authenticated') === 'true') {
             showApp();
@@ -359,6 +424,7 @@
         function showApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app').classList.add('authenticated');
+            log('App vist, starter init...');
             initApp();
         }
 
@@ -372,7 +438,7 @@
             if (sectionId === 'podcast') loadPodcast();
         }
 
-        // Supabase Client
+        // Supabase Client med bedre feilhåndtering
         async function supabaseRequest(endpoint, options = {}) {
             const url = `${SUPABASE_URL}/rest/v1${endpoint}`;
             const headers = {
@@ -382,46 +448,103 @@
                 ...options.headers
             };
             
-            const response = await fetch(url, { ...options, headers });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
+            log(`Request: ${url}`);
+            
+            try {
+                const response = await fetch(url, { ...options, headers });
+                log(`Response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                log(`Response data: ${JSON.stringify(data).substring(0, 200)}...`);
+                return data;
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+                throw error;
+            }
         }
 
         async function initApp() {
+            log('Starter initApp...');
             await loadDashboard();
         }
 
         async function loadDashboard() {
+            log('Laster dashboard...');
+            const statusEl = document.getElementById('system-status');
+            
             try {
                 // Hent dagens saker
                 const today = new Date().toISOString().split('T')[0];
+                log(`Henter saker for dato: ${today}`);
+                
                 const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}`);
+                log(`Fant ${saker.length} saker`, 'success');
                 document.getElementById('stat-saker').textContent = saker.length;
 
                 // Hent stats
+                log('Henter radio stats...');
                 const stats = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.STATS&order=created_at.desc&limit=1`);
+                
+                log('Henter podcast stats...');
                 const podcast = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&category=eq.PODCAST_RANKING&order=created_at.desc&limit=1`);
                 
                 if (stats[0] && stats[0].link_metadata) {
-                    const meta = JSON.parse(stats[0].link_metadata);
-                    document.getElementById('stat-radio').textContent = meta.dailyListeners ? (meta.dailyListeners / 1000).toFixed(1) + 'k' : '-';
+                    try {
+                        const meta = typeof stats[0].link_metadata === 'string' 
+                            ? JSON.parse(stats[0].link_metadata) 
+                            : stats[0].link_metadata;
+                        const listeners = meta.dailyListeners || meta.daily_listeners || 0;
+                        document.getElementById('stat-radio').textContent = listeners ? (listeners / 1000).toFixed(1) + 'k' : '-';
+                        log(`Radio lyttere: ${listeners}`, 'success');
+                    } catch (e) {
+                        log(`Kunne ikke parse radio stats: ${e.message}`, 'error');
+                        document.getElementById('stat-radio').textContent = '-';
+                    }
+                } else {
+                    log('Ingen radio stats funnet', 'warning');
+                    document.getElementById('stat-radio').textContent = '-';
                 }
                 
                 if (podcast[0] && podcast[0].link_metadata) {
-                    const meta = JSON.parse(podcast[0].link_metadata);
-                    document.getElementById('stat-podcast').textContent = '#' + (meta.ranking || '-');
+                    try {
+                        const meta = typeof podcast[0].link_metadata === 'string'
+                            ? JSON.parse(podcast[0].link_metadata)
+                            : podcast[0].link_metadata;
+                        const ranking = meta.ranking || meta.podcast_ranking || 0;
+                        document.getElementById('stat-podcast').textContent = ranking ? '#' + ranking : '-';
+                        log(`Podcast ranking: ${ranking}`, 'success');
+                    } catch (e) {
+                        log(`Kunne ikke parse podcast stats: ${e.message}`, 'error');
+                        document.getElementById('stat-podcast').textContent = '-';
+                    }
+                } else {
+                    log('Ingen podcast stats funnet', 'warning');
+                    document.getElementById('stat-podcast').textContent = '-';
                 }
 
-                document.getElementById('system-status').innerHTML = `
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <span style="color: var(--color-success);">✅ Supabase tilkoblet</span>
-                        <span style="color: var(--color-success);">✅ ${saker.length} saker i dag</span>
-                        <span style="color: var(--color-success);">✅ Dashboard aktivt</span>
+                statusEl.innerHTML = `
+                    <div class="success">
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                            <span>✅ Supabase tilkoblet</span>
+                            <span>✅ ${saker.length} saker i dag</span>
+                            <span>✅ Dashboard aktivt</span>
+                        </div>
                     </div>
                 `;
+                log('Dashboard lastet', 'success');
             } catch (error) {
-                document.getElementById('system-status').innerHTML = `
-                    <div class="error">❌ Feil: ${error.message}</div>
+                log(`Dashboard feil: ${error.message}`, 'error');
+                statusEl.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Feil ved lasting av data:</strong><br>
+                        ${error.message}<br><br>
+                        <button class="btn" onclick="loadDashboard()">Prøv igjen</button>
+                    </div>
                 `;
             }
         }
@@ -432,62 +555,141 @@
             
             try {
                 const today = new Date().toISOString().split('T')[0];
+                log(`Laster saker for ${today}...`);
+                
                 const saker = await supabaseRequest(`/agenda_items?tenant_id=eq.${TENANT_ID}&show_date=eq.${today}&order=order_index.asc`);
+                log(`Fant ${saker.length} saker`, 'success');
                 
                 if (saker.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Ingen saker for i dag.</p>';
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ingen saker for i dag</p>
+                            <p>Kjør Morning Routine for å legge til saker.</p>
+                        </div>
+                    `;
                     return;
                 }
 
-                container.innerHTML = saker.map((sak, i) => `
-                    <div class="sak-item">
-                        <div class="sak-number">${i + 1}</div>
-                        <div class="sak-content">
-                            <div class="sak-title">${sak.title}</div>
-                            <div class="sak-meta">
-                                <span class="sak-category">${sak.category || 'TALK'}</span>
-                                ${sak.link_url ? `<a href="${sak.link_url}" target="_blank" style="color: var(--color-primary);">🔗 Lenke</a>` : ''}
+                container.innerHTML = saker.map((sak, i) => {
+                    const categoryClass = getCategoryClass(sak.category);
+                    let notes = '';
+                    if (sak.notes) {
+                        // Fjern kilde-linjen fra visning
+                        notes = sak.notes.split('\n\n')[0];
+                        if (notes.length > 150) notes = notes.substring(0, 150) + '...';
+                    }
+                    
+                    return `
+                        <div class="sak-item">
+                            <div class="sak-number">${i + 1}</div>
+                            <div class="sak-content">
+                                <div class="sak-title">${escapeHtml(sak.title)}</div>
+                                <div class="sak-meta">
+                                    <span class="sak-category ${categoryClass}">${sak.category || 'TALK'}</span>
+                                    ${sak.link_url ? `<a href="${escapeHtml(sak.link_url)}" target="_blank" class="sak-link">🔗 Les mer</a>` : ''}
+                                </div>
+                                ${notes ? `<div class="sak-notes">${escapeHtml(notes)}</div>` : ''}
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
+                
+                log('Saksliste rendret', 'success');
             } catch (error) {
-                container.innerHTML = `<div class="error">❌ Kunne ikke laste saker: ${error.message}</div>`;
+                log(`Saksliste feil: ${error.message}`, 'error');
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Kunne ikke laste saker:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
             }
+        }
+
+        function getCategoryClass(category) {
+            const map = {
+                'REALITY_TV': 'reality',
+                'KJENDIS_DRAMA': 'kjendis',
+                'FILM_TV': 'film',
+                'MUSIKK': 'musikk',
+                'INTERNASJONALT': 'internasjonalt'
+            };
+            return map[category] || '';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         async function loadPodcast() {
             const container = document.getElementById('podcast-content');
             
             try {
-                // Prøv å hente fra podcast_episodes
+                log('Laster podcast episoder...');
                 const episodes = await supabaseRequest('/podcast_episodes?order=published_at.desc&limit=10');
+                log(`Fant ${episodes.length} episoder`, 'success');
                 
                 if (episodes.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Ingen episoder funnet.</p>';
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <p>Ingen episoder funnet i databasen.</p>
+                        </div>
+                    `;
                     return;
                 }
 
                 container.innerHTML = episodes.map(ep => `
                     <div class="sak-item">
                         <div class="sak-content">
-                            <div class="sak-title">${ep.title}</div>
-                            <div class="sak-meta">${ep.published_at ? new Date(ep.published_at).toLocaleDateString('nb-NO') : ''}</div>
+                            <div class="sak-title">${escapeHtml(ep.title)}</div>
+                            <div class="sak-meta">
+                                ${ep.published_at ? new Date(ep.published_at).toLocaleDateString('nb-NO') : ''}
+                                ${ep.duration ? `• ${ep.duration}` : ''}
+                            </div>
                         </div>
                     </div>
                 `).join('');
             } catch (error) {
-                container.innerHTML = `<div class="error">❌ Kunne ikke laste episoder: ${error.message}</div>`;
+                log(`Podcast feil: ${error.message}`, 'error');
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Kunne ikke laste episoder:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
             }
         }
 
-        function refreshSaker() {
-            loadSaker();
+        async function testConnection() {
+            log('Tester tilkobling...');
+            try {
+                const result = await supabaseRequest('/agenda_items?tenant_id=eq.' + TENANT_ID + '&limit=1');
+                alert(`✅ Tilkobling OK! Fant ${result.length} test-rad.`);
+                log('Tilkobling OK', 'success');
+            } catch (error) {
+                alert(`❌ Tilkobling feilet: ${error.message}`);
+                log(`Tilkobling feilet: ${error.message}`, 'error');
+            }
         }
 
-        // Auto-refresh hver 5. minutt
+        function refreshAll() {
+            log('Oppdaterer alle data...');
+            loadDashboard();
+            if (document.getElementById('saksliste').classList.contains('active')) {
+                loadSaker();
+            }
+            if (document.getElementById('podcast').classList.contains('active')) {
+                loadPodcast();
+            }
+        }
+
+        // Auto-refresh hvert 5. minutt
         setInterval(() => {
             if (document.getElementById('app').classList.contains('authenticated')) {
+                log('Auto-refresh...');
                 loadDashboard();
             }
         }, 300000);
