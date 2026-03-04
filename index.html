@@ -336,6 +336,92 @@ input:focus, select:focus, textarea:focus {
   animation: countUp var(--transition-normal) var(--easing-default);
 }
 
+
+/* ===== FASE 4: CHARTS & GRAPHS ===== */
+.chart-container {
+  width: 100%;
+  height: 250px;
+  margin: 1rem 0;
+  position: relative;
+}
+.chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.chart-line {
+  fill: none;
+  stroke: var(--c1);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.chart-area {
+  fill: rgba(99, 102, 241, 0.1);
+  stroke: none;
+}
+.chart-grid {
+  stroke: var(--b);
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+}
+.chart-point {
+  fill: var(--c1);
+  stroke: var(--bg);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: r 0.2s;
+}
+.chart-point:hover {
+  r: 6;
+}
+.chart-label {
+  font-size: 10px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+.chart-tooltip {
+  position: absolute;
+  background: var(--bg2);
+  border: 1px solid var(--b);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+.chart-tooltip.visible {
+  opacity: 1;
+}
+
+/* Export buttons */
+.export-btn {
+  background: transparent;
+  border: 1px solid var(--b);
+  color: var(--muted);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+.export-btn:hover {
+  border-color: var(--c1);
+  color: var(--tx);
+}
+
+/* Autosave indicator */
+.save-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: 1rem;
+}
+.save-indicator.saved { color: var(--c2); }
+.save-indicator.saving { color: var(--c4); }
+.save-indicator.unsaved { color: var(--c3); }
 /* ===== FASE 2: INLINE EDITING ===== */
 .sak-item {
   transition: all 0.2s ease;
@@ -561,8 +647,22 @@ input:focus, select:focus, textarea:focus {
 
     <!-- Stats -->
     <section class="section" id="stats">
-      <div class="card"><h2>📻 Radio (Nielsen)</h2><div id="radio-stats">Laster...</div></div>
-      <div class="card"><h2>🎙️ Podcast (Podtoppen)</h2><div id="podcast-stats">Laster...</div></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h2>📻 Radio (Nielsen)</h2>
+          <button onclick="exportStats('radio')" class="export-btn">📊 Eksport CSV</button>
+        </div>
+        <div id="radio-chart" style="margin-bottom:1rem;"></div>
+        <div id="radio-stats">Laster...</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <h2>🎙️ Podcast (Podtoppen)</h2>
+          <button onclick="exportStats('podcast')" class="export-btn">📊 Eksport CSV</button>
+        </div>
+        <div id="podcast-chart" style="margin-bottom:1rem;"></div>
+        <div id="podcast-stats">Laster...</div>
+      </div>
     </section>
   </main>
 </div>
@@ -962,6 +1062,8 @@ async function loadStats() {
     document.getElementById('radio-stats').innerHTML = r.length > 0 ? r.map(x => '<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke ' + x.week_number + ', ' + x.year + '</strong>: ' + x.value.toLocaleString() + ' lyttere</div>').join('') : '<p style="color:var(--muted)">Ingen data</p>';
     const p = await sup('/podtoppen_weekly_data?podcast_title=eq.NRJ%20Morgen%20Podkast&order=created_at.desc&limit=5');
     document.getElementById('podcast-stats').innerHTML = p.length > 0 ? p.map(x => '<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke ' + x.week_number + '</strong>: Rank #' + x.rank + ' • ' + (x.unique_units || 0).toLocaleString() + ' unike</div>').join('') : '<p style="color:var(--muted)">Ingen data</p>';
+    // FASE 4: Load charts
+    loadCharts();
   } catch (e) {
     document.getElementById('radio-stats').innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
     showToast('Feil ved lasting av statistikk', 'error');
@@ -970,6 +1072,119 @@ async function loadStats() {
 
 // Brave News API Search
 async function doSearch() {
+
+// ===== FASE 4: CHART FUNCTIONS =====
+function renderLineChart(data, containerId, color, label) {
+  const container = document.getElementById(containerId);
+  if (!container || data.length === 0) return;
+  
+  const width = 800;
+  const height = 250;
+  const padding = { top: 20, right: 30, bottom: 40, left: 60 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  
+  const values = data.map(d => d.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  
+  // Create points
+  const points = data.map((d, i) => {
+    const x = padding.left + (i / (data.length - 1)) * chartWidth;
+    const y = padding.top + chartHeight - ((d.value - min) / range) * chartHeight;
+    return { x, y, value: d.value, label: d.label };
+  });
+  
+  // Create path
+  const pathData = points.map((p, i) => (i === 0 ? "M" : "L") + p.x + "," + p.y).join(" ");
+  
+  // Create area path
+  const areaData = pathData + " L" + points[points.length-1].x + "," + (padding.top + chartHeight) + 
+                   " L" + points[0].x + "," + (padding.top + chartHeight) + " Z";
+  
+  // Grid lines
+  const gridLines = [];
+  for (let i = 0; i <= 4; i++) {
+    const y = padding.top + (i / 4) * chartHeight;
+    gridLines.push(`<line x1="${padding.left}" y1="${y}" x2="${width - padding.right}" y2="${y}" class="chart-grid"/>`);
+  }
+  
+  // Points
+  const circles = points.map((p, i) => 
+    `u003ccircle cx="${p.x}" cy="${p.y}" r="4" class="chart-point" data-value="${p.value}" data-label="${p.label}"/>`
+  ).join("");
+  
+  // Labels
+  const xLabels = points.map((p, i) => 
+    `u003ctext x="${p.x}" y="${height - 10}" class="chart-label">${p.label}u003c/text>`
+  ).join("");
+  
+  // Y-axis labels
+  const yLabels = [];
+  for (let i = 0; i <= 4; i++) {
+    const value = Math.round(min + (1 - i / 4) * range);
+    const y = padding.top + (i / 4) * chartHeight;
+    yLabels.push(`<text x="${padding.left - 10}" y="${y + 4}" class="chart-label" text-anchor="end">${value.toLocaleString()}u003c/text>`);
+  }
+  
+  container.innerHTML = `
+    <div class="chart-container">
+      <svg viewBox="0 0 ${width} ${height}" class="chart-svg" preserveAspectRatio="xMidYMid meet">
+        ${gridLines.join("")}
+        <path d="${areaData}" class="chart-area" fill="${color}" fill-opacity="0.1"/>
+        <path d="${pathData}" class="chart-line" stroke="${color}"/>
+        ${circles}
+        ${xLabels}
+        ${yLabels.join("")}
+      </svg>
+      <div class="chart-tooltip" id="${containerId}-tooltip">u003c/div>
+    </div>
+  `;
+  
+  // Add hover effects
+  const tooltip = document.getElementById(containerId + "-tooltip");
+  points.forEach((p, i) => {
+    const point = container.querySelectorAll(".chart-point")[i];
+    if (point) {
+      point.addEventListener("mouseenter", () => {
+        tooltip.innerHTML = `u003cstrong>${p.label}u003c/strong>u003cbr>${label}: ${p.value.toLocaleString()}`;
+        tooltip.style.left = (p.x / width * 100) + "%";
+        tooltip.style.top = (p.y / height * 100) + "%";
+        tooltip.classList.add("visible");
+      });
+      point.addEventListener("mouseleave", () => {
+        tooltip.classList.remove("visible");
+      });
+    }
+  });
+}
+
+async function loadCharts() {
+  try {
+    // Radio chart
+    const radioData = await sup("/nielsen_weekly_metrics?channel=eq.NRJu0026order=created_at.ascu0026limit=12");
+    if (radioData.length > 1) {
+      const rData = radioData.map(d => ({
+        value: d.value,
+        label: "U" + d.week_number
+      }));
+      renderLineChart(rData, "radio-chart", "#6366f1", "Lyttere");
+    }
+    
+    // Podcast chart
+    const podcastData = await sup("/podtoppen_weekly_data?podcast_title=eq.NRJ%20Morgen%20Podkastu0026order=created_at.ascu0026limit=12");
+    if (podcastData.length > 1) {
+      const pData = podcastData.map(d => ({
+        value: d.rank,
+        label: "U" + d.week_number
+      }));
+      renderLineChart(pData, "podcast-chart", "#10b981", "Ranking");
+    }
+  } catch (e) {
+    console.error("Chart error:", e);
+  }
+}
   const query = document.getElementById('search-query').value.trim();
   const category = document.getElementById('search-category').value;
   const freshness = document.getElementById('search-freshness').value;
