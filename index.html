@@ -378,72 +378,6 @@ input:focus, select:focus, textarea:focus {
 .chart-label {
   font-size: 10px;
 
-/* ===== FASE 5: ONBOARDING & A11Y ===== */
-.onboarding-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.onboarding-overlay.active {
-  opacity: 1;
-}
-.onboarding-modal {
-  background: var(--bg2);
-  border: 1px solid var(--b);
-  border-radius: 1rem;
-  padding: 2rem;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-  transform: scale(0.9);
-  transition: transform 0.3s;
-}
-.onboarding-overlay.active .onboarding-modal {
-  transform: scale(1);
-}
-.onboarding-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-.onboarding-progress {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 1.5rem 0;
-}
-.onboarding-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--b);
-  transition: background 0.2s;
-}
-.onboarding-dot.active {
-  background: var(--c1);
-}
-.onboarding-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-.onboarding-highlight {
-  position: absolute;
-  border: 2px solid var(--c1);
-  border-radius: 0.5rem;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-  z-index: 9998;
-  pointer-events: none;
-  transition: all 0.3s;
-}
-
-/* Accessibility improvements */
-.sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -611,28 +545,6 @@ input:focus, select:focus, textarea:focus {
 <div class="toast-container" id="toast-container"></div>
 
 
-<!-- Onboarding Modal (FASE 5) -->
-<div class="onboarding-overlay" id="onboarding-overlay">
-  <div class="onboarding-modal">
-    <div class="onboarding-icon" id="onboarding-icon">🎛️</div>
-    <h2 id="onboarding-title">Velkommen til Mission Control!</h2>
-    <p id="onboarding-text" style="color: var(--muted); margin: 1rem 0;">
-      Din kommandosentral for NRJ Morgen. La oss vise deg rundt.
-    </p>
-    <div class="onboarding-progress" id="onboarding-progress">
-      <div class="onboarding-dot active"></div>
-      <div class="onboarding-dot"></div>
-      <div class="onboarding-dot"></div>
-      <div class="onboarding-dot"></div>
-      <div class="onboarding-dot"></div>
-    </div>
-    <div class="onboarding-actions">
-      <button onclick="prevOnboardingStep()" id="onboarding-prev" style="background: transparent; border: 1px solid var(--b);">Forrige</button>
-      <button onclick="nextOnboardingStep()" id="onboarding-next" style="background: var(--c1);">Neste →</button>
-    </div>
-    <button onclick="skipOnboarding()" style="background: transparent; border: none; color: var(--muted); margin-top: 1rem; font-size: 0.875rem;">Hopp over</button>
-  </div>
-</div>
 <!-- Keyboard Hint (Quick Win #4) -->
 <div class="keyboard-hint">
   Trykk <kbd>Ctrl</kbd> + <kbd>K</kbd> for å søke
@@ -928,7 +840,6 @@ async function initApp() {
   initTheme(); // FASE 3: Initialize theme
   await loadDashboard();
   renderSearchHistory(); // FASE 2: Load search history
-  checkOnboarding(); // FASE 5: Check if onboarding should show
 }
 
 async function loadDashboard() {
@@ -1161,98 +1072,6 @@ function updateThemeIcon(theme) {
     btn.textContent = theme === "dark" ? "🌙" : "☀️";
   }
 
-// ===== FASE 5: ONBOARDING =====
-const onboardingSteps = [
-  {
-    icon: "🎛️",
-    title: "Velkommen til Mission Control!",
-    text: "Din kommandosentral for NRJ Morgen. La oss vise deg rundt."
-  },
-  {
-    icon: "📊",
-    title: "Dashboard",
-    text: "Se oversikt over statistikk, radio-lyttere og podcast-ranking. Hold deg oppdatert!"
-  },
-  {
-    icon: "📋",
-    title: "Saksliste",
-    text: "Administrer alle saker for sendingen. Rediger, slett eller legg til nye saker."
-  },
-  {
-    icon: "🔍",
-    title: "Søk etter saker",
-    text: "Bruk Brave News API for å finne nyheter. Filtrer etter kategori og underholdningsverdi."
-  },
-  {
-    icon: "✨",
-    title: "Du er klar!",
-    text: "Mission Control er din arena. Lykke til med sendingen!"
-  }
-];
-
-let currentOnboardingStep = 0;
-
-function checkOnboarding() {
-  if (!localStorage.getItem("mc_onboarding_seen")) {
-    setTimeout(showOnboarding, 500);
-  }
-}
-
-function showOnboarding() {
-  const overlay = document.getElementById("onboarding-overlay");
-  overlay.classList.add("active");
-  updateOnboardingStep();
-}
-
-function hideOnboarding() {
-  const overlay = document.getElementById("onboarding-overlay");
-  overlay.classList.remove("active");
-}
-
-function updateOnboardingStep() {
-  const step = onboardingSteps[currentOnboardingStep];
-  document.getElementById("onboarding-icon").textContent = step.icon;
-  document.getElementById("onboarding-title").textContent = step.title;
-  document.getElementById("onboarding-text").textContent = step.text;
-  
-  // Update dots
-  const dots = document.querySelectorAll(".onboarding-dot");
-  dots.forEach((dot, i) => {
-    dot.classList.toggle("active", i === currentOnboardingStep);
-  });
-  
-  // Update buttons
-  document.getElementById("onboarding-prev").style.visibility = 
-    currentOnboardingStep === 0 ? "hidden" : "visible";
-  document.getElementById("onboarding-next").textContent = 
-    currentOnboardingStep === onboardingSteps.length - 1 ? "Fullfør ✓" : "Neste →";
-}
-
-function nextOnboardingStep() {
-  if (currentOnboardingStep < onboardingSteps.length - 1) {
-    currentOnboardingStep++;
-    updateOnboardingStep();
-  } else {
-    completeOnboarding();
-  }
-}
-
-function prevOnboardingStep() {
-  if (currentOnboardingStep > 0) {
-    currentOnboardingStep--;
-    updateOnboardingStep();
-  }
-}
-
-function skipOnboarding() {
-  completeOnboarding();
-}
-
-function completeOnboarding() {
-  localStorage.setItem("mc_onboarding_seen", "true");
-  hideOnboarding();
-  showToast("🎉 Velkommen til Mission Control!", "success");
-}
 }
 // ===== QUICK WIN #2: DELETE CONFIRMATION =====
 async function confirmDeleteSak(id) {
@@ -1274,7 +1093,9 @@ async function loadStats() {
     const p = await sup('/podtoppen_weekly_data?podcast_title=eq.NRJ%20Morgen%20Podkast&order=created_at.desc&limit=5');
     document.getElementById('podcast-stats').innerHTML = p.length > 0 ? p.map(x => '<div style="padding:1rem;background:var(--bg2);border-radius:0.5rem;margin-bottom:0.5rem;"><strong>Uke ' + x.week_number + '</strong>: Rank #' + x.rank + ' • ' + (x.unique_units || 0).toLocaleString() + ' unike</div>').join('') : '<p style="color:var(--muted)">Ingen data</p>';
     // FASE 4: Load charts
-    loadCharts();
+    if (typeof loadCharts === 'function') {
+      loadCharts();
+    }
   } catch (e) {
     document.getElementById('radio-stats').innerHTML = '<div class="alert err">❌ ' + e.message + '</div>';
     showToast('Feil ved lasting av statistikk', 'error');
