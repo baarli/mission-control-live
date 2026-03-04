@@ -1,0 +1,145 @@
+/* ============================================
+   SEARCH PANEL STYLES
+   ============================================ */
+
+.container {
+  animation: fadeInUp 0.4s ease;
+}
+
+.header {
+  padding: var(--space-xl) var(--space-xl) 0 var(--space-xl);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Search Form */
+.searchForm {
+  display: flex;
+  gap: var(--space-md);
+  margin: var(--space-lg) var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.searchInputWrapper {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.searchInputWrapper input {
+  padding-left: 2.75rem;
+}
+
+.filters {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Actions Bar */
+.actionsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin: 0 var(--space-xl) var(--space-lg) var(--space-xl);
+  flex-wrap: wrap;
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+}
+
+.actionsBar.visible {
+  opacity: 1;
+}
+
+.selectionActions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.addAction {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.selectedCount {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Results */
+.results {
+  padding: 0 var(--space-xl);
+}
+
+.resultsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: var(--space-lg) var(--space-lg) 0 var(--space-lg);
+  }
+
+  .searchForm {
+    margin: var(--space-lg);
+    flex-direction: column;
+  }
+
+  .searchInputWrapper {
+    min-width: 100%;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .filters > * {
+    flex: 1;
+  }
+
+  .actionsBar {
+    margin: 0 var(--space-lg) var(--space-lg) var(--space-lg);
+  }
+
+  .results {
+    padding: 0 var(--space-lg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

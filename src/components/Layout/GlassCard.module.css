@@ -1,0 +1,69 @@
+/* ============================================
+   GLASS CARD STYLES
+   ============================================ */
+
+.card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-normal);
+}
+
+.hover:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-primary-glow), var(--shadow-lg);
+}
+
+/* Padding variants */
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: var(--space-sm);
+}
+
+.padding-md {
+  padding: var(--space-md);
+}
+
+.padding-lg {
+  padding: var(--space-xl);
+}
+
+.padding-xl {
+  padding: var(--space-2xl);
+}
+
+/* Border color variants */
+.border-primary {
+  border-top: 3px solid;
+  border-image: var(--gradient-primary) 1;
+}
+
+.border-success {
+  border-top: 3px solid;
+  border-image: var(--gradient-success) 1;
+}
+
+.border-warning {
+  border-top: 3px solid var(--accent-warning);
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .card {
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}

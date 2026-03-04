@@ -1,83 +1,217 @@
 <!DOCTYPE html>
-<html>
+<html lang="no" data-theme="dark">
 <head>
-    <title>Mission Control - Test Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: rgba(15, 23, 42, 0.9);
+            --bg-tertiary: rgba(30, 41, 59, 0.6);
+            --accent-primary: #6366f1;
+            --accent-primary-glow: rgba(99, 102, 241, 0.4);
+            --accent-secondary: #10b981;
+            --accent-danger: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --radius-lg: 1rem;
+            --radius-md: 0.75rem;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(255, 255, 255, 0.95);
+            --bg-tertiary: rgba(241, 245, 249, 0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-medium: rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            margin: 0;
-        }
-        .box {
-            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 2rem;
-            border-radius: 1rem;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
         }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, var(--accent-primary-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 0 40px var(--accent-primary-glow);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
         input {
             width: 100%;
-            padding: 0.75rem;
-            margin: 1rem 0;
-            border: 1px solid #334155;
-            border-radius: 0.5rem;
-            background: #0f172a;
-            color: white;
-            font-size: 1rem;
+            padding: 0.875rem 1rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            transition: all 0.2s;
         }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-primary-glow);
+        }
+
         button {
             width: 100%;
-            padding: 0.75rem;
-            background: #6366f1;
+            padding: 0.875rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
             color: white;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
             border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
+            border-radius: var(--radius-md);
             cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px var(--accent-primary-glow);
         }
-        button:hover { background: #4f46e5; }
-        .error { color: #ef4444; margin-top: 1rem; display: none; }
-        .success { color: #10b981; margin-top: 1rem; }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 30px var(--accent-primary-glow);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            color: var(--accent-danger);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error.visible { display: block; animation: shake 0.4s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .success-box { display: none; }
+
+        .success-box.visible { display: block; }
+
+        a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="box" id="login-box">
-        <h1>🎛️ Mission Control</h1>
+    <div class="glass-card" id="login-box">
+        <div class="logo">🎛️</div>
+        <h1>Mission Control</h1>
         <p>NRJ Morgen Dashboard</p>
-        <input type="password" id="pwd" placeholder="Passord" onkeypress="if(event.key==='Enter')doLogin()">
-        <button onclick="doLogin()">Logg inn</button>
+        <input type="password" id="pwd" placeholder="Skriv passord..." onkeypress="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()" id="login-btn">Logg inn</button>
         <div class="error" id="error">Feil passord</div>
     </div>
     
-    <div class="box" id="success-box" style="display: none;">
-        <h1 class="success">✅ Innlogget!</h1>
+    <div class="glass-card success-box" id="success-box">
+        <div class="logo">✅</div>
+        <h1>Innlogget!</h1>
         <p>Du kan nå gå til hovedsiden:</p>
-        <a href="index.html" style="color: #6366f1;">Gå til Mission Control →</a>
+        <a href="index.html">Gå til Mission Control →</a>
         <br><br>
-        <button onclick="doLogout()">Logg ut</button>
+        <button onclick="doLogout()" style="background: var(--bg-tertiary); color: var(--text-primary);">Logg ut</button>
     </div>
 
     <script>
         const CORRECT_PASSWORD = 'kloakontroll2026';
         
         function doLogin() {
-            const input = document.getElementById('pwd').value;
-            console.log('Login attempt:', input);
+            const input = document.getElementById('pwd');
+            const btn = document.getElementById('login-btn');
+            const error = document.getElementById('error');
             
-            if (input === CORRECT_PASSWORD) {
-                console.log('Login successful');
+            btn.disabled = true;
+            error.classList.remove('visible');
+            
+            if (input.value === CORRECT_PASSWORD) {
                 localStorage.setItem('mc_auth', 'true');
                 document.getElementById('login-box').style.display = 'none';
-                document.getElementById('success-box').style.display = 'block';
+                document.getElementById('success-box').classList.add('visible');
             } else {
-                console.log('Login failed');
-                document.getElementById('error').style.display = 'block';
+                error.classList.add('visible');
+                btn.disabled = false;
+                input.focus();
             }
         }
         
@@ -86,10 +220,10 @@
             location.reload();
         }
         
-        // Auto-login hvis allerede autentisert
+        // Auto-login if already authenticated
         if (localStorage.getItem('mc_auth') === 'true') {
             document.getElementById('login-box').style.display = 'none';
-            document.getElementById('success-box').style.display = 'block';
+            document.getElementById('success-box').classList.add('visible');
         }
     </script>
 </body>

@@ -1,0 +1,39 @@
+/* ============================================
+   AGENT CONTROL PANEL STYLES (TAILWIND)
+   ============================================ */
+
+/* Agent Status Card Styles */
+.agent-status-card {
+  @apply relative overflow-hidden;
+}
+
+.agent-status-card::before {
+  content: '';
+  @apply absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500;
+}
+
+/* Command Sender Styles */
+.command-sender textarea {
+  @apply resize-none;
+}
+
+/* Scrollbar Styles */
+.task-list .scrollbar-thin,
+.approval-queue .scrollbar-thin,
+.activity-log .scrollbar-thin {
+  @apply scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent;
+}
+
+/* Realtime Connection Indicator */
+.connection-indicator {
+  @apply fixed bottom-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full 
+         bg-gray-800/90 backdrop-blur border border-gray-700 text-xs;
+}
+
+.connection-indicator.online {
+  @apply border-green-500/50 text-green-400;
+}
+
+.connection-indicator.offline {
+  @apply border-red-500/50 text-red-400;
+}

@@ -1,0 +1,134 @@
+/* ============================================
+   SEARCH RESULT STYLES
+   ============================================ */
+
+.card {
+  padding: var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--accent-primary);
+}
+
+.card:focus-within {
+  box-shadow: 0 0 0 2px var(--accent-primary-glow);
+}
+
+.selected {
+  border-color: var(--accent-secondary);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--accent-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--text-primary);
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.source {
+  font-weight: 500;
+}
+
+.date {
+  opacity: 0.8;
+}
+
+.score {
+  display: inline-flex;
+  padding: 0.25rem 0.625rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+}
+
+.score.high {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.score.medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.score.low {
+  background: rgba(100, 116, 139, 0.2);
+  color: #94a3b8;
+}
+
+.addButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.addButton:hover {
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+  color: white;
+}
+
+/* Light mode score adjustments */
+[data-theme="light"] .score.high {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+[data-theme="light"] .score.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+}
+
+[data-theme="light"] .score.low {
+  background: rgba(100, 116, 139, 0.15);
+  color: #64748b;
+}

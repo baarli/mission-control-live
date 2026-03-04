@@ -1,0 +1,84 @@
+/* ============================================
+   TOGGLE STYLES
+   ============================================ */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.toggle:hover {
+  background: var(--bg-tertiary);
+}
+
+.toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-primary-glow);
+}
+
+.track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 56px;
+  height: 32px;
+  padding: 4px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.toggle:hover .track {
+  border-color: var(--border-strong);
+}
+
+.thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px var(--accent-primary-glow);
+  transition: transform var(--transition-spring);
+  will-change: transform;
+}
+
+.icon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+/* Alternative icon-only button style */
+.iconButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.iconButton:hover {
+  background: var(--bg-card);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.iconButton:active {
+  transform: translateY(0);
+}
