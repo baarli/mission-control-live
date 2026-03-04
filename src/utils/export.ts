@@ -29,7 +29,12 @@ export function exportToCsv(
       return { success: false, error: 'Ingen data å eksportere' };
     }
 
-    const headers = Object.keys(data[0]);
+    const firstRow = data[0];
+    if (!firstRow) {
+      return { success: false, error: 'Ingen data å eksportere' };
+    }
+
+    const headers = Object.keys(firstRow);
     
     // Create CSV content
     let csv = '';

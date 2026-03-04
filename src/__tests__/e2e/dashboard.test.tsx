@@ -1,13 +1,23 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GlassCard } from '@/components/UI/GlassCard';
 import { StatCard } from '@/components/UI/StatCard';
 import { Button } from '@/components/UI/Button';
-import { LoginScreen } from '@/components/Auth/LoginScreen';
+import LoginScreen from '@/components/Auth/LoginScreen';
 import { useAuthStore } from '@/stores/authStore';
-import type { DashboardStats } from '@/types';
 import React, { useState, useEffect } from 'react';
+
+// Local type for test dashboard stats
+interface DashboardStats {
+  totalSaker: number;
+  pendingSaker: number;
+  approvedSaker: number;
+  rejectedSaker: number;
+  averageEntertainmentScore: number;
+  sakerThisWeek: number;
+  sakerLastWeek: number;
+}
 
 // Mock dashboard component
 const Dashboard: React.FC = () => {
@@ -36,7 +46,7 @@ const Dashboard: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <LoginScreen 
-        onLogin={() => useAuthStore.setState({ isAuthenticated: true })} 
+        onLogin={() => { useAuthStore.setState({ isAuthenticated: true }); return true; }} 
       />
     );
   }

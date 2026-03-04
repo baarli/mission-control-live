@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import type { Mission, User } from '@types';
+import type { Mission, User } from '@/types';
 
 // Mock data
 const mockMissions: Mission[] = [
@@ -10,11 +10,13 @@ const mockMissions: Mission[] = [
     description: 'A test mission',
     status: 'active',
     priority: 'high',
-    startDate: new Date().toISOString(),
+    start_date: new Date().toISOString(),
+    end_date: null,
     progress: 50,
     tags: ['test', 'demo'],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    assigned_to: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
   {
     id: '2',
@@ -22,18 +24,20 @@ const mockMissions: Mission[] = [
     description: 'Another test mission',
     status: 'pending',
     priority: 'medium',
-    startDate: new Date().toISOString(),
+    start_date: new Date().toISOString(),
+    end_date: null,
     progress: 0,
     tags: ['test'],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    assigned_to: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
 ];
 
 const mockUser: User = {
   id: '1',
   email: 'test@example.com',
-  displayName: 'Test User',
+  name: 'Test User',
   role: 'admin',
   createdAt: new Date().toISOString(),
 };
@@ -62,18 +66,18 @@ export const handlers = [
   }),
 
   http.post('*/rest/v1/missions', async ({ request }) => {
-    const body = await request.json();
+    const body = await request.json() as Record<string, unknown>;
     const newMission = {
       id: '3',
       ...body,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    } as Mission;
+    } as unknown as Mission;
     return HttpResponse.json(newMission, { status: 201 });
   }),
 
   http.patch('*/rest/v1/missions/:id', async ({ params, request }) => {
-    const body = await request.json();
+    const body = await request.json() as Record<string, unknown>;
     const mission = mockMissions.find(m => m.id === params.id);
     if (!mission) {
       return new HttpResponse(null, { status: 404 });

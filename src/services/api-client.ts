@@ -9,6 +9,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
   CancelTokenSource,
+  InternalAxiosRequestConfig,
 } from 'axios';
 
 import type { ApiResponseWrapper as ApiResponse, ApiErrorDetails as ApiError } from '../types/mission';
@@ -102,12 +103,13 @@ export class ApiClient {
   private setupInterceptors(): void {
     // Request interceptor
     this.client.interceptors.request.use(
-      async (config) => {
+      async (config: InternalAxiosRequestConfig) => {
         // Apply custom request interceptors
+        let currentConfig: AxiosRequestConfig = config;
         for (const interceptor of this.requestInterceptors) {
-          config = await interceptor(config);
+          currentConfig = await interceptor(currentConfig);
         }
-        return config;
+        return currentConfig as InternalAxiosRequestConfig;
       },
       (error) => Promise.reject(error)
     );

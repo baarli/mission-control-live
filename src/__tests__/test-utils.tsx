@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, RenderOptions, RenderResult } from '@testing-library/react';
 
 import type { ReactNode } from 'react';
 
@@ -19,7 +19,7 @@ function AllTheProviders({ children }: { children: ReactNode }) {
 function customRender(
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
-) {
+): RenderResult {
   return render(ui, { wrapper: AllTheProviders, ...options });
 }
 

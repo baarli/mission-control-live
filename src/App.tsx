@@ -28,11 +28,11 @@ function App() {
       case 'dashboard':
         return <Dashboard />;
       case 'saksliste':
-        return <Saksliste />;
+        return <Saksliste saker={[]} />;
       case 'search':
-        return <SearchPanel />;
+        return <SearchPanel results={[]} onSearch={() => {}} />;
       case 'stats':
-        return <StatsView />;
+        return <StatsView radioData={[]} podcastData={[]} />;
       case 'agent':
         return <AgentSection />;
       default:

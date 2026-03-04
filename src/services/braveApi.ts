@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { SearchResult } from '@types';
+import type { SearchResult } from '@/types';
 
 const BRAVE_API_BASE = 'https://api.search.brave.com/res/v1';
 
@@ -57,7 +57,8 @@ export async function searchBrave(params: BraveSearchParams): Promise<SearchResu
       },
     });
 
-    return response.data.web.results.map(result => ({
+    return response.data.web.results.map((result, index) => ({
+      id: String(index),
       title: result.title,
       url: result.url,
       description: result.description,

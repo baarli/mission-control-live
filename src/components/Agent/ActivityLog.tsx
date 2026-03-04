@@ -15,7 +15,7 @@ const levelIcons: Record<string, string> = {
   error: '❌',
 };
 
-const levelStyles: Record<string, string> = {
+const levelStyles: Record<string, string | undefined> = {
   debug: styles.levelDebug,
   info: styles.levelInfo,
   success: styles.levelSuccess,

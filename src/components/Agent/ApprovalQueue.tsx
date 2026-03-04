@@ -8,7 +8,7 @@ import { Button } from '../UI';
 import { useAgentStore } from '@/stores/agentStore';
 import styles from './styles.module.css';
 
-const riskLevelStyles: Record<string, string> = {
+const riskLevelStyles: Record<string, string | undefined> = {
   low: styles.riskLow,
   medium: styles.riskMedium,
   high: styles.riskHigh,

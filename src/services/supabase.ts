@@ -321,8 +321,9 @@ class SupabaseService {
 
       // Check for errors
       const errors = results.filter((r) => r.error);
-      if (errors.length > 0) {
-        throw normalizeError(errors[0].error!);
+      const firstError = errors[0];
+      if (firstError?.error) {
+        throw normalizeError(firstError.error);
       }
 
       return successResponse(undefined);
@@ -500,5 +501,5 @@ export const supabase = new SupabaseService();
 /**
  * Re-export types and utilities
  */
-export { SupabaseError, getConfig, TABLES };
+export { getConfig, TABLES };
 export type { SupabaseClient };

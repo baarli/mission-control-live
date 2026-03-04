@@ -223,7 +223,7 @@ export async function batchGenerateSpeech(
   let failed = 0;
 
   for (let i = 0; i < items.length; i++) {
-    const item = items[i];
+    const item = items[i]!;
     
     try {
       const result = await bridge.execute(

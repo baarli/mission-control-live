@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SearchPanel } from '@/components/Search/SearchPanel';
+import SearchPanel from '@/components/Search/SearchPanel';
 import type { SearchResult } from '@/types';
 
 const mockSearchResults: SearchResult[] = [
@@ -37,27 +37,27 @@ describe('SearchPanel', () => {
   
   describe('rendering', () => {
     it('renders search heading', () => {
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.getByText('Søk etter innhold')).toBeInTheDocument();
     });
     
     it('renders search input', () => {
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.getByPlaceholderText('Søk etter innhold...')).toBeInTheDocument();
     });
     
     it('renders search button', () => {
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.getByTestId('search-button')).toBeInTheDocument();
     });
     
     it('renders close button when onClose provided', () => {
-      render(<SearchPanel onSearch={mockOnSearch} onClose={mockOnClose} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.getByLabelText('Lukk søk')).toBeInTheDocument();
     });
     
     it('does not render close button when onClose not provided', () => {
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.queryByLabelText('Lukk søk')).not.toBeInTheDocument();
     });
   });
@@ -65,7 +65,7 @@ describe('SearchPanel', () => {
   describe('search input', () => {
     it('accepts text input', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       const input = screen.getByPlaceholderText('Søk etter innhold...');
       await user.type(input, 'test query');
@@ -74,13 +74,13 @@ describe('SearchPanel', () => {
     });
     
     it('has search aria-label', () => {
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       expect(screen.getByLabelText('Søk')).toBeInTheDocument();
     });
     
     it('clears error when user types', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       // Trigger error
       await user.click(screen.getByTestId('search-button'));
@@ -100,7 +100,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -114,7 +114,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.keyboard('{Enter}');
@@ -126,7 +126,7 @@ describe('SearchPanel', () => {
     
     it('shows error for empty query', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.click(screen.getByTestId('search-button'));
       
@@ -136,7 +136,7 @@ describe('SearchPanel', () => {
     
     it('shows error for whitespace-only query', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), '   ');
       await user.click(screen.getByTestId('search-button'));
@@ -149,7 +149,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue([]);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), '<script>alert("xss")</script>');
       await user.click(screen.getByTestId('search-button'));
@@ -164,7 +164,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockImplementation(() => new Promise(() => {})); // Never resolves
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -178,7 +178,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -193,7 +193,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -208,7 +208,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -223,7 +223,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue([]);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -237,7 +237,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockRejectedValue(new Error('Search failed'));
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -253,7 +253,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} onAddToSaksliste={mockOnAddToSaksliste} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} onAddSingle={mockOnAddToSaksliste} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -267,7 +267,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -281,7 +281,7 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       mockOnSearch.mockResolvedValue(mockSearchResults);
       
-      render(<SearchPanel onSearch={mockOnSearch} onAddToSaksliste={mockOnAddToSaksliste} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} onAddSingle={mockOnAddToSaksliste} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
       await user.click(screen.getByTestId('search-button'));
@@ -299,7 +299,7 @@ describe('SearchPanel', () => {
   describe('close functionality', () => {
     it('calls onClose when close button clicked', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} onClose={mockOnClose} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.click(screen.getByLabelText('Lukk søk'));
       
@@ -313,7 +313,7 @@ describe('SearchPanel', () => {
       mockOnSearch.mockResolvedValue([]);
       
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'abc');
       
@@ -335,7 +335,7 @@ describe('SearchPanel', () => {
       mockOnSearch.mockResolvedValue([]);
       
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'ab');
       vi.advanceTimersByTime(600);
@@ -349,7 +349,7 @@ describe('SearchPanel', () => {
   describe('accessibility', () => {
     it('input has aria-invalid on error', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.click(screen.getByTestId('search-button'));
       
@@ -359,7 +359,7 @@ describe('SearchPanel', () => {
     
     it('error is associated with input via aria-describedby', async () => {
       const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} />);
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
       
       await user.click(screen.getByTestId('search-button'));
       

@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'esnext',
-      minify: 'terser',
+      minify: 'esbuild',
       cssMinify: true,
       sourcemap: mode !== 'production',
       outDir: 'dist',

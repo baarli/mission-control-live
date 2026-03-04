@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ToastItem, ToastContainer } from '@/components/UI/Toast';
@@ -36,7 +36,7 @@ describe('ToastItem', () => {
     });
     
     it('renders without message when not provided', () => {
-      const toastWithoutMessage = { ...mockToast, message: undefined };
+      const toastWithoutMessage = { ...mockToast, message: undefined } as unknown as Toast;
       const { container } = render(<ToastItem toast={toastWithoutMessage} onClose={mockOnClose} />);
       
       const messages = container.querySelectorAll('p');
@@ -241,7 +241,7 @@ describe('ToastContainer', () => {
     render(<ToastContainer toasts={toasts} onClose={mockOnClose} />);
     
     const closeButtons = screen.getAllByLabelText('Lukk varsel');
-    await user.click(closeButtons[1]);
+    await user.click(closeButtons[1]!);
     
     await waitFor(() => {
       expect(mockOnClose).toHaveBeenCalledWith('toast_2');

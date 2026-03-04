@@ -3,7 +3,7 @@
    ============================================ */
 
 import React, { useState } from 'react';
-import SakItem from './SakItem';
+import { SakItem } from './SakItem';
 import SakEditForm from './SakEditForm';
 import EmptyState from './EmptyState';
 import { GlassCard, Button, Input, SkeletonCard } from '../UI';
@@ -66,7 +66,7 @@ const Saksliste: React.FC<SakslisteProps> = ({
   const getTomorrowDate = (): string => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    return tomorrow.toISOString().split('T')[0] ?? '';
   };
 
   return (
@@ -136,9 +136,8 @@ const Saksliste: React.FC<SakslisteProps> = ({
                   <SakItem
                     key={sak.id}
                     sak={sak}
-                    index={index}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onEdit={(s) => handleEdit(s.id)}
+                    onDelete={(id) => handleDelete(id)}
                   />
                 )
               )}

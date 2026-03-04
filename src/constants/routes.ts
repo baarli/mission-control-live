@@ -205,7 +205,7 @@ export function extractParams(
   if (!match) return null;
   
   return paramNames.reduce((acc, name, index) => {
-    acc[name] = match[index + 1];
+    acc[name] = match[index + 1] ?? '';
     return acc;
   }, {} as Record<string, string>);
 }

@@ -3,7 +3,7 @@
    ============================================ */
 
 import React from 'react';
-import Toast from './Toast';
+import { ToastItem } from './Toast';
 import type { Toast as ToastType } from '../../types';
 import styles from './ToastContainer.module.css';
 
@@ -22,11 +22,9 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => 
       aria-label="Notifications"
     >
       {toasts.map((toast) => (
-        <Toast
+        <ToastItem
           key={toast.id}
-          id={toast.id}
-          message={toast.message}
-          type={toast.type}
+          toast={toast}
           onClose={onRemove}
         />
       ))}

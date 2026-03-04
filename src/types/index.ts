@@ -5,7 +5,16 @@
 export * from './agent';
 
 // Theme
-export type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light' | 'system';
+
+// User
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  createdAt: string;
+}
 
 // Toast
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -14,6 +23,8 @@ export interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  title?: string;
+  duration?: number;
 }
 
 // Category
@@ -38,6 +49,11 @@ export interface Sak {
   created_at: string;
   updated_at: string;
   created_by?: string;
+  status?: string;
+  priority?: string;
+  entertainmentScore?: number;
+  tags?: string[];
+  assignee?: string;
 }
 
 // Search Result
@@ -50,6 +66,8 @@ export interface SearchResult {
   published_at?: string;
   score?: number;
   category?: Category;
+  thumbnail?: string;
+  entertainmentScore?: number;
 }
 
 // Nielsen Stats
@@ -77,6 +95,40 @@ export interface ChartDataPoint {
   label: string;
   value: number;
   date?: string;
+}
+
+// Metric Status
+export type MetricStatus = 'success' | 'warning' | 'error' | 'neutral';
+
+// Metric
+export interface Metric {
+  id: string;
+  label: string;
+  value: number;
+  status: MetricStatus;
+  change?: number;
+}
+
+// Mission
+export type Mission = {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  priority: string;
+  progress: number;
+  tags: string[];
+  assigned_to: string[] | null;
+  start_date: string;
+  end_date: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+// Dashboard Data
+export interface DashboardData {
+  metrics: Metric[];
+  missions: Mission[];
 }
 
 // Stat Card Data

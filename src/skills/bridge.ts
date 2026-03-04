@@ -91,7 +91,6 @@ class SkillBridge {
       progress: 0,
       message: 'Initializing...',
       startTime: Date.now(),
-      logs: []
     };
     
     this.jobs.set(job.id, job);
@@ -210,6 +209,10 @@ class SkillBridge {
         }
 
         const step = steps[currentStep];
+        if (!step) {
+          resolve();
+          return;
+        }
         setTimeout(() => {
           this.updateJob(jobId, { progress: step.progress, message: step.message });
           currentStep++;
@@ -262,7 +265,7 @@ class SkillBridge {
     const missing: string[] = [];
 
     switch (skill) {
-      case 'transribe':
+      case 'transcribe':
       case 'imagegen':
       case 'speech':
         if (!import.meta.env.VITE_OPENAI_API_KEY) {
