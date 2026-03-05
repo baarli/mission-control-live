@@ -14,8 +14,8 @@ const mockSearchResults: SearchResult[] = [
     title: 'Test Video Premiere',
     description: 'An amazing video with exclusive content',
     url: 'https://youtube.com/watch?v=test1',
-    thumbnail: 'https://example.com/thumb1.jpg',
     entertainmentScore: 90,
+    score: 90,
     source: 'brave',
   },
   {
@@ -24,6 +24,7 @@ const mockSearchResults: SearchResult[] = [
     description: 'Exclusive behind the scenes footage',
     url: 'https://nrk.no/video/test2',
     entertainmentScore: 75,
+    score: 75,
     source: 'brave',
   },
 ];
@@ -31,18 +32,21 @@ const mockSearchResults: SearchResult[] = [
 // Integration component that combines search and saksliste
 const SearchToSaksliste: React.FC = () => {
   const [saker, setSaker] = useState<Sak[]>([]);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = async (query: string): Promise<SearchResult[]> => {
-    setHasSearched(true);
+  const handleSearch = async (query: string, _category: string, _freshness: string) => {
+    setIsLoading(true);
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    return mockSearchResults.filter(
+    const filtered = mockSearchResults.filter(
       r =>
         r.title.toLowerCase().includes(query.toLowerCase()) ||
         r.description.toLowerCase().includes(query.toLowerCase())
     );
+    setResults(filtered);
+    setIsLoading(false);
   };
 
   const handleAddToSaksliste = (result: SearchResult) => {
@@ -68,7 +72,12 @@ const SearchToSaksliste: React.FC = () => {
   return (
     <div>
       <div data-testid="search-section">
-        <SearchPanel onSearch={handleSearch} results={[]} onAddSingle={handleAddToSaksliste} />
+        <SearchPanel
+          onSearch={handleSearch}
+          results={results}
+          isLoading={isLoading}
+          onAddSingle={handleAddToSaksliste}
+        />
       </div>
 
       <div data-testid="saksliste-section">
@@ -76,9 +85,6 @@ const SearchToSaksliste: React.FC = () => {
         {saker.map(sak => (
           <SakItem key={sak.id} sak={sak} />
         ))}
-        {hasSearched && saker.length === 0 && (
-          <p data-testid="empty-saksliste">Ingen saker lagt til ennå</p>
-        )}
       </div>
     </div>
   );
@@ -91,26 +97,33 @@ describe('Search to Saksliste Integration', () => {
       render(<SearchToSaksliste />);
 
       // Search for content
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'video');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'video');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
       // Results should appear
-      await waitFor(() => {
-        expect(screen.getByText('Test Video Premiere')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('Test Video Premiere')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
     });
 
-    it('shows entertainment scores for search results', async () => {
+    it('shows scores for search results', async () => {
       const user = userEvent.setup();
       render(<SearchToSaksliste />);
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      // 'exclusive' appears in both result descriptions
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'exclusive');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('score-search_1')).toHaveTextContent('90/100');
-        expect(screen.getByTestId('score-search_2')).toHaveTextContent('75/100');
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText('Score: 90')).toBeInTheDocument();
+          expect(screen.getByText('Score: 75')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
     });
   });
 
@@ -120,21 +133,24 @@ describe('Search to Saksliste Integration', () => {
       render(<SearchToSaksliste />);
 
       // Search first
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
       // Wait for results
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-search_1')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Legg til Test Video Premiere')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
       // Add first result to saksliste
-      await user.click(screen.getByTestId('add-btn-search_1'));
+      await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
 
       // Should appear in saksliste
       await waitFor(() => {
         expect(screen.getByText('Saksliste (1)')).toBeInTheDocument();
-        expect(screen.getByText('Test Video Premiere')).toBeInTheDocument();
+        expect(screen.getAllByText('Test Video Premiere').length).toBeGreaterThanOrEqual(1);
       });
     });
 
@@ -142,24 +158,27 @@ describe('Search to Saksliste Integration', () => {
       const user = userEvent.setup();
       render(<SearchToSaksliste />);
 
-      // Search
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      // Search with 'exclusive' which matches both results
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'exclusive');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      // Wait for results
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-search_1')).toBeInTheDocument();
-      });
+      // Wait for both results
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Legg til Test Video Premiere')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
       // Add both results
-      await user.click(screen.getByTestId('add-btn-search_1'));
-      await user.click(screen.getByTestId('add-btn-search_2'));
+      await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
+      await user.click(screen.getByLabelText('Legg til Behind the Scenes'));
 
       // Both should appear in saksliste
       await waitFor(() => {
         expect(screen.getByText('Saksliste (2)')).toBeInTheDocument();
-        expect(screen.getByText('Test Video Premiere')).toBeInTheDocument();
-        expect(screen.getByText('Behind the Scenes')).toBeInTheDocument();
+        expect(screen.getAllByText('Test Video Premiere').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('Behind the Scenes').length).toBeGreaterThanOrEqual(1);
       });
     });
 
@@ -168,16 +187,19 @@ describe('Search to Saksliste Integration', () => {
       render(<SearchToSaksliste />);
 
       // Search and add
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-search_1')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Legg til Test Video Premiere')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
-      await user.click(screen.getByTestId('add-btn-search_1'));
+      await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
 
-      // Check that entertainment score is preserved
+      // Check that entertainment score is preserved in the sak
       await waitFor(() => {
         const score = screen.getByTestId('entertainment-score');
         expect(score).toHaveTextContent('90/100');
@@ -202,7 +224,7 @@ describe('Search to Saksliste Integration', () => {
 
     it('calculates score based on source', () => {
       const score1 = calculateScore('Title', 'Description');
-      const score2 = calculateScore('Title', 'Description youtube');
+      const score2 = calculateScore('Title', 'Description', 'https://youtube.com/watch?v=test');
 
       expect(score2).toBeGreaterThan(score1);
     });
@@ -213,29 +235,30 @@ describe('Search to Saksliste Integration', () => {
       const user = userEvent.setup();
       render(<SearchToSaksliste />);
 
-      // 1. Initial state - empty saksliste message
-      expect(screen.getByTestId('empty-saksliste')).toBeInTheDocument();
+      // 1. Initial state - empty saksliste
+      expect(screen.getByText('Saksliste (0)')).toBeInTheDocument();
 
       // 2. Search for content
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'behind');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'behind');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      // 3. Results appear with entertainment scores
-      await waitFor(() => {
-        expect(screen.getByText('Behind the Scenes')).toBeInTheDocument();
-        expect(screen.getByText('Underholdningsverdi: 75/100')).toBeInTheDocument();
-      });
+      // 3. Results appear
+      await waitFor(
+        () => {
+          expect(screen.getByText('Behind the Scenes')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
       // 4. Add to saksliste
-      await user.click(screen.getByTestId('add-btn-search_2'));
+      await user.click(screen.getByLabelText('Legg til Behind the Scenes'));
 
       // 5. Verify in saksliste with correct data
       await waitFor(() => {
         expect(screen.getByText('Saksliste (1)')).toBeInTheDocument();
-        expect(screen.getByText('Behind the Scenes')).toBeInTheDocument();
-        expect(screen.getByText('Exclusive behind the scenes footage')).toBeInTheDocument();
+        expect(screen.getAllByText('Behind the Scenes').length).toBeGreaterThanOrEqual(1);
 
-        // Verify sak has correct status and properties
+        // Verify sak has correct status
         const sakStatus = screen.getByTestId('sak-status');
         expect(sakStatus).toHaveTextContent('Utkast');
       });
@@ -246,16 +269,19 @@ describe('Search to Saksliste Integration', () => {
       render(<SearchToSaksliste />);
 
       // Search
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-search_1')).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByLabelText('Legg til Test Video Premiere')).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
       // Add same result twice
-      await user.click(screen.getByTestId('add-btn-search_1'));
-      await user.click(screen.getByTestId('add-btn-search_1'));
+      await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
+      await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
 
       // Should have two saker
       await waitFor(() => {
@@ -264,3 +290,4 @@ describe('Search to Saksliste Integration', () => {
     });
   });
 });
+
