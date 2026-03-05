@@ -1,0 +1,53 @@
+import { useState, useCallback } from 'react';
+
+import { ConnectionIndicator } from '@components/Agent';
+import { Dashboard, AgentSection } from '@components/Dashboard';
+import { Layout } from '@components/Layout';
+import { Saksliste } from '@components/Saksliste';
+import { SearchPanel } from '@components/Search';
+import { StatsView } from '@components/Stats';
+import { useKeyboardShortcuts, getMissionControlShortcuts } from '@hooks/useKeyboardShortcuts';
+
+function App() {
+  const [activeSection, setActiveSection] = useState<string>('dashboard');
+
+  const handleNavigate = useCallback((section: string) => {
+    setActiveSection(section);
+  }, []);
+
+  // Setup keyboard shortcuts
+  useKeyboardShortcuts(getMissionControlShortcuts(handleNavigate));
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    console.log('Logout clicked');
+  };
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'saksliste':
+        return <Saksliste saker={[]} />;
+      case 'search':
+        return <SearchPanel results={[]} onSearch={() => {}} />;
+      case 'stats':
+        return <StatsView radioData={[]} podcastData={[]} />;
+      case 'agent':
+        return <AgentSection />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
+  return (
+    <>
+      <Layout activeSection={activeSection} onNavigate={handleNavigate} onLogout={handleLogout}>
+        {renderContent()}
+      </Layout>
+      <ConnectionIndicator />
+    </>
+  );
+}
+
+export default App;

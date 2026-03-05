@@ -1,0 +1,127 @@
+/* ============================================
+   STAT CARD STYLES
+   ============================================ */
+
+.card {
+  padding: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+  background: var(--bg-tertiary);
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.value.success {
+  background: var(--gradient-success);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.value.info {
+  background: linear-gradient(135deg, var(--accent-info), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  margin-top: var(--space-sm);
+}
+
+.trend.up {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-secondary);
+}
+
+.trend.down {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--accent-danger);
+}
+
+.trend.neutral {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+/* Loading skeleton */
+.loading {
+  padding: var(--space-xl);
+}
+
+.skeletonIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  margin-bottom: var(--space-md);
+  animation: pulse 1.5s infinite;
+}
+
+.skeletonValue {
+  width: 60%;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  margin-bottom: var(--space-xs);
+  animation: pulse 1.5s infinite;
+}
+
+.skeletonLabel {
+  width: 40%;
+  height: 0.875rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .value {
+    font-size: 2rem;
+  }
+}

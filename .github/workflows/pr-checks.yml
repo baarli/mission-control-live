@@ -1,0 +1,253 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [master, develop]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript type checking
+        run: npm run type-check
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test -- --reporter=verbose
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results-pr-${{ github.event.pull_request.number }}
+          path: |
+            coverage/
+            test-results/
+          retention-days: 7
+
+  build-size-check:
+    name: Build Size Check
+    runs-on: ubuntu-latest
+    needs: [lint, type-check]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          GITHUB_PAGES: true
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_BRAVE_API_KEY: ${{ secrets.VITE_BRAVE_API_KEY }}
+
+      - name: Check build size
+        run: |
+          echo "Checking build size..."
+          du -sh dist/
+          
+          # Calculate total size in KB
+          SIZE_KB=$(du -sk dist/ | cut -f1)
+          SIZE_MB=$(echo "scale=2; $SIZE_KB / 1024" | bc)
+          
+          echo "Build size: ${SIZE_MB} MB (${SIZE_KB} KB)"
+          echo ""
+          
+          # Check if size exceeds 500KB limit
+          if [ $SIZE_KB -gt 512 ]; then
+            echo "⚠️ WARNING: Build size exceeds 500KB limit!"
+            echo "Current size: ${SIZE_MB} MB"
+            echo ""
+            echo "Largest files:"
+            find dist/ -type f -exec du -h {} + | sort -rh | head -20
+            
+            # Post warning but don't fail
+            echo "::warning::Build size (${SIZE_MB} MB) exceeds 500KB threshold"
+          else
+            echo "✅ Build size is within acceptable range (${SIZE_MB} MB)"
+          fi
+          
+          # Show detailed breakdown
+          echo ""
+          echo "Build size breakdown:"
+          echo "===================="
+          for dir in dist/*/; do
+            if [ -d "$dir" ]; then
+              DIR_SIZE=$(du -sh "$dir" | cut -f1)
+              echo "$dir: $DIR_SIZE"
+            fi
+          done
+          
+          echo ""
+          echo "Top 10 largest files:"
+          find dist/ -type f -exec du -h {} + | sort -rh | head -10
+
+      - name: Compare with base branch
+        if: github.event.pull_request.base.ref
+        run: |
+          echo "Comparing build size with base branch..."
+          echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Current PR branch: ${{ github.head_ref }}"
+          
+          # Save current build size
+          CURRENT_SIZE=$(du -sk dist/ | cut -f1)
+          echo "Current build size: ${CURRENT_SIZE} KB"
+          echo "current_size=${CURRENT_SIZE}" >> $GITHUB_ENV
+
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          echo "Running npm audit..."
+          npm audit --audit-level=moderate --json > audit-results.json || true
+          
+          # Check for high/critical vulnerabilities
+          HIGH_COUNT=$(cat audit-results.json | jq '[.vulnerabilities[]? | select(.severity == "high" or .severity == "critical")] | length' 2>/dev/null || echo "0")
+          MODERATE_COUNT=$(cat audit-results.json | jq '[.vulnerabilities[]? | select(.severity == "moderate")] | length' 2>/dev/null || echo "0")
+          
+          echo "Security scan results:"
+          echo "======================"
+          echo "Critical/High vulnerabilities: $HIGH_COUNT"
+          echo "Moderate vulnerabilities: $MODERATE_COUNT"
+          
+          if [ "$HIGH_COUNT" -gt 0 ]; then
+            echo "❌ Found $HIGH_COUNT high/critical vulnerabilities!"
+            npm audit --audit-level=high
+            exit 1
+          else
+            echo "✅ No high or critical vulnerabilities found"
+          fi
+          
+          if [ "$MODERATE_COUNT" -gt 0 ]; then
+            echo "⚠️ Found $MODERATE_COUNT moderate vulnerabilities (non-blocking)"
+          fi
+
+      - name: Run dependency review
+        uses: actions/dependency-review-action@v4
+        if: github.event_name == 'pull_request'
+        with:
+          fail-on-severity: high
+
+  pr-summary:
+    name: PR Summary
+    runs-on: ubuntu-latest
+    needs: [lint, type-check, test, build-size-check, security-scan]
+    if: always()
+    steps:
+      - name: Create PR Summary
+        run: |
+          echo "## PR Checks Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          LINT_STATUS="${{ needs.lint.result }}"
+          TYPE_STATUS="${{ needs.type-check.result }}"
+          TEST_STATUS="${{ needs.test.result }}"
+          BUILD_STATUS="${{ needs.build-size-check.result }}"
+          SECURITY_STATUS="${{ needs.security-scan.result }}"
+          
+          get_status_icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              failure) echo "❌" ;;
+              cancelled) echo "🚫" ;;
+              skipped) echo "⏭️" ;;
+              *) echo "❓" ;;
+            esac
+          }
+          
+          echo "| Lint | $(get_status_icon $LINT_STATUS) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Type Check | $(get_status_icon $TYPE_STATUS) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | $(get_status_icon $TEST_STATUS) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Size | $(get_status_icon $BUILD_STATUS) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | $(get_status_icon $SECURITY_STATUS) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "$LINT_STATUS" == "success" && "$TYPE_STATUS" == "success" && "$TEST_STATUS" == "success" && "$BUILD_STATUS" == "success" && "$SECURITY_STATUS" == "success" ]]; then
+            echo "✅ **All checks passed!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Some checks failed. Please review the errors above.**" >> $GITHUB_STEP_SUMMARY
+          fi

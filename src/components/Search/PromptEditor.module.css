@@ -1,0 +1,96 @@
+/* ============================================
+   PROMPT EDITOR STYLES
+   ============================================ */
+
+.container {
+  margin-bottom: var(--space-lg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle:hover {
+  color: var(--text-primary);
+}
+
+.chevron {
+  font-size: 0.625rem;
+  transition: transform var(--transition-fast);
+}
+
+.chevron.expanded {
+  transform: rotate(0deg);
+}
+
+.chevron:not(.expanded) {
+  transform: rotate(-90deg);
+}
+
+.resetButton {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.editorWrapper {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.editorWrapper:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-glow);
+}
+
+.editor {
+  width: 100%;
+  padding: var(--space-md);
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.editor:focus {
+  outline: none;
+}
+
+.editor::placeholder {
+  color: var(--text-muted);
+}
+
+.footer {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
