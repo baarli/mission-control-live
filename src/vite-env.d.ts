@@ -9,6 +9,8 @@ interface ImportMetaEnv {
   readonly VITE_API_TIMEOUT: string;
   readonly VITE_ENABLE_ANALYTICS: string;
   readonly VITE_ENABLE_DEBUG_LOGGING: string;
+  readonly VITE_VOICE_ENABLED: string;
+  readonly VITE_VOICE_PROVIDER_URL: string;
 }
 
 interface ImportMeta {

@@ -377,12 +377,8 @@ input:focus, select:focus, textarea:focus {
 }
 .chart-label {
   font-size: 10px;
-
-  border-radius: 0.5rem;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-  z-index: 9998;
-  pointer-events: none;
-  transition: all 0.3s;
+  fill: var(--muted);
+  text-anchor: middle;
 }
 
 /* Accessibility improvements */
@@ -411,9 +407,6 @@ input:focus, select:focus, textarea:focus {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-  fill: var(--muted);
-  text-anchor: middle;
 }
 .chart-tooltip {
   position: absolute;

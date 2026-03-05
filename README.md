@@ -20,6 +20,8 @@ src/
 │   ├── common/         # Shared UI components
 │   ├── layout/         # Layout components
 │   └── dashboard/      # Dashboard-specific
+├── features/           # Feature modules (feature-flagged)
+│   └── voice/          # Voice chat plumbing (VITE_VOICE_ENABLED)
 ├── services/           # API layer
 │   ├── api/           # REST API functions
 │   ├── supabase.ts    # Supabase client
@@ -36,7 +38,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - npm 9+
 
 ### Installation
@@ -63,6 +65,41 @@ src/
    npm run dev
    ```
 
+## 🐳 Docker
+
+### Development (hot-reload on port 3000)
+
+```bash
+# Copy and fill in your env vars first
+cp .env.example .env.local
+
+docker compose up app-dev
+```
+
+The Vite dev server will be available at <http://localhost:3000> with full hot-module replacement via the bind-mounted source tree.
+
+### Production (Nginx on port 8080)
+
+```bash
+# Build args are passed at build time so VITE_* vars are baked into the bundle
+VITE_SUPABASE_URL=... \
+VITE_SUPABASE_ANON_KEY=... \
+VITE_BRAVE_API_KEY=... \
+docker compose up app-prod
+```
+
+The production image serves the pre-built `dist/` directory via Nginx on <http://localhost:8080>.
+
+### Optional profiles
+
+```bash
+# Nginx reverse proxy (port 80/443)
+docker compose --profile proxy up
+
+# Watchtower auto-update
+docker compose --profile monitoring up
+```
+
 ## 🔧 Available Scripts
 
 | Command | Description |
@@ -78,13 +115,73 @@ src/
 
 ## 🔐 Environment Variables
 
-Create a `.env.local` file with:
+Copy `.env.example` to `.env.local` and fill in your values:
 
-```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_BRAVE_API_KEY=your-brave-api-key
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_SUPABASE_URL` | Yes | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
+| `VITE_BRAVE_API_KEY` | Yes | Brave Search API key |
+| `VITE_APP_ENVIRONMENT` | No | `development` or `production` |
+| `VITE_ENABLE_ANALYTICS` | No | Enable analytics (`false`) |
+| `VITE_ENABLE_DEBUG_LOGGING` | No | Enable debug logs (`false`) |
+| `VITE_VOICE_ENABLED` | No | Enable voice chat feature (`false`) |
+| `VITE_VOICE_PROVIDER_URL` | No | Voice provider endpoint (future) |
+
+> **Never** commit `.env.local` or any file containing real credentials.
+
+## 🎙️ Voice Chat (Feature Flag)
+
+Voice chat plumbing lives in `src/features/voice/`. It is **disabled by default** and has no runtime effect unless `VITE_VOICE_ENABLED=true` is set.
+
+```tsx
+import { VoiceProvider } from '@/features/voice';
+
+// Wrap your app (no-op when VITE_VOICE_ENABLED != "true")
+<VoiceProvider>
+  <App />
+</VoiceProvider>
 ```
+
+```tsx
+import { useVoice } from '@/features/voice';
+
+function MyComponent() {
+  const { isEnabled, isListening, startListening, stopListening } = useVoice();
+  if (!isEnabled) return null;
+  // ...
+}
+```
+
+## 🚀 Deployment (GitHub Pages)
+
+The project deploys automatically to GitHub Pages on every push to `master`.
+
+### Required GitHub Secrets
+
+Configure these in **Repository Settings → Secrets and variables → Actions**:
+
+| Secret | Description |
+|--------|-------------|
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key |
+| `VITE_BRAVE_API_KEY` | Brave Search API key |
+| `CODECOV_TOKEN` | Codecov upload token (optional) |
+
+### Pages Setup
+
+1. Go to **Repository Settings → Pages**
+2. Source: **Deploy from a branch**
+3. Branch: `gh-pages` / `root`
+
+### Manual Deployment
+
+```bash
+GITHUB_PAGES=true npm run build
+# Deploy dist/ to gh-pages branch
+```
+
+The `GITHUB_PAGES=true` flag sets the Vite `base` to `/mission-control-live/` so assets resolve correctly on the GitHub Pages subdomain.
 
 ## 🧪 Testing
 
