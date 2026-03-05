@@ -146,7 +146,7 @@ export function calculateScore(title: string, description: string, url?: string)
   const text = `${title} ${description}`.toLowerCase();
   let score = 0;
 
-  // Calculate keyword score
+  // Accumulate weighted scores from entertainment keyword matches in title and description
   for (const [keyword, weight] of Object.entries(ENTERTAINMENT_KEYWORDS)) {
     const regex = new RegExp(`\\b${keyword}\\w*\\b`, 'gi');
     const matches = text.match(regex);
@@ -177,21 +177,26 @@ export function calculateScore(title: string, description: string, url?: string)
     score += 10;
   }
 
-  // URL/source domain bonuses
+  // URL/source domain bonuses using hostname parsing to prevent substring spoofing
   if (url) {
-    const urlLower = url.toLowerCase();
-    if (urlLower.includes('youtube.com')) {
-      score += 10;
-    } else if (urlLower.includes('spotify.com')) {
-      score += 10;
-    } else if (urlLower.includes('nrk.no')) {
-      score += 5;
-    } else if (urlLower.includes('tv2.no')) {
-      score += 5;
+    try {
+      const hostname = new URL(url).hostname;
+      if (hostname === 'youtube.com' || hostname.endsWith('.youtube.com')) {
+        score += 10;
+      } else if (hostname === 'spotify.com' || hostname.endsWith('.spotify.com')) {
+        score += 10;
+      } else if (hostname === 'nrk.no' || hostname.endsWith('.nrk.no')) {
+        score += 5;
+      } else if (hostname === 'tv2.no' || hostname.endsWith('.tv2.no')) {
+        score += 5;
+      }
+    } catch {
+      // Invalid URL - skip domain bonus
     }
   }
 
-  // Base score of 50, clamped to 0-100
+  // Add base score of 50 so neutral content starts at mid-range (0-100 scale).
+  // The accumulated bonuses above shift the score upward; clamped to [0, 100].
   return Math.min(100, Math.max(0, 50 + score));
 }
 
