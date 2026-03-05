@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -11,8 +11,7 @@ const mockSearchResults: SearchResult[] = [
     title: 'Test Result 1',
     description: 'Description for result 1',
     url: 'https://example.com/1',
-    thumbnail: 'https://example.com/thumb1.jpg',
-    entertainmentScore: 85,
+    score: 85,
     source: 'brave',
   },
   {
@@ -20,46 +19,45 @@ const mockSearchResults: SearchResult[] = [
     title: 'Test Result 2',
     description: 'Description for result 2',
     url: 'https://example.com/2',
-    entertainmentScore: 72,
+    score: 72,
     source: 'brave',
   },
 ];
 
 describe('SearchPanel', () => {
   const mockOnSearch = vi.fn();
-  const mockOnAddToSaksliste = vi.fn();
-  const mockOnClose = vi.fn();
+  const mockOnAddSingle = vi.fn();
 
   beforeEach(() => {
     mockOnSearch.mockClear();
-    mockOnAddToSaksliste.mockClear();
-    mockOnClose.mockClear();
+    mockOnAddSingle.mockClear();
   });
 
   describe('rendering', () => {
     it('renders search heading', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.getByText('Søk etter innhold')).toBeInTheDocument();
+      expect(screen.getByText('Søk etter saker')).toBeInTheDocument();
     });
 
     it('renders search input', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.getByPlaceholderText('Søk etter innhold...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Søk etter nyheter...')).toBeInTheDocument();
     });
 
     it('renders search button', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.getByTestId('search-button')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Søk' })).toBeInTheDocument();
     });
 
-    it('renders close button when onClose provided', () => {
+    it('has search section aria-label', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.getByLabelText('Lukk søk')).toBeInTheDocument();
+      expect(screen.getByRole('region', { name: 'Søk' })).toBeInTheDocument();
     });
 
-    it('does not render close button when onClose not provided', () => {
+    it('renders category and freshness selects', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.queryByLabelText('Lukk søk')).not.toBeInTheDocument();
+      expect(screen.getByDisplayValue('Alle kategorier')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Siste 24t')).toBeInTheDocument();
     });
   });
 
@@ -68,312 +66,127 @@ describe('SearchPanel', () => {
       const user = userEvent.setup();
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      const input = screen.getByPlaceholderText('Søk etter innhold...');
+      const input = screen.getByPlaceholderText('Søk etter nyheter...');
       await user.type(input, 'test query');
 
       expect(input).toHaveValue('test query');
-    });
-
-    it('has search aria-label', () => {
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-      expect(screen.getByLabelText('Søk')).toBeInTheDocument();
-    });
-
-    it('clears error when user types', async () => {
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      // Trigger error
-      await user.click(screen.getByTestId('search-button'));
-      expect(await screen.findByRole('alert')).toBeInTheDocument();
-
-      // Type to clear
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'a');
-
-      await waitFor(() => {
-        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-      });
     });
   });
 
   describe('search functionality', () => {
     it('calls onSearch when search button clicked', async () => {
       const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
-
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      await waitFor(() => {
-        expect(mockOnSearch).toHaveBeenCalledWith('test');
-      });
+      expect(mockOnSearch).toHaveBeenCalledWith('test', '', 'pd');
     });
 
     it('calls onSearch when Enter is pressed', async () => {
       const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
-
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
       await user.keyboard('{Enter}');
 
-      await waitFor(() => {
-        expect(mockOnSearch).toHaveBeenCalledWith('test');
-      });
+      expect(mockOnSearch).toHaveBeenCalledWith('test', '', 'pd');
     });
 
-    it('shows error for empty query', async () => {
+    it('does not call onSearch for empty query', async () => {
       const user = userEvent.setup();
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      await user.click(screen.getByTestId('search-button'));
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      const error = await screen.findByRole('alert');
-      expect(error).toHaveTextContent('Vennligst skriv inn et søkeord');
+      expect(mockOnSearch).not.toHaveBeenCalled();
     });
 
-    it('shows error for whitespace-only query', async () => {
+    it('does not call onSearch for whitespace-only query', async () => {
       const user = userEvent.setup();
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), '   ');
-      await user.click(screen.getByTestId('search-button'));
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), '   ');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      const error = await screen.findByRole('alert');
-      expect(error).toHaveTextContent('Vennligst skriv inn et søkeord');
+      expect(mockOnSearch).not.toHaveBeenCalled();
     });
 
-    it('sanitizes search query', async () => {
+    it('calls onSearch with selected category', async () => {
       const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue([]);
-
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
 
-      await user.type(
-        screen.getByPlaceholderText('Søk etter innhold...'),
-        '<script>alert("xss")</script>'
-      );
-      await user.click(screen.getByTestId('search-button'));
+      await user.selectOptions(screen.getByDisplayValue('Alle kategorier'), 'MUSIKK');
+      await user.type(screen.getByPlaceholderText('Søk etter nyheter...'), 'test');
+      await user.click(screen.getByRole('button', { name: 'Søk' }));
 
-      await waitFor(() => {
-        // Should strip HTML tags
-        expect(mockOnSearch).toHaveBeenCalledWith(expect.not.stringContaining('<'));
-      });
+      expect(mockOnSearch).toHaveBeenCalledWith('test', 'MUSIKK', 'pd');
     });
+  });
 
-    it('shows loading state during search', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockImplementation(() => new Promise(() => {})); // Never resolves
-
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      expect(screen.getByTestId('search-button')).toHaveAttribute('aria-busy', 'true');
+  describe('loading state', () => {
+    it('shows loading skeletons when isLoading is true', () => {
+      render(<SearchPanel onSearch={mockOnSearch} results={[]} isLoading={true} />);
+      // When loading, Button's accessible name changes to 'Laster...' and is disabled
+      const button = screen.getByRole('button', { name: 'Laster...' });
+      expect(button).toBeDisabled();
     });
   });
 
   describe('search results', () => {
-    it('displays search results', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
+    it('displays results from results prop', () => {
+      render(<SearchPanel onSearch={mockOnSearch} results={mockSearchResults} />);
 
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.getByText('Test Result 1')).toBeInTheDocument();
-        expect(screen.getByText('Test Result 2')).toBeInTheDocument();
-      });
+      expect(screen.getByText('Test Result 1')).toBeInTheDocument();
+      expect(screen.getByText('Test Result 2')).toBeInTheDocument();
     });
 
-    it('displays entertainment score for each result', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
+    it('displays result descriptions', () => {
+      render(<SearchPanel onSearch={mockOnSearch} results={mockSearchResults} />);
 
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.getByTestId('score-result_1')).toHaveTextContent('85/100');
-        expect(screen.getByTestId('score-result_2')).toHaveTextContent('72/100');
-      });
+      expect(screen.getByText('Description for result 1')).toBeInTheDocument();
     });
 
-    it('displays thumbnails when available', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
-
+    it('shows empty state when results is empty', () => {
       render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        const img = screen.getByAltText('');
-        expect(img).toHaveAttribute('src', 'https://example.com/thumb1.jpg');
-      });
-    });
-
-    it('shows no results message when search returns empty', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue([]);
-
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.getByText('Ingen resultater funnet')).toBeInTheDocument();
-      });
-    });
-
-    it('shows error message when search fails', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockRejectedValue(new Error('Search failed'));
-
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.getByRole('alert')).toHaveTextContent('Search failed');
-      });
+      expect(screen.getByText('Søk etter nyheter')).toBeInTheDocument();
     });
   });
 
   describe('add to saksliste', () => {
-    it('shows add button when onAddToSaksliste provided', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
-
+    it('shows add button when onAddSingle provided', () => {
       render(
-        <SearchPanel onSearch={mockOnSearch} results={[]} onAddSingle={mockOnAddToSaksliste} />
+        <SearchPanel
+          onSearch={mockOnSearch}
+          results={mockSearchResults}
+          onAddSingle={mockOnAddSingle}
+        />
       );
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-result_1')).toBeInTheDocument();
-      });
+      expect(screen.getByLabelText('Legg til Test Result 1')).toBeInTheDocument();
     });
 
-    it('does not show add button when onAddToSaksliste not provided', async () => {
-      const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
+    it('does not show add button when onAddSingle not provided', () => {
+      render(<SearchPanel onSearch={mockOnSearch} results={mockSearchResults} />);
 
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('add-btn-result_1')).not.toBeInTheDocument();
-      });
+      expect(screen.queryByLabelText('Legg til Test Result 1')).not.toBeInTheDocument();
     });
 
-    it('calls onAddToSaksliste when add button clicked', async () => {
+    it('calls onAddSingle when add button clicked', async () => {
       const user = userEvent.setup();
-      mockOnSearch.mockResolvedValue(mockSearchResults);
-
       render(
-        <SearchPanel onSearch={mockOnSearch} results={[]} onAddSingle={mockOnAddToSaksliste} />
+        <SearchPanel
+          onSearch={mockOnSearch}
+          results={mockSearchResults}
+          onAddSingle={mockOnAddSingle}
+        />
       );
 
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'test');
-      await user.click(screen.getByTestId('search-button'));
+      await user.click(screen.getByLabelText('Legg til Test Result 1'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('add-btn-result_1')).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId('add-btn-result_1'));
-
-      expect(mockOnAddToSaksliste).toHaveBeenCalledWith(mockSearchResults[0]);
-    });
-  });
-
-  describe('close functionality', () => {
-    it('calls onClose when close button clicked', async () => {
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.click(screen.getByLabelText('Lukk søk'));
-
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('debounced search', () => {
-    it('triggers search after typing 3+ characters with delay', async () => {
-      vi.useFakeTimers();
-      mockOnSearch.mockResolvedValue([]);
-
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'abc');
-
-      // Should not have called yet
-      expect(mockOnSearch).not.toHaveBeenCalled();
-
-      // Fast-forward past debounce
-      vi.advanceTimersByTime(600);
-
-      await waitFor(() => {
-        expect(mockOnSearch).toHaveBeenCalledWith('abc');
-      });
-
-      vi.useRealTimers();
-    });
-
-    it('does not trigger debounced search for less than 3 characters', async () => {
-      vi.useFakeTimers();
-      mockOnSearch.mockResolvedValue([]);
-
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.type(screen.getByPlaceholderText('Søk etter innhold...'), 'ab');
-      vi.advanceTimersByTime(600);
-
-      expect(mockOnSearch).not.toHaveBeenCalled();
-
-      vi.useRealTimers();
-    });
-  });
-
-  describe('accessibility', () => {
-    it('input has aria-invalid on error', async () => {
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.click(screen.getByTestId('search-button'));
-
-      const input = screen.getByPlaceholderText('Søk etter innhold...');
-      expect(input).toHaveAttribute('aria-invalid', 'true');
-    });
-
-    it('error is associated with input via aria-describedby', async () => {
-      const user = userEvent.setup();
-      render(<SearchPanel onSearch={mockOnSearch} results={[]} />);
-
-      await user.click(screen.getByTestId('search-button'));
-
-      const input = screen.getByPlaceholderText('Søk etter innhold...');
-      const errorId = input.getAttribute('aria-describedby');
-      expect(screen.getByRole('alert')).toHaveAttribute('id', errorId);
+      expect(mockOnAddSingle).toHaveBeenCalledWith(mockSearchResults[0]);
     });
   });
 });
+

@@ -47,9 +47,12 @@ const Dashboard: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <LoginScreen
-        onLogin={() => {
-          useAuthStore.setState({ isAuthenticated: true });
-          return true;
+        onLogin={(password: string) => {
+          if (password === 'kloakontroll2026') {
+            useAuthStore.setState({ isAuthenticated: true });
+            return true;
+          }
+          return false;
         }}
       />
     );

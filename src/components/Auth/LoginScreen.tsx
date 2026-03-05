@@ -17,17 +17,33 @@ interface LoginScreenProps {
   errorText?: string;
 }
 
+const LockIcon: React.FC = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    width="40"
+    height="40"
+    aria-hidden="true"
+  >
+    <path
+      fillRule="evenodd"
+      d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
 const LoginScreen: React.FC<LoginScreenProps> = ({
   onLogin,
   title = 'Mission Control',
-  subtitle = 'NRJ Morgen Dashboard',
-  logo = '🎛️',
+  subtitle = 'Logg inn for å fortsette',
   loadingText = 'Logger inn...',
   errorText = 'Feil passord',
 }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Focus input on mount
@@ -38,38 +54,42 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!password.trim() || isLoading) return;
+    if (!password.trim()) {
+      setErrorMessage('Vennligst skriv inn passord');
+      return;
+    }
+
+    if (isLoading) return;
 
     setIsLoading(true);
-    setShowError(false);
+    setErrorMessage('');
 
     try {
       const success = await Promise.resolve(onLogin(password));
 
       if (!success) {
-        setShowError(true);
+        setErrorMessage(errorText);
         setPassword('');
         inputRef.current?.focus();
       }
-    } catch (error) {
-      setShowError(true);
+    } catch {
+      setErrorMessage(errorText);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
-    }
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (errorMessage) setErrorMessage('');
   };
 
   return (
     <div className={styles.screen}>
       <div className={styles.card}>
         {/* Logo */}
-        <div className={styles.logo} aria-hidden="true">
-          {logo}
+        <div className={styles.logo}>
+          <LockIcon />
         </div>
 
         {/* Title */}
@@ -77,17 +97,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
         <p className={styles.subtitle}>{subtitle}</p>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.form}
+          noValidate
+          aria-label="Logg inn"
+        >
           <Input
             ref={inputRef}
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onChange={handlePasswordChange}
             placeholder="Skriv passord..."
             autoComplete="current-password"
             disabled={isLoading}
             fullWidth
+            label="Passord"
+            error={errorMessage || undefined}
           />
 
           <Button
@@ -101,14 +127,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           </Button>
         </form>
 
-        {/* Error Message */}
-        <div
-          className={[styles.error, showError && styles.visible].filter(Boolean).join(' ')}
-          role="alert"
-          aria-live="polite"
-        >
-          {errorText}
-        </div>
+        {/* Help text */}
+        <p className={styles.helpText}>Kontakt administrator hvis du har glemt passordet</p>
       </div>
 
       {/* Footer */}

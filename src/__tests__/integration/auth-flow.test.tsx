@@ -39,7 +39,7 @@ describe('Auth Flow Integration', () => {
 
     it('shows error for wrong password', async () => {
       const user = userEvent.setup();
-      const onLogin = vi.fn();
+      const onLogin = vi.fn().mockResolvedValue(false);
 
       render(<LoginScreen onLogin={onLogin} />);
 
@@ -51,8 +51,8 @@ describe('Auth Flow Integration', () => {
       const error = await screen.findByRole('alert');
       expect(error).toHaveTextContent('Feil passord');
 
-      // onLogin not called
-      expect(onLogin).not.toHaveBeenCalled();
+      // onLogin was called with the wrong password
+      expect(onLogin).toHaveBeenCalledWith('wrongpassword');
     });
 
     it('clears error and allows retry', async () => {
@@ -184,7 +184,8 @@ describe('Auth Flow Integration', () => {
   describe('loading states', () => {
     it('shows loading state during login', async () => {
       const user = userEvent.setup();
-      const onLogin = vi.fn();
+      // Use a never-resolving promise to catch the loading state
+      const onLogin = vi.fn().mockImplementation(() => new Promise(() => {}));
 
       render(<LoginScreen onLogin={onLogin} />);
 
@@ -193,7 +194,7 @@ describe('Auth Flow Integration', () => {
 
       // Button should show loading state
       expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true');
-      expect(screen.getByRole('button')).toHaveTextContent('Logg inn');
+      expect(screen.getByRole('button')).toHaveTextContent('Logger inn...');
     });
 
     it('store shows loading state during login', async () => {
@@ -237,14 +238,14 @@ describe('Auth Flow Integration', () => {
       expect(input).toHaveFocus();
     });
 
-    it('button is focusable', async () => {
+    it('button receives focus when clicked', async () => {
       const user = userEvent.setup();
       render(<LoginScreen onLogin={vi.fn()} />);
 
-      screen.getByRole('button', { name: 'Logg inn' });
-      await user.tab();
+      const button = screen.getByRole('button', { name: 'Logg inn' });
+      await user.click(button);
 
-      expect(document.activeElement).toBe(screen.getByPlaceholderText('Skriv passord...'));
+      expect(button).toHaveFocus();
     });
   });
 });

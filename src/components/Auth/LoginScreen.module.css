@@ -87,38 +87,17 @@
   margin-bottom: var(--space-md);
 }
 
-.error {
-  color: var(--accent-danger);
-  font-size: 0.875rem;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all var(--transition-fast);
-}
-
-.error.visible {
-  opacity: 1;
-  transform: translateY(0);
-  animation: shake 0.4s ease;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
-}
-
 .footer {
   margin-top: var(--space-xl);
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+.helpText {
+  margin-top: var(--space-md);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
 }
 
 /* Reduced motion */
