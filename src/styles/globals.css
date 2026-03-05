@@ -2,11 +2,12 @@
 
 /* ==========================================
    Global Styles - Mission Control
-   Tailwind v4-safe: mission colors via CSS variables + plain CSS
+   Tailwind v4-safe: mission colors via CSS variables + CSS fallbacks
    ========================================== */
 
 @layer base {
   :root {
+    /* RGB triples so we can use rgb(var(--x) / <alpha>) */
     --mission-dark: 15 23 42;
     --mission-panel: 30 41 59;
     --mission-accent: 6 182 212;
@@ -93,6 +94,71 @@
 }
 
 @layer utilities {
+  /* Tailwind-like class fallbacks used in TSX (so they work even if Tailwind doesn't generate them) */
+  .bg-mission-dark {
+    background-color: rgb(var(--mission-dark));
+  }
+
+  .bg-mission-panel {
+    background-color: rgb(var(--mission-panel));
+  }
+
+  .bg-mission-accent {
+    background-color: rgb(var(--mission-accent));
+  }
+
+  .bg-mission-success\/10 {
+    background-color: rgb(var(--mission-success) / 0.1);
+  }
+
+  .bg-mission-success\/20 {
+    background-color: rgb(var(--mission-success) / 0.2);
+  }
+
+  .bg-mission-warning\/10 {
+    background-color: rgb(var(--mission-warning) / 0.1);
+  }
+
+  .bg-mission-warning\/20 {
+    background-color: rgb(var(--mission-warning) / 0.2);
+  }
+
+  .bg-mission-error\/10 {
+    background-color: rgb(var(--mission-error) / 0.1);
+  }
+
+  .bg-mission-error\/20 {
+    background-color: rgb(var(--mission-error) / 0.2);
+  }
+
+  .text-mission-accent {
+    color: rgb(var(--mission-accent));
+  }
+
+  .text-mission-success {
+    color: rgb(var(--mission-success));
+  }
+
+  .text-mission-warning {
+    color: rgb(var(--mission-warning));
+  }
+
+  .text-mission-error {
+    color: rgb(var(--mission-error));
+  }
+
+  .border-mission-success\/20 {
+    border-color: rgb(var(--mission-success) / 0.2);
+  }
+
+  .border-mission-warning\/20 {
+    border-color: rgb(var(--mission-warning) / 0.2);
+  }
+
+  .border-mission-error\/20 {
+    border-color: rgb(var(--mission-error) / 0.2);
+  }
+
   .focus-ring {
     @apply focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none;
     --tw-ring-color: rgb(var(--mission-accent));
