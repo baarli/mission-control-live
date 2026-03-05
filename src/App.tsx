@@ -1,12 +1,15 @@
 import { useState, useCallback } from 'react';
 
 import { ConnectionIndicator } from '@components/Agent';
+import { ProtectedRoute } from '@components/Auth';
 import { Dashboard, AgentSection } from '@components/Dashboard';
 import { Layout } from '@components/Layout';
 import { NotImplemented } from '@components/UI';
 import { useKeyboardShortcuts, getMissionControlShortcuts } from '@hooks/useKeyboardShortcuts';
+import { useAuthStore } from '@stores/authStore';
 
 function App() {
+  const { login, logout, checkAuth } = useAuthStore();
   const [activeSection, setActiveSection] = useState<string>('dashboard');
 
   const handleNavigate = useCallback((section: string) => {
@@ -15,11 +18,6 @@ function App() {
 
   // Setup keyboard shortcuts
   useKeyboardShortcuts(getMissionControlShortcuts(handleNavigate));
-
-  const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logout clicked');
-  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -55,9 +53,11 @@ function App() {
 
   return (
     <>
-      <Layout activeSection={activeSection} onNavigate={handleNavigate} onLogout={handleLogout}>
-        {renderContent()}
-      </Layout>
+      <ProtectedRoute onAuthenticate={login} authCheck={checkAuth} onLogout={logout}>
+        <Layout activeSection={activeSection} onNavigate={handleNavigate} onLogout={logout}>
+          {renderContent()}
+        </Layout>
+      </ProtectedRoute>
       <ConnectionIndicator />
     </>
   );
