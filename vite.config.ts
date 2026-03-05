@@ -5,7 +5,6 @@ import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  
   // GitHub Pages base URL configuration
   // Set GITHUB_PAGES=true in GitHub Actions to enable base URL
   const isGitHubPages = process.env.GITHUB_PAGES === 'true';
@@ -59,9 +58,6 @@ export default defineConfig(({ mode }) => {
     },
     css: {
       devSourcemap: true,
-      postcss: {
-        plugins: [],
-      },
     },
     esbuild: {
       drop: mode === 'production' ? ['console', 'debugger'] : [],
@@ -76,13 +72,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: 'v8',
         reporter: ['text', 'json', 'html'],
-        exclude: [
-          'node_modules/',
-          'src/__tests__/',
-          '**/*.d.ts',
-          '**/*.config.*',
-          '**/mock*/',
-        ],
+        exclude: ['node_modules/', 'src/__tests__/', '**/*.d.ts', '**/*.config.*', '**/mock*/'],
       },
     },
     // Environment variables

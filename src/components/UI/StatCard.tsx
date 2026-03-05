@@ -109,6 +109,7 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
     return (
       <div
         ref={ref}
+        role="region"
         className={cn(
           'rounded-xl border border-white/20 bg-white/70 p-6 shadow-lg backdrop-blur-md dark:border-gray-700/30 dark:bg-gray-800/70',
           className

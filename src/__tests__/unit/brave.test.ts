@@ -4,12 +4,39 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { calculateScore } from '@/services/brave';
 import type { SearchResult } from '@/types';
 
-// Mock axios
-vi.mock('axios');
+// Mock axios with factory to ensure axios.create returns a proper mock instance
+vi.mock('axios', () => {
+  const mockAxiosInstance = {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
+    request: vi.fn(),
+    interceptors: {
+      request: { use: vi.fn(), eject: vi.fn() },
+      response: { use: vi.fn(), eject: vi.fn() },
+    },
+  };
+  const mockAxios = {
+    default: {
+      create: vi.fn(() => mockAxiosInstance),
+      get: vi.fn(),
+      isAxiosError: vi.fn(),
+      isCancel: vi.fn(),
+      CancelToken: { source: vi.fn(() => ({ token: 'mock-token', cancel: vi.fn() })) },
+    },
+    create: vi.fn(() => mockAxiosInstance),
+    get: vi.fn(),
+    isAxiosError: vi.fn(),
+    isCancel: vi.fn(),
+    CancelToken: { source: vi.fn(() => ({ token: 'mock-token', cancel: vi.fn() })) },
+  };
+  return mockAxios;
+});
 
 // Wrapper for backward-compatible test usage (calculateScore takes 2 args)
-function calculateEntertainmentScore(title: string, description: string, _url?: string): number {
-  return calculateScore(title, description);
+function calculateEntertainmentScore(title: string, description: string, url?: string): number {
+  return calculateScore(title, description, url);
 }
 
 // Local test implementation (no longer exported from the service)

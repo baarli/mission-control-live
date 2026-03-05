@@ -40,6 +40,11 @@ const ENTERTAINMENT_KEYWORDS: Record<string, number> = {
   premiere: 10,
   hollywood: 10,
   netflix: 10,
+  exclusive: 10,
+  trending: 10,
+  hit: 10,
+  beste: 10,
+  viral: 10,
 
   // Medium-high relevance (weight: 7)
   tv: 7,
@@ -50,6 +55,8 @@ const ENTERTAINMENT_KEYWORDS: Record<string, number> = {
   entertainment: 7,
   artist: 7,
   musiker: 7,
+  intervju: 7,
+  interview: 7,
 
   // Medium relevance (weight: 5)
   musikk: 5,
@@ -58,6 +65,7 @@ const ENTERTAINMENT_KEYWORDS: Record<string, number> = {
   skuespiller: 5,
   skuespillerinne: 5,
   regissør: 5,
+  trailer: 5,
 
   // Low-medium relevance (weight: 3)
   kultur: 3,
@@ -65,6 +73,8 @@ const ENTERTAINMENT_KEYWORDS: Record<string, number> = {
   bok: 3,
   litteratur: 3,
   kunst: 3,
+  behind: 3,
+  scenes: 3,
 };
 
 /**
@@ -129,13 +139,14 @@ export class BraveApiError extends Error {
  * Calculates entertainment relevance score for a text
  * @param title - Article title
  * @param description - Article description
+ * @param url - Optional source URL for domain-based bonus
  * @returns Score from 0 to 100
  */
-export function calculateScore(title: string, description: string): number {
+export function calculateScore(title: string, description: string, url?: string): number {
   const text = `${title} ${description}`.toLowerCase();
   let score = 0;
 
-  // Calculate base score from keywords
+  // Calculate keyword score
   for (const [keyword, weight] of Object.entries(ENTERTAINMENT_KEYWORDS)) {
     const regex = new RegExp(`\\b${keyword}\\w*\\b`, 'gi');
     const matches = text.match(regex);
@@ -161,8 +172,27 @@ export function calculateScore(title: string, description: string): number {
     }
   }
 
-  // Normalize to 0-100 range
-  return Math.min(100, Math.max(0, score * 2));
+  // Bonus for description length (richer content)
+  if (description.length >= 200) {
+    score += 10;
+  }
+
+  // URL/source domain bonuses
+  if (url) {
+    const urlLower = url.toLowerCase();
+    if (urlLower.includes('youtube.com')) {
+      score += 10;
+    } else if (urlLower.includes('spotify.com')) {
+      score += 10;
+    } else if (urlLower.includes('nrk.no')) {
+      score += 5;
+    } else if (urlLower.includes('tv2.no')) {
+      score += 5;
+    }
+  }
+
+  // Base score of 50, clamped to 0-100
+  return Math.min(100, Math.max(0, 50 + score));
 }
 
 /**

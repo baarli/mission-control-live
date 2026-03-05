@@ -53,6 +53,7 @@ const StatsView: React.FC<{ stats: DashboardStats; loading?: boolean }> = ({
           title="Underholdningsscore"
           value={`${stats.averageEntertainmentScore}/100`}
           trend={stats.averageEntertainmentScore > 70 ? 'up' : 'down'}
+          change={stats.averageEntertainmentScore}
           loading={loading}
         />
         <StatCard
