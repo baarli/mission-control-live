@@ -1,12 +1,7 @@
-.mission-class {
-  --bg-mission-dark: #1a1a1a; /* Define your custom color here */
-  /* Add other mission-* colors here using CSS variables if needed */
-}
-
-/* Replace @apply bg-mission-dark with bg-slate-900 */
-
-.bg-mission-dark {
-  background-color: var(--bg-mission-dark);
-}
-
-// Remove the old utility class directly from your Tailwind CSS
+.bg-mission-main { background-color: var(--color-mission-main); }
+.bg-mission-secondary { background-color: var(--color-mission-secondary); }
+.bg-mission-tertiary { background-color: var(--color-mission-tertiary); }
+.text-mission-main { color: var(--color-mission-main); }
+.text-mission-secondary { color: var(--color-mission-secondary); }
+.text-mission-tertiary { color: var(--color-mission-tertiary); }
+/** Other styles can be added here with corresponding CSS variables **/
