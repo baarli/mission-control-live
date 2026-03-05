@@ -436,6 +436,27 @@
   background: var(--bg-code, #1f2937);
 }
 
+/* Validation Errors */
+.validationErrors {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 0.5rem;
+  color: #dc2626;
+  font-size: 0.8rem;
+}
+
+[data-theme='dark'] .validationErrors {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.validationErrors li {
+  padding: 0.125rem 0;
+}
+
 /* Empty States */
 .empty {
   text-align: center;

@@ -2,7 +2,7 @@
    INPUT COMPONENT
    ============================================ */
 
-import React, { InputHTMLAttributes, TextareaHTMLAttributes, forwardRef } from 'react';
+import React, { InputHTMLAttributes, TextareaHTMLAttributes, forwardRef, useId } from 'react';
 
 import type { InputType } from '../../types';
 
@@ -46,7 +46,8 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
     },
     ref
   ) => {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || `input-${generatedId}`;
     const hasError = !!error;
 
     const containerClass = [styles.container, fullWidth && styles.fullWidth, className]

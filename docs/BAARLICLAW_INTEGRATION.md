@@ -142,26 +142,67 @@ create table activity_log (
 );
 ```
 
+## Typed Clawbot Command Contract
+
+Starting from 2026-03-05 the `CommandSender` uses a **versioned, typed command
+contract** instead of free-text JSON for robotic-arm control.
+
+### Command Schema
+
+All clawbot commands are wrapped in a `ClawbotCommand` envelope (see
+`src/types/clawbot.ts`):
+
+```typescript
+interface ClawbotCommand {
+  contract_version: 1;
+  payload: ClawbotCommandPayload; // discriminated union
+  risk: 'safe' | 'elevated' | 'critical';
+}
+```
+
+Supported actions: `stop`, `home`, `move`, `grip`, `set_speed`, `set_mode`.
+See `docs/CLAWBOT_CONTROL_PLAN.md` for the full roadmap, safety features and
+telemetry plan.
+
+### UI changes (CommandSender)
+
+- Structured mode (default) with validated form inputs per action.
+- Advanced JSON mode for debugging and custom payloads.
+- Prominent **🛑 E-STOP** button that sends `{ action: 'stop', emergency: true }`
+  with `priority: 'critical'` – always visible when connected.
+- Inline validation errors shown before a command is sent.
+
+### Connection state improvements (agentService)
+
+- `isConnected` is no longer set to `true` at the start of `initRealtime()`.
+  It is set only after the **first** Supabase channel fires `SUBSCRIBED`.
+- Channel errors call `setError()` and reset `isConnected` to `false`.
+- `cleanup()` now explicitly resets `isConnected` to `false` and clears the
+  heartbeat interval.
+
+---
+
 ## API Service
 
 ### agentService
 
 ```typescript
 // Initialiser realtime subscriptions
+// connected=true is deferred until first channel subscription succeeds
 await agentService.initRealtime();
 
-// Send kommando
-const commandId = await agentService.sendCommand(
-  'task',           // type
-  { action: '...' }, // data
-  'high'            // priority
-);
+// Send a structured clawbot command
+import { buildClawbotCommand } from '@/types/clawbot';
+const envelope = buildClawbotCommand({ action: 'move', x: 100, y: 0, z: 50 });
+const commandId = await agentService.sendCommand('task', envelope, 'medium');
+
+// Or send via the CommandSender UI (recommended)
 
 // Godkjenn/avslå
 await agentService.respondToApproval(id, 'approved');
 await agentService.respondToApproval(id, 'rejected');
 
-// Rydd opp
+// Rydd opp – also resets isConnected to false
 agentService.cleanup();
 ```
 
@@ -261,10 +302,11 @@ Ingen ekstra avhengigheter nødvendig - bruker eksisterende:
 ## Neste Steg
 
 1. Aktiver RLS policies i Supabase
-2. Konfigurer BaarliClaw til å lese fra `agent_commands`
-3. Sett opp webhook for eksterne notifikasjoner
-4. Legg til audit logging
+2. Konfigurer BaarliClaw til å lese fra `agent_commands` og validere `contract_version`
+3. Implementer telemetri-fasen 1 (se `docs/CLAWBOT_CONTROL_PLAN.md`)
+4. Sett opp webhook for eksterne notifikasjoner
+5. Legg til audit logging
 
 ---
 
-Sist oppdatert: 4. mars 2026
+Sist oppdatert: 5. mars 2026

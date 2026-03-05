@@ -3,9 +3,7 @@ import { useState, useCallback } from 'react';
 import { ConnectionIndicator } from '@components/Agent';
 import { Dashboard, AgentSection } from '@components/Dashboard';
 import { Layout } from '@components/Layout';
-import { Saksliste } from '@components/Saksliste';
-import { SearchPanel } from '@components/Search';
-import { StatsView } from '@components/Stats';
+import { NotImplemented } from '@components/UI';
 import { useKeyboardShortcuts, getMissionControlShortcuts } from '@hooks/useKeyboardShortcuts';
 
 function App() {
@@ -28,11 +26,26 @@ function App() {
       case 'dashboard':
         return <Dashboard />;
       case 'saksliste':
-        return <Saksliste saker={[]} />;
+        return (
+          <NotImplemented
+            section="Saksliste"
+            description="Saksliste is not yet connected to a live data source. Add saker from the search panel when the integration is ready."
+          />
+        );
       case 'search':
-        return <SearchPanel results={[]} onSearch={() => {}} />;
+        return (
+          <NotImplemented
+            section="Søk"
+            description="The search panel requires a configured Brave API key. Set VITE_BRAVE_API_KEY in your environment to enable news search."
+          />
+        );
       case 'stats':
-        return <StatsView radioData={[]} podcastData={[]} />;
+        return (
+          <NotImplemented
+            section="Statistikk"
+            description="Statistics are not yet connected to live radio/podcast data sources."
+          />
+        );
       case 'agent':
         return <AgentSection />;
       default:
