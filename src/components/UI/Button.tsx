@@ -30,6 +30,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       isLoading = false,
+      loadingText,
       fullWidth = false,
       leftIcon,
       rightIcon,
@@ -95,7 +96,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </svg>
         )}
         {!isLoading && leftIcon && <span className="mr-2">{leftIcon}</span>}
-        {children}
+        {isLoading && loadingText ? loadingText : children}
         {!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
       </button>
     );

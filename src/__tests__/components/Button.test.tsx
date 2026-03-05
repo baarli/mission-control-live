@@ -87,6 +87,31 @@ describe('Button', () => {
       render(<Button isLoading>Loading</Button>);
       expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Laster...');
     });
+
+    it('displays loadingText when isLoading is true and loadingText is provided', () => {
+      render(
+        <Button isLoading loadingText="Logger inn...">
+          Logg inn
+        </Button>
+      );
+      expect(screen.getByRole('button')).toHaveTextContent('Logger inn...');
+      expect(screen.getByRole('button')).not.toHaveTextContent('Logg inn');
+    });
+
+    it('displays children when isLoading is true but loadingText is not provided', () => {
+      render(<Button isLoading>Logg inn</Button>);
+      expect(screen.getByRole('button')).toHaveTextContent('Logg inn');
+    });
+
+    it('displays children when isLoading is false regardless of loadingText', () => {
+      render(
+        <Button isLoading={false} loadingText="Logger inn...">
+          Logg inn
+        </Button>
+      );
+      expect(screen.getByRole('button')).toHaveTextContent('Logg inn');
+      expect(screen.getByRole('button')).not.toHaveTextContent('Logger inn...');
+    });
   });
 
   describe('disabled state', () => {
