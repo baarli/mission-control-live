@@ -28,7 +28,22 @@ class AgentService {
   // Initialize realtime subscriptions
   async initRealtime() {
     const store = useAgentStore.getState();
-    store.setIsConnected(true);
+
+    // Track how many channels have successfully subscribed
+    let successCount = 0;
+
+    const onSubscribed = () => {
+      successCount += 1;
+      if (successCount === 1) {
+        // Mark connected as soon as the first channel is up
+        useAgentStore.getState().setIsConnected(true);
+      }
+    };
+
+    const onError = (err: Error) => {
+      store.setError(err.message ?? 'Realtime subscription failed');
+      useAgentStore.getState().setIsConnected(false);
+    };
 
     // Subscribe to agent_commands
     const commandsSub = this.client
@@ -38,7 +53,10 @@ class AgentService {
         { event: '*', schema: 'public', table: 'agent_commands' },
         (payload: RealtimePayload) => this.handleCommandChange(payload)
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        if (status === 'SUBSCRIBED') onSubscribed();
+        else if (status === 'CHANNEL_ERROR' && err) onError(err);
+      });
 
     // Subscribe to agent_responses
     const responsesSub = this.client
@@ -48,7 +66,10 @@ class AgentService {
         { event: 'INSERT', schema: 'public', table: 'agent_responses' },
         (payload: RealtimePayload) => this.handleResponseInsert(payload)
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        if (status === 'SUBSCRIBED') onSubscribed();
+        else if (status === 'CHANNEL_ERROR' && err) onError(err);
+      });
 
     // Subscribe to approval_requests
     const approvalsSub = this.client
@@ -58,7 +79,10 @@ class AgentService {
         { event: '*', schema: 'public', table: 'approval_requests' },
         (payload: RealtimePayload) => this.handleApprovalChange(payload)
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        if (status === 'SUBSCRIBED') onSubscribed();
+        else if (status === 'CHANNEL_ERROR' && err) onError(err);
+      });
 
     // Subscribe to system_status
     const statusSub = this.client
@@ -68,7 +92,10 @@ class AgentService {
         { event: '*', schema: 'public', table: 'system_status' },
         (payload: RealtimePayload) => this.handleStatusChange(payload)
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        if (status === 'SUBSCRIBED') onSubscribed();
+        else if (status === 'CHANNEL_ERROR' && err) onError(err);
+      });
 
     // Subscribe to activity_log
     const logsSub = this.client
@@ -78,7 +105,10 @@ class AgentService {
         { event: 'INSERT', schema: 'public', table: 'activity_log' },
         (payload: RealtimePayload) => this.handleLogInsert(payload)
       )
-      .subscribe();
+      .subscribe((status: string, err?: Error) => {
+        if (status === 'SUBSCRIBED') onSubscribed();
+        else if (status === 'CHANNEL_ERROR' && err) onError(err);
+      });
 
     this.subscriptions = [
       () => commandsSub.unsubscribe(),
@@ -261,9 +291,12 @@ class AgentService {
 
   cleanup() {
     this.subscriptions.forEach(unsub => unsub());
+    this.subscriptions = [];
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = undefined;
     }
+    useAgentStore.getState().setIsConnected(false);
   }
 }
 
