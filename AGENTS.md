@@ -23,11 +23,11 @@ The project uses GitHub Actions for continuous integration and deployment:
    - Build verification
    - Security audit (npm audit)
 
-2. **`.github/workflows/deploy.yml`** - Deploys to GitHub Pages on push to main
+2. **`.github/workflows/deploy.yml`** - Deploys to GitHub Pages on push to master
    - Builds with production settings
    - Creates 404.html for SPA routing
    - Adds security headers
-   - Deploys to gh-pages branch
+   - Deploys via GitHub Actions (`actions/deploy-pages`)
 
 3. **`.github/workflows/pr-checks.yml`** - PR-specific checks
    - Lint and format checks
@@ -152,15 +152,16 @@ Before merging, all PRs must pass:
 ### GitHub Pages Setup
 
 1. Go to Repository Settings > Pages
-2. Source: Deploy from a branch
-3. Branch: `gh-pages` / `root`
-4. Custom domain: (optional)
+2. Source: **GitHub Actions** *(not "Deploy from a branch")*
+3. Custom domain: (optional)
+
+> The deploy workflow uses `actions/deploy-pages` which requires **GitHub Actions** as the source. Using "Deploy from a branch" will prevent changes from appearing on the live site at https://baarli.github.io/mission-control-live/
 
 ### Manual Deployment
 
 ```bash
-npm run build
-# Copy dist/ to gh-pages branch or use deploy workflow
+GITHUB_PAGES=true npm run build
+# Upload dist/ via the GitHub Actions deploy workflow
 ```
 
 ## Commands Reference

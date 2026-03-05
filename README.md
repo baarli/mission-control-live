@@ -157,6 +157,8 @@ function MyComponent() {
 
 The project deploys automatically to GitHub Pages on every push to `master`.
 
+**🌐 Live site:** https://baarli.github.io/mission-control-live/
+
 ### Required GitHub Secrets
 
 Configure these in **Repository Settings → Secrets and variables → Actions**:
@@ -171,14 +173,15 @@ Configure these in **Repository Settings → Secrets and variables → Actions**
 ### Pages Setup
 
 1. Go to **Repository Settings → Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `gh-pages` / `root`
+2. Source: **GitHub Actions** *(not "Deploy from a branch")*
+
+> ⚠️ The deploy workflow uses `actions/deploy-pages` which requires the **GitHub Actions** source. Using "Deploy from a branch" will prevent changes from appearing on the live site.
 
 ### Manual Deployment
 
 ```bash
 GITHUB_PAGES=true npm run build
-# Deploy dist/ to gh-pages branch
+# Upload dist/ contents using the GitHub Actions deploy workflow
 ```
 
 The `GITHUB_PAGES=true` flag sets the Vite `base` to `/mission-control-live/` so assets resolve correctly on the GitHub Pages subdomain.
