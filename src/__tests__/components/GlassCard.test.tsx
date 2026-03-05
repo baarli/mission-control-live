@@ -12,19 +12,19 @@ describe('GlassCard', () => {
 
     it('renders with default variant', () => {
       render(<GlassCard>Default</GlassCard>);
-      const card = screen.getByText('Default').parentElement;
+      const card = screen.getByText('Default');
       expect(card).toHaveClass('bg-white/70', 'dark:bg-gray-800/70');
     });
 
     it('renders elevated variant', () => {
       render(<GlassCard variant="elevated">Elevated</GlassCard>);
-      const card = screen.getByText('Elevated').parentElement;
+      const card = screen.getByText('Elevated');
       expect(card).toHaveClass('bg-white/80', 'dark:bg-gray-800/80', 'shadow-xl');
     });
 
     it('renders outlined variant', () => {
       render(<GlassCard variant="outlined">Outlined</GlassCard>);
-      const card = screen.getByText('Outlined').parentElement;
+      const card = screen.getByText('Outlined');
       expect(card).toHaveClass('bg-transparent', 'border-2');
     });
   });
@@ -32,25 +32,25 @@ describe('GlassCard', () => {
   describe('padding options', () => {
     it('renders with no padding', () => {
       render(<GlassCard padding="none">No Padding</GlassCard>);
-      const card = screen.getByText('No Padding').parentElement;
+      const card = screen.getByText('No Padding');
       expect(card).not.toHaveClass('p-3', 'p-6', 'p-8');
     });
 
     it('renders with small padding', () => {
       render(<GlassCard padding="sm">Small Padding</GlassCard>);
-      const card = screen.getByText('Small Padding').parentElement;
+      const card = screen.getByText('Small Padding');
       expect(card).toHaveClass('p-3');
     });
 
     it('renders with medium padding by default', () => {
       render(<GlassCard>Medium Padding</GlassCard>);
-      const card = screen.getByText('Medium Padding').parentElement;
+      const card = screen.getByText('Medium Padding');
       expect(card).toHaveClass('p-6');
     });
 
     it('renders with large padding', () => {
       render(<GlassCard padding="lg">Large Padding</GlassCard>);
-      const card = screen.getByText('Large Padding').parentElement;
+      const card = screen.getByText('Large Padding');
       expect(card).toHaveClass('p-8');
     });
   });
@@ -58,13 +58,13 @@ describe('GlassCard', () => {
   describe('hoverable state', () => {
     it('has hoverable classes when hoverable is true', () => {
       render(<GlassCard hoverable>Hoverable</GlassCard>);
-      const card = screen.getByText('Hoverable').parentElement;
+      const card = screen.getByText('Hoverable');
       expect(card).toHaveClass('hover:shadow-xl', 'hover:-translate-y-1', 'cursor-pointer');
     });
 
     it('does not have hoverable classes by default', () => {
       render(<GlassCard>Not Hoverable</GlassCard>);
-      const card = screen.getByText('Not Hoverable').parentElement;
+      const card = screen.getByText('Not Hoverable');
       expect(card).not.toHaveClass('hover:shadow-xl');
     });
   });
@@ -72,25 +72,25 @@ describe('GlassCard', () => {
   describe('glass morphism styles', () => {
     it('has backdrop blur effect', () => {
       render(<GlassCard>Blurred</GlassCard>);
-      const card = screen.getByText('Blurred').parentElement;
+      const card = screen.getByText('Blurred');
       expect(card).toHaveClass('backdrop-blur-md');
     });
 
     it('has rounded corners', () => {
       render(<GlassCard>Rounded</GlassCard>);
-      const card = screen.getByText('Rounded').parentElement;
+      const card = screen.getByText('Rounded');
       expect(card).toHaveClass('rounded-xl');
     });
 
     it('has border styling', () => {
       render(<GlassCard>Bordered</GlassCard>);
-      const card = screen.getByText('Bordered').parentElement;
+      const card = screen.getByText('Bordered');
       expect(card).toHaveClass('border');
     });
 
     it('has transition effects', () => {
       render(<GlassCard>Transitioned</GlassCard>);
-      const card = screen.getByText('Transitioned').parentElement;
+      const card = screen.getByText('Transitioned');
       expect(card).toHaveClass('transition-all', 'duration-200');
     });
   });
@@ -104,7 +104,7 @@ describe('GlassCard', () => {
 
     it('preserves custom className', () => {
       render(<GlassCard className="custom-class">Custom</GlassCard>);
-      const card = screen.getByText('Custom').parentElement;
+      const card = screen.getByText('Custom');
       expect(card).toHaveClass('custom-class');
     });
 

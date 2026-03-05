@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
@@ -106,45 +106,38 @@ describe('ToastItem', () => {
     });
 
     it('calls onClose when close button clicked', async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
       render(<ToastItem toast={mockToast} onClose={mockOnClose} />);
 
       await user.click(screen.getByLabelText('Lukk varsel'));
 
-      // Should start exit animation then call onClose
-      await waitFor(
-        () => {
-          expect(mockOnClose).toHaveBeenCalledWith('toast_1');
-        },
-        { timeout: 1000 }
-      );
+      // Advance past the 300ms exit animation timeout
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+
+      expect(mockOnClose).toHaveBeenCalledWith('toast_1');
     });
 
     it('auto-closes after duration', async () => {
       render(<ToastItem toast={mockToast} onClose={mockOnClose} />);
 
-      vi.advanceTimersByTime(5000);
+      act(() => {
+        vi.advanceTimersByTime(5300); // 5000ms duration + 300ms exit animation
+      });
 
-      await waitFor(
-        () => {
-          expect(mockOnClose).toHaveBeenCalledWith('toast_1');
-        },
-        { timeout: 1000 }
-      );
+      expect(mockOnClose).toHaveBeenCalledWith('toast_1');
     });
 
     it('uses custom duration', async () => {
       const customToast = { ...mockToast, duration: 1000 };
       render(<ToastItem toast={customToast} onClose={mockOnClose} />);
 
-      vi.advanceTimersByTime(1000);
+      act(() => {
+        vi.advanceTimersByTime(1300); // 1000ms duration + 300ms exit animation
+      });
 
-      await waitFor(
-        () => {
-          expect(mockOnClose).toHaveBeenCalledWith('toast_1');
-        },
-        { timeout: 1000 }
-      );
+      expect(mockOnClose).toHaveBeenCalledWith('toast_1');
     });
   });
 

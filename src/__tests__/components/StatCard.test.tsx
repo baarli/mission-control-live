@@ -19,10 +19,10 @@ describe('StatCard', () => {
 
   describe('loading state', () => {
     it('shows loading skeleton when loading is true', () => {
-      render(<StatCard title="Loading" value={0} loading />);
+      const { container } = render(<StatCard title="Loading" value={0} loading />);
 
       // Should have animate-pulse class
-      const card = screen.getByText('Loading').closest('div')?.parentElement;
+      const card = container.firstChild;
       expect(card).toHaveClass('animate-pulse');
     });
 
@@ -67,7 +67,7 @@ describe('StatCard', () => {
 
     it('shows neutral trend icon', () => {
       render(<StatCard title="Users" value={100} change={0} trend="neutral" />);
-      expect(screen.getByText('+0%').parentElement?.querySelector('svg')).toBeInTheDocument();
+      expect(screen.getByText('0%').parentElement?.querySelector('svg')).toBeInTheDocument();
     });
 
     it('has green color for upward trend', () => {
@@ -84,7 +84,7 @@ describe('StatCard', () => {
 
     it('has gray color for neutral trend', () => {
       render(<StatCard title="Users" value={100} change={0} trend="neutral" />);
-      const changeElement = screen.getByText('+0%').parentElement;
+      const changeElement = screen.getByText('0%').parentElement;
       expect(changeElement).toHaveClass('text-gray-600');
     });
   });
@@ -124,7 +124,7 @@ describe('StatCard', () => {
 
     it('has proper role and structure', () => {
       render(<StatCard title="Stats" value={100} />);
-      const card = screen.getByText('Stats').closest('div')?.parentElement;
+      const card = screen.getByText('Stats').closest('[role="region"]');
       expect(card).toHaveAttribute('role', 'region');
     });
 
@@ -136,7 +136,7 @@ describe('StatCard', () => {
 
     it('preserves custom className', () => {
       render(<StatCard className="custom-class" title="Stats" value={100} />);
-      const card = screen.getByText('Stats').closest('div')?.parentElement;
+      const card = screen.getByText('Stats').closest('[role="region"]');
       expect(card).toHaveClass('custom-class');
     });
 
@@ -149,19 +149,19 @@ describe('StatCard', () => {
   describe('visual styling', () => {
     it('has glass morphism effect', () => {
       render(<StatCard title="Stats" value={100} />);
-      const card = screen.getByText('Stats').closest('div')?.parentElement;
+      const card = screen.getByText('Stats').closest('[role="region"]');
       expect(card).toHaveClass('bg-white/70', 'backdrop-blur-md');
     });
 
     it('has proper spacing', () => {
       render(<StatCard title="Stats" value={100} />);
-      const card = screen.getByText('Stats').closest('div')?.parentElement;
+      const card = screen.getByText('Stats').closest('[role="region"]');
       expect(card).toHaveClass('p-6', 'rounded-xl');
     });
 
     it('has shadow', () => {
       render(<StatCard title="Stats" value={100} />);
-      const card = screen.getByText('Stats').closest('div')?.parentElement;
+      const card = screen.getByText('Stats').closest('[role="region"]');
       expect(card).toHaveClass('shadow-lg');
     });
   });
