@@ -68,8 +68,11 @@ describe('CommandSender', () => {
 
       render(<CommandSender />);
 
-      // action selector defaults to 'stop'
-      fireEvent.submit(screen.getByRole('button', { name: /send/i }).closest('form')!);
+      // action selector defaults to 'stop' – submit the structured form
+      const sendButton = screen.getByRole('button', { name: /send/i });
+      const form = sendButton.closest('form');
+      expect(form).not.toBeNull();
+      fireEvent.submit(form!);
 
       const { commands } = useAgentStore.getState();
       expect(commands).toHaveLength(1);

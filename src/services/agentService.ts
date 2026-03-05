@@ -31,7 +31,6 @@ class AgentService {
 
     // Track how many channels have successfully subscribed
     let successCount = 0;
-    const TOTAL_CHANNELS = 5;
 
     const onSubscribed = () => {
       successCount += 1;
@@ -110,9 +109,6 @@ class AgentService {
         if (status === 'SUBSCRIBED') onSubscribed();
         else if (status === 'CHANNEL_ERROR' && err) onError(err);
       });
-
-    // Suppress unused-variable warning: TOTAL_CHANNELS is used for documentation
-    void TOTAL_CHANNELS;
 
     this.subscriptions = [
       () => commandsSub.unsubscribe(),

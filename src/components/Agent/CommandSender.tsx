@@ -176,14 +176,15 @@ export const CommandSender: React.FC = () => {
     e.preventDefault();
     if (!form.legacyCommand.trim() || !isConnected) return;
 
-    let parsedData: Record<string, unknown> = { message: form.legacyCommand };
+    let parsedData: Record<string, unknown>;
     try {
       parsedData = JSON.parse(form.legacyCommand) as Record<string, unknown>;
-      setValidationErrors([]);
     } catch {
       setValidationErrors(['Advanced JSON: invalid JSON payload.']);
       return;
     }
+
+    setValidationErrors([]);
 
     const id = crypto.randomUUID();
     addCommand({
