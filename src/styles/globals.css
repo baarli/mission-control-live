@@ -1,7 +1,104 @@
-.bg-mission-main { background-color: var(--color-mission-main); }
-.bg-mission-secondary { background-color: var(--color-mission-secondary); }
-.bg-mission-tertiary { background-color: var(--color-mission-tertiary); }
-.text-mission-main { color: var(--color-mission-main); }
-.text-mission-secondary { color: var(--color-mission-secondary); }
-.text-mission-tertiary { color: var(--color-mission-tertiary); }
-/** Other styles can be added here with corresponding CSS variables **/
+@import 'tailwindcss';
+
+/* ==========================================
+   Global Styles - Mission Control
+   Tailwind v4-safe: mission colors via CSS variables + plain CSS
+   ========================================== */
+
+@layer base {
+  :root {
+    --mission-dark: 15 23 42;
+    --mission-panel: 30 41 59;
+    --mission-accent: 6 182 212;
+    --mission-success: 16 185 129;
+    --mission-warning: 245 158 11;
+    --mission-error: 239 68 68;
+    --mission-text-primary: 248 250 252;
+  }
+
+  * {
+    @apply border-slate-800;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    background-color: rgb(var(--mission-dark));
+    color: rgb(var(--mission-text-primary));
+    @apply antialiased;
+
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  ::-webkit-scrollbar {
+    @apply h-2 w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-700;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+}
+
+@layer components {
+  .mission-panel {
+    background-color: rgb(var(--mission-panel));
+    @apply rounded-xl border border-slate-800 p-6;
+  }
+
+  .mission-card {
+    @apply rounded-lg border border-slate-800 bg-slate-800/50 p-4 transition-all hover:border-slate-700 hover:bg-slate-800;
+  }
+
+  .mission-button {
+    background-color: rgb(var(--mission-accent));
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-900 transition-colors;
+    @apply hover:bg-cyan-400 focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none disabled:opacity-50;
+  }
+
+  .mission-input {
+    @apply rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder:text-slate-500;
+    @apply focus:ring-1 focus:outline-none;
+  }
+
+  .mission-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .mission-badge--success {
+    background-color: rgb(var(--mission-success) / 0.1);
+    color: rgb(var(--mission-success));
+  }
+
+  .mission-badge--warning {
+    background-color: rgb(var(--mission-warning) / 0.1);
+    color: rgb(var(--mission-warning));
+  }
+
+  .mission-badge--error {
+    background-color: rgb(var(--mission-error) / 0.1);
+    color: rgb(var(--mission-error));
+  }
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none;
+    --tw-ring-color: rgb(var(--mission-accent));
+  }
+
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg;
+  }
+}
