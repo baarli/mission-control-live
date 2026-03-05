@@ -118,17 +118,17 @@
 }
 
 /* Light mode score adjustments */
-[data-theme="light"] .score.high {
+[data-theme='light'] .score.high {
   background: rgba(16, 185, 129, 0.15);
   color: #059669;
 }
 
-[data-theme="light"] .score.medium {
+[data-theme='light'] .score.medium {
   background: rgba(245, 158, 11, 0.15);
   color: #d97706;
 }
 
-[data-theme="light"] .score.low {
+[data-theme='light'] .score.low {
   background: rgba(100, 116, 139, 0.15);
   color: #64748b;
 }

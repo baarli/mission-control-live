@@ -40,7 +40,7 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       setError('Tittel er påkrevd');
       return;
@@ -60,11 +60,7 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      onKeyDown={handleKeyDown}
-      className={styles.form}
-    >
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className={styles.form}>
       {/* Number */}
       <div className={styles.number} aria-hidden="true">
         {index + 1}
@@ -75,7 +71,7 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
         <div className={styles.row}>
           <Input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
             placeholder="Tittel"
             error={error}
             fullWidth
@@ -83,7 +79,7 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
           />
           <Select
             value={category}
-            onChange={(e) => setCategory(e.target.value as Category)}
+            onChange={e => setCategory(e.target.value as Category)}
             options={categoryOptions}
             disabled={isSaving}
           />
@@ -94,7 +90,7 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
           multiline
           rows={3}
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={e => setDescription(e.target.value)}
           placeholder="Beskrivelse"
           fullWidth
           disabled={isSaving}
@@ -102,19 +98,10 @@ const SakEditForm: React.FC<SakEditFormProps> = ({
 
         {/* Actions */}
         <div className={styles.actions}>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onCancel}
-            disabled={isSaving}
-          >
+          <Button type="button" variant="ghost" onClick={onCancel} disabled={isSaving}>
             Avbryt
           </Button>
-          <Button
-            type="submit"
-            variant="success"
-            isLoading={isSaving}
-          >
+          <Button type="submit" variant="success" isLoading={isSaving}>
             💾 Lagre
           </Button>
         </div>

@@ -4,14 +4,14 @@
 
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { 
-  useStatsStore, 
-  useNielsenData, 
-  usePodcastData, 
+import {
+  useStatsStore,
+  useNielsenData,
+  usePodcastData,
   useStatsLoading,
   useStatsError,
   useStatsTimeRange,
-  useStatsView
+  useStatsView,
 } from '../stores/statsStore';
 import type { ChartDataPoint, NielsenMetric, PodcastMetric } from '../types';
 
@@ -31,15 +31,15 @@ interface UseStatsReturn {
   selectedChannels: string[];
   selectedPodcasts: string[];
   chartType: 'line' | 'bar' | 'area' | 'pie';
-  
+
   // Chart data
   nielsenChartData: ChartDataPoint[];
   podcastChartData: ChartDataPoint[];
-  
+
   // Available options
   availableChannels: string[];
   availablePodcasts: string[];
-  
+
   // Summary
   summary: {
     totalNielsenPoints: number;
@@ -47,7 +47,7 @@ interface UseStatsReturn {
     avgNielsenValue: number;
     topPodcast: { podcast_title: string; rank: number } | null;
   };
-  
+
   // Actions
   fetchNielsenData: () => Promise<void>;
   fetchPodcastData: () => Promise<void>;
@@ -65,21 +65,70 @@ interface UseStatsReturn {
 
 // Mock API calls - replace with actual API calls
 const mockFetchNielsen = async (): Promise<NielsenMetric[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  await new Promise(resolve => setTimeout(resolve, 600));
   return [
-    { id: '1', channel: 'NRJ', metric_type: 'listeners', value: 150000, week_start: '2024-01-01', created_at: new Date().toISOString() },
-    { id: '2', channel: 'NRJ', metric_type: 'listeners', value: 155000, week_start: '2024-01-08', created_at: new Date().toISOString() },
-    { id: '3', channel: 'P4', metric_type: 'listeners', value: 200000, week_start: '2024-01-01', created_at: new Date().toISOString() },
-    { id: '4', channel: 'P4', metric_type: 'listeners', value: 198000, week_start: '2024-01-08', created_at: new Date().toISOString() }
+    {
+      id: '1',
+      channel: 'NRJ',
+      metric_type: 'listeners',
+      value: 150000,
+      week_start: '2024-01-01',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      channel: 'NRJ',
+      metric_type: 'listeners',
+      value: 155000,
+      week_start: '2024-01-08',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '3',
+      channel: 'P4',
+      metric_type: 'listeners',
+      value: 200000,
+      week_start: '2024-01-01',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '4',
+      channel: 'P4',
+      metric_type: 'listeners',
+      value: 198000,
+      week_start: '2024-01-08',
+      created_at: new Date().toISOString(),
+    },
   ];
 };
 
 const mockFetchPodcasts = async (): Promise<PodcastMetric[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  await new Promise(resolve => setTimeout(resolve, 600));
   return [
-    { id: '1', podcast_title: 'Kloakkontroll', rank: 5, total_listens: 50000, week_start: '2024-01-01', created_at: new Date().toISOString() },
-    { id: '2', podcast_title: 'Morgenrush', rank: 12, total_listens: 35000, week_start: '2024-01-01', created_at: new Date().toISOString() },
-    { id: '3', podcast_title: 'Top 20', rank: 3, total_listens: 75000, week_start: '2024-01-01', created_at: new Date().toISOString() }
+    {
+      id: '1',
+      podcast_title: 'Kloakkontroll',
+      rank: 5,
+      total_listens: 50000,
+      week_start: '2024-01-01',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      podcast_title: 'Morgenrush',
+      rank: 12,
+      total_listens: 35000,
+      week_start: '2024-01-01',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: '3',
+      podcast_title: 'Top 20',
+      rank: 3,
+      total_listens: 75000,
+      week_start: '2024-01-01',
+      created_at: new Date().toISOString(),
+    },
   ];
 };
 
@@ -92,9 +141,9 @@ export function useStats(): UseStatsReturn {
   const error = useStatsError();
   const timeRange = useStatsTimeRange();
   const currentView = useStatsView();
-  const selectedChannels = useStatsStore((state) => state.selectedChannels);
-  const selectedPodcasts = useStatsStore((state) => state.selectedPodcasts);
-  const chartType = useStatsStore((state) => state.chartType);
+  const selectedChannels = useStatsStore(state => state.selectedChannels);
+  const selectedPodcasts = useStatsStore(state => state.selectedPodcasts);
+  const chartType = useStatsStore(state => state.chartType);
 
   // Memoized computed values
   const nielsenChartData = useMemo(() => store.getNielsenChartData(), [store]);
@@ -137,21 +186,33 @@ export function useStats(): UseStatsReturn {
     showToast('Statistikk oppdatert', 'success');
   }, [fetchNielsenData, fetchPodcastData, showToast]);
 
-  const setTimeRange = useCallback((range: StatsTimeRange) => {
-    store.setTimeRange(range);
-  }, [store]);
+  const setTimeRange = useCallback(
+    (range: StatsTimeRange) => {
+      store.setTimeRange(range);
+    },
+    [store]
+  );
 
-  const setCurrentView = useCallback((view: StatsView) => {
-    store.setCurrentView(view);
-  }, [store]);
+  const setCurrentView = useCallback(
+    (view: StatsView) => {
+      store.setCurrentView(view);
+    },
+    [store]
+  );
 
-  const toggleChannel = useCallback((channel: string) => {
-    store.toggleChannel(channel);
-  }, [store]);
+  const toggleChannel = useCallback(
+    (channel: string) => {
+      store.toggleChannel(channel);
+    },
+    [store]
+  );
 
-  const togglePodcast = useCallback((podcast: string) => {
-    store.togglePodcast(podcast);
-  }, [store]);
+  const togglePodcast = useCallback(
+    (podcast: string) => {
+      store.togglePodcast(podcast);
+    },
+    [store]
+  );
 
   const selectAllChannels = useCallback(() => {
     store.selectAllChannels(availableChannels);
@@ -169,9 +230,12 @@ export function useStats(): UseStatsReturn {
     store.selectAllPodcasts([]);
   }, [store]);
 
-  const setChartType = useCallback((type: 'line' | 'bar' | 'area' | 'pie') => {
-    store.setChartType(type);
-  }, [store]);
+  const setChartType = useCallback(
+    (type: 'line' | 'bar' | 'area' | 'pie') => {
+      store.setChartType(type);
+    },
+    [store]
+  );
 
   // Auto-fetch on mount
   useEffect(() => {
@@ -181,7 +245,7 @@ export function useStats(): UseStatsReturn {
     if (podcastData.length === 0 && !isLoading) {
       fetchPodcastData();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -210,7 +274,7 @@ export function useStats(): UseStatsReturn {
     selectAllPodcasts,
     clearChannelSelection,
     clearPodcastSelection,
-    setChartType
+    setChartType,
   };
 }
 

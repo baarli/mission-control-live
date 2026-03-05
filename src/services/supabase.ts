@@ -56,17 +56,11 @@ function getConfig(): { url: string; anonKey: string } {
   const anonKey = import.meta.env[ENV_KEYS.ANON_KEY];
 
   if (!url) {
-    throw new SupabaseError(
-      `Missing environment variable: ${ENV_KEYS.URL}`,
-      'CONFIG_ERROR'
-    );
+    throw new SupabaseError(`Missing environment variable: ${ENV_KEYS.URL}`, 'CONFIG_ERROR');
   }
 
   if (!anonKey) {
-    throw new SupabaseError(
-      `Missing environment variable: ${ENV_KEYS.ANON_KEY}`,
-      'CONFIG_ERROR'
-    );
+    throw new SupabaseError(`Missing environment variable: ${ENV_KEYS.ANON_KEY}`, 'CONFIG_ERROR');
   }
 
   return { url, anonKey };
@@ -78,12 +72,7 @@ function getConfig(): { url: string; anonKey: string } {
  * @returns SupabaseError instance
  */
 function normalizeError(error: PostgrestError): SupabaseError {
-  return new SupabaseError(
-    error.message,
-    error.code,
-    error.details,
-    error.hint
-  );
+  return new SupabaseError(error.message, error.code, error.details, error.hint);
 }
 
 /**
@@ -201,9 +190,7 @@ class SupabaseService {
    * @param item - Agenda item data (without auto-generated fields)
    * @returns API response with created agenda item
    */
-  async createAgendaItem(
-    item: CreateAgendaItemInput
-  ): Promise<ApiResponse<AgendaItem>> {
+  async createAgendaItem(item: CreateAgendaItemInput): Promise<ApiResponse<AgendaItem>> {
     try {
       const client = await this.initialize();
       const { data, error } = await client
@@ -262,10 +249,7 @@ class SupabaseService {
   async deleteAgendaItem(id: string): Promise<ApiResponse<void>> {
     try {
       const client = await this.initialize();
-      const { error } = await client
-        .from(TABLES.AGENDA_ITEMS)
-        .delete()
-        .eq('id', id);
+      const { error } = await client.from(TABLES.AGENDA_ITEMS).delete().eq('id', id);
 
       if (error) throw normalizeError(error);
       return successResponse(undefined);
@@ -293,10 +277,7 @@ class SupabaseService {
    * @param isPinned - New pinned status
    * @returns API response with updated agenda item
    */
-  async toggleAgendaItemPinned(
-    id: string,
-    isPinned: boolean
-  ): Promise<ApiResponse<AgendaItem>> {
+  async toggleAgendaItemPinned(id: string, isPinned: boolean): Promise<ApiResponse<AgendaItem>> {
     return this.updateAgendaItem(id, { is_pinned: isPinned });
   }
 
@@ -320,7 +301,7 @@ class SupabaseService {
       const results = await Promise.all(updates);
 
       // Check for errors
-      const errors = results.filter((r) => r.error);
+      const errors = results.filter(r => r.error);
       const firstError = errors[0];
       if (firstError?.error) {
         throw normalizeError(firstError.error);
@@ -411,10 +392,7 @@ class SupabaseService {
   }): Promise<ApiResponse<PodtoppenData[]>> {
     try {
       const client = await this.initialize();
-      let query = client
-        .from(TABLES.PODTOPPEN_DATA)
-        .select('*')
-        .order('rank', { ascending: true });
+      let query = client.from(TABLES.PODTOPPEN_DATA).select('*').order('rank', { ascending: true });
 
       if (options?.week) {
         query = query.eq('week_number', options.week);
@@ -477,7 +455,7 @@ class SupabaseService {
           table: TABLES.AGENDA_ITEMS,
           filter: `show_date=eq.${date}`,
         },
-        (payload) => {
+        payload => {
           callback({
             event: payload.eventType,
             new: payload.new as AgendaItem,

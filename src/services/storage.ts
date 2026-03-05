@@ -30,11 +30,11 @@ export function getItem<T>(key: string, defaultValue: T): T {
     const storage = getStorage();
     const fullKey = PREFIX + key;
     const item = storage.getItem(fullKey);
-    
+
     if (item === null) {
       return defaultValue;
     }
-    
+
     return JSON.parse(item) as T;
   } catch (error) {
     console.error(`Error reading from localStorage [${key}]:`, error);
@@ -79,14 +79,14 @@ export function clearAll(): boolean {
   try {
     const storage = getStorage();
     const keysToRemove: string[] = [];
-    
+
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
       if (key?.startsWith(PREFIX)) {
         keysToRemove.push(key);
       }
     }
-    
+
     keysToRemove.forEach(key => storage.removeItem(key));
     return true;
   } catch (error) {
@@ -116,14 +116,14 @@ export function getAllKeys(): string[] {
   try {
     const storage = getStorage();
     const keys: string[] = [];
-    
+
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
       if (key?.startsWith(PREFIX)) {
         keys.push(key.slice(PREFIX.length));
       }
     }
-    
+
     return keys;
   } catch (error) {
     console.error('Error getting keys from localStorage:', error);

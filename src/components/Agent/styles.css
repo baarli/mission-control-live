@@ -9,7 +9,7 @@
 
 .agent-status-card::before {
   content: '';
-  @apply absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500;
+  @apply absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500;
 }
 
 /* Command Sender Styles */
@@ -26,8 +26,7 @@
 
 /* Realtime Connection Indicator */
 .connection-indicator {
-  @apply fixed bottom-4 right-4 flex items-center gap-2 px-3 py-2 rounded-full 
-         bg-gray-800/90 backdrop-blur border border-gray-700 text-xs;
+  @apply fixed right-4 bottom-4 flex items-center gap-2 rounded-full border border-gray-700 bg-gray-800/90 px-3 py-2 text-xs backdrop-blur;
 }
 
 .connection-indicator.online {

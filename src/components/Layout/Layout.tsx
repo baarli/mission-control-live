@@ -19,12 +19,7 @@ interface LayoutProps {
   onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({
-  children,
-  activeSection,
-  onNavigate,
-  onLogout,
-}) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeSection, onNavigate, onLogout }) => {
   const [theme, setTheme] = useState<Theme>('dark');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toasts, removeToast } = useToast();

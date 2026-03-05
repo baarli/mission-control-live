@@ -10,7 +10,7 @@ export const ROUTES = {
   // Auth routes
   LOGIN: '/login',
   LOGOUT: '/logout',
-  
+
   // Main routes
   HOME: '/',
   DASHBOARD: '/',
@@ -18,14 +18,14 @@ export const ROUTES = {
   SEARCH: '/search',
   STATS: '/stats',
   SETTINGS: '/settings',
-  
+
   // Detail routes
   SAK_DETAIL: '/saksliste/:id',
   SAK_EDIT: '/saksliste/:id/edit',
-  
+
   // Utility routes
   NOT_FOUND: '/404',
-  WILDCARD: '*'
+  WILDCARD: '*',
 } as const;
 
 /**
@@ -50,7 +50,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     icon: 'LayoutDashboard',
     requiresAuth: true,
     showInNav: true,
-    order: 1
+    order: 1,
   },
   [ROUTES.SAKSLISTE]: {
     path: ROUTES.SAKSLISTE,
@@ -58,7 +58,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     icon: 'List',
     requiresAuth: true,
     showInNav: true,
-    order: 2
+    order: 2,
   },
   [ROUTES.SEARCH]: {
     path: ROUTES.SEARCH,
@@ -66,7 +66,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     icon: 'Search',
     requiresAuth: true,
     showInNav: true,
-    order: 3
+    order: 3,
   },
   [ROUTES.STATS]: {
     path: ROUTES.STATS,
@@ -74,7 +74,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     icon: 'BarChart3',
     requiresAuth: true,
     showInNav: true,
-    order: 4
+    order: 4,
   },
   [ROUTES.SETTINGS]: {
     path: ROUTES.SETTINGS,
@@ -82,15 +82,15 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     icon: 'Settings',
     requiresAuth: true,
     showInNav: true,
-    order: 5
+    order: 5,
   },
   [ROUTES.LOGIN]: {
     path: ROUTES.LOGIN,
     label: 'Logg inn',
     icon: 'LogIn',
     requiresAuth: false,
-    showInNav: false
-  }
+    showInNav: false,
+  },
 };
 
 /**
@@ -111,10 +111,8 @@ export function getRouteMeta(path: string): RouteMeta | undefined {
  */
 export function matchRoute(path: string, pattern: string): boolean {
   // Convert pattern to regex
-  const regexPattern = pattern
-    .replace(/:([^/]+)/g, '([^/]+)')
-    .replace(/\*/g, '.*');
-  
+  const regexPattern = pattern.replace(/:([^/]+)/g, '([^/]+)').replace(/\*/g, '.*');
+
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(path);
 }
@@ -122,16 +120,13 @@ export function matchRoute(path: string, pattern: string): boolean {
 /**
  * Build route with parameters
  */
-export function buildRoute(
-  route: string,
-  params: Record<string, string | number>
-): string {
+export function buildRoute(route: string, params: Record<string, string | number>): string {
   let builtRoute = route;
-  
+
   for (const [key, value] of Object.entries(params)) {
     builtRoute = builtRoute.replace(`:${key}`, String(value));
   }
-  
+
   return builtRoute;
 }
 
@@ -140,7 +135,7 @@ export function buildRoute(
  */
 export function getNavRoutes(): RouteMeta[] {
   return Object.values(ROUTE_META)
-    .filter((route) => route.showInNav)
+    .filter(route => route.showInNav)
     .sort((a, b) => (a.order || 99) - (b.order || 99));
 }
 
@@ -148,14 +143,14 @@ export function getNavRoutes(): RouteMeta[] {
  * Get routes requiring authentication
  */
 export function getAuthRoutes(): RouteMeta[] {
-  return Object.values(ROUTE_META).filter((route) => route.requiresAuth);
+  return Object.values(ROUTE_META).filter(route => route.requiresAuth);
 }
 
 /**
  * Get public routes (no auth required)
  */
 export function getPublicRoutes(): RouteMeta[] {
-  return Object.values(ROUTE_META).filter((route) => !route.requiresAuth);
+  return Object.values(ROUTE_META).filter(route => !route.requiresAuth);
 }
 
 /**
@@ -174,40 +169,40 @@ export function canAccessRoute(
   isAuthenticated: boolean
 ): { allowed: boolean; redirectTo?: string } {
   const needsAuth = requiresAuth(path);
-  
+
   if (needsAuth && !isAuthenticated) {
     return { allowed: false, redirectTo: ROUTES.LOGIN };
   }
-  
+
   if (!needsAuth && isAuthenticated && path === ROUTES.LOGIN) {
     return { allowed: false, redirectTo: ROUTES.DASHBOARD };
   }
-  
+
   return { allowed: true };
 }
 
 /**
  * Extract parameters from path
  */
-export function extractParams(
-  pattern: string,
-  path: string
-): Record<string, string> | null {
+export function extractParams(pattern: string, path: string): Record<string, string> | null {
   const paramNames: string[] = [];
   const regexPattern = pattern.replace(/:([^/]+)/g, (_, name) => {
     paramNames.push(name);
     return '([^/]+)';
   });
-  
+
   const regex = new RegExp(`^${regexPattern}$`);
   const match = path.match(regex);
-  
+
   if (!match) return null;
-  
-  return paramNames.reduce((acc, name, index) => {
-    acc[name] = match[index + 1] ?? '';
-    return acc;
-  }, {} as Record<string, string>);
+
+  return paramNames.reduce(
+    (acc, name, index) => {
+      acc[name] = match[index + 1] ?? '';
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 }
 
 /**
@@ -215,17 +210,17 @@ export function extractParams(
  */
 export function getBreadcrumbs(path: string): Array<{ label: string; path?: string }> {
   const breadcrumbs: Array<{ label: string; path?: string }> = [];
-  
+
   // Always add home
   breadcrumbs.push({ label: 'Dashboard', path: ROUTES.DASHBOARD });
-  
+
   // Add specific routes based on path
   if (path.startsWith('/saksliste')) {
     if (path === '/saksliste') {
       breadcrumbs.push({ label: 'Saksliste' });
     } else {
       breadcrumbs.push({ label: 'Saksliste', path: ROUTES.SAKSLISTE });
-      
+
       const params = extractParams(ROUTES.SAK_DETAIL, path);
       if (params) {
         breadcrumbs.push({ label: `Sak ${params.id}` });
@@ -238,7 +233,7 @@ export function getBreadcrumbs(path: string): Array<{ label: string; path?: stri
   } else if (path.startsWith('/settings')) {
     breadcrumbs.push({ label: 'Innstillinger' });
   }
-  
+
   return breadcrumbs;
 }
 
@@ -248,11 +243,11 @@ export function getBreadcrumbs(path: string): Array<{ label: string; path?: stri
 export function getPageTitle(path: string): string {
   const meta = getRouteMeta(path);
   const baseTitle = 'Mission Control | NRJ Morgen';
-  
+
   if (meta && meta.label && meta.path !== '/') {
     return `${meta.label} | ${baseTitle}`;
   }
-  
+
   return baseTitle;
 }
 
@@ -263,7 +258,7 @@ export const EXTERNAL_LINKS = {
   nrj: 'https://www.nrj.no',
   supabase: 'https://supabase.com',
   github: 'https://github.com/baarli/mission-control-live',
-  braveSearch: 'https://brave.com/search'
+  braveSearch: 'https://brave.com/search',
 };
 
 export default {
@@ -280,5 +275,5 @@ export default {
   canAccessRoute,
   extractParams,
   getBreadcrumbs,
-  getPageTitle
+  getPageTitle,
 };

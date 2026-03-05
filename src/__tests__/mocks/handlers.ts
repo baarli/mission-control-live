@@ -66,7 +66,7 @@ export const handlers = [
   }),
 
   http.post('*/rest/v1/missions', async ({ request }) => {
-    const body = await request.json() as Record<string, unknown>;
+    const body = (await request.json()) as Record<string, unknown>;
     const newMission = {
       id: '3',
       ...body,
@@ -77,7 +77,7 @@ export const handlers = [
   }),
 
   http.patch('*/rest/v1/missions/:id', async ({ params, request }) => {
-    const body = await request.json() as Record<string, unknown>;
+    const body = (await request.json()) as Record<string, unknown>;
     const mission = mockMissions.find(m => m.id === params.id);
     if (!mission) {
       return new HttpResponse(null, { status: 404 });

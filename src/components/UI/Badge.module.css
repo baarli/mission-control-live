@@ -52,32 +52,32 @@
 }
 
 /* Light mode adjustments */
-[data-theme="light"] .reality {
+[data-theme='light'] .reality {
   background: rgba(245, 158, 11, 0.15);
   color: #d97706;
 }
 
-[data-theme="light"] .kjendis {
+[data-theme='light'] .kjendis {
   background: rgba(236, 72, 153, 0.15);
   color: #db2777;
 }
 
-[data-theme="light"] .film {
+[data-theme='light'] .film {
   background: rgba(59, 130, 246, 0.15);
   color: #2563eb;
 }
 
-[data-theme="light"] .musikk {
+[data-theme='light'] .musikk {
   background: rgba(16, 185, 129, 0.15);
   color: #059669;
 }
 
-[data-theme="light"] .internasjonalt {
+[data-theme='light'] .internasjonalt {
   background: rgba(139, 92, 246, 0.15);
   color: #7c3aed;
 }
 
-[data-theme="light"] .talk {
+[data-theme='light'] .talk {
   background: rgba(99, 102, 241, 0.15);
   color: #4f46e5;
 }

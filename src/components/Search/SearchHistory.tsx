@@ -43,7 +43,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
       <h4 className={styles.title}>
         <span aria-hidden="true">📜</span> Siste søk
       </h4>
-      
+
       <ul className={styles.list} role="list">
         {visibleItems.map((item, _index) => (
           <li key={`${item.query}-${item.timestamp}`}>
@@ -54,9 +54,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
             >
               <span className={styles.query}>
                 {item.query}
-                {item.category && (
-                  <span className={styles.category}>[{item.category}]</span>
-                )}
+                {item.category && <span className={styles.category}>[{item.category}]</span>}
               </span>
               <span className={styles.time}>{getTimeAgo(item.timestamp)}</span>
             </button>
@@ -64,12 +62,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({
         ))}
       </ul>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClear}
-        className={styles.clearButton}
-      >
+      <Button variant="ghost" size="sm" onClick={onClear} className={styles.clearButton}>
         Tøm historikk
       </Button>
     </div>

@@ -27,19 +27,12 @@ const Skeleton: React.FC<SkeletonProps> = ({
     borderRadius: circle ? '50%' : undefined,
   };
 
-  const skeletonClass = [styles.skeleton, className]
-    .filter(Boolean)
-    .join(' ');
+  const skeletonClass = [styles.skeleton, className].filter(Boolean).join(' ');
 
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <div
-          key={index}
-          className={skeletonClass}
-          style={style}
-          aria-hidden="true"
-        />
+        <div key={index} className={skeletonClass} style={style} aria-hidden="true" />
       ))}
     </>
   );
@@ -67,10 +60,7 @@ export const SkeletonText: React.FC<{ lines?: number; className?: string }> = ({
   return (
     <div className={[styles.textBlock, className].filter(Boolean).join(' ')}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          width={i === lines - 1 ? '75%' : '100%'}
-        />
+        <Skeleton key={i} width={i === lines - 1 ? '75%' : '100%'} />
       ))}
     </div>
   );

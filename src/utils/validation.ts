@@ -28,17 +28,21 @@ export const VALIDATION_RULES = {
     return null;
   },
 
-  minLength: (min: number) => (value: unknown): string | null => {
-    if (typeof value !== 'string') return null;
-    if (value.length < min) return `Må være minst ${min} tegn`;
-    return null;
-  },
+  minLength:
+    (min: number) =>
+    (value: unknown): string | null => {
+      if (typeof value !== 'string') return null;
+      if (value.length < min) return `Må være minst ${min} tegn`;
+      return null;
+    },
 
-  maxLength: (max: number) => (value: unknown): string | null => {
-    if (typeof value !== 'string') return null;
-    if (value.length > max) return `Maks ${max} tegn`;
-    return null;
-  },
+  maxLength:
+    (max: number) =>
+    (value: unknown): string | null => {
+      if (typeof value !== 'string') return null;
+      if (value.length > max) return `Maks ${max} tegn`;
+      return null;
+    },
 
   email: (value: unknown): string | null => {
     if (typeof value !== 'string' || !value) return null;
@@ -63,30 +67,38 @@ export const VALIDATION_RULES = {
     return null;
   },
 
-  min: (min: number) => (value: unknown): string | null => {
-    const num = typeof value === 'string' ? parseFloat(value) : Number(value);
-    if (isNaN(num)) return null;
-    if (num < min) return `Må være minst ${min}`;
-    return null;
-  },
+  min:
+    (min: number) =>
+    (value: unknown): string | null => {
+      const num = typeof value === 'string' ? parseFloat(value) : Number(value);
+      if (isNaN(num)) return null;
+      if (num < min) return `Må være minst ${min}`;
+      return null;
+    },
 
-  max: (max: number) => (value: unknown): string | null => {
-    const num = typeof value === 'string' ? parseFloat(value) : Number(value);
-    if (isNaN(num)) return null;
-    if (num > max) return `Maks ${max}`;
-    return null;
-  },
+  max:
+    (max: number) =>
+    (value: unknown): string | null => {
+      const num = typeof value === 'string' ? parseFloat(value) : Number(value);
+      if (isNaN(num)) return null;
+      if (num > max) return `Maks ${max}`;
+      return null;
+    },
 
-  pattern: (regex: RegExp, message: string) => (value: unknown): string | null => {
-    if (typeof value !== 'string' || !value) return null;
-    if (!regex.test(value)) return message;
-    return null;
-  },
+  pattern:
+    (regex: RegExp, message: string) =>
+    (value: unknown): string | null => {
+      if (typeof value !== 'string' || !value) return null;
+      if (!regex.test(value)) return message;
+      return null;
+    },
 
-  oneOf: (values: unknown[]) => (value: unknown): string | null => {
-    if (!values.includes(value)) return 'Ugyldig verdi';
-    return null;
-  }
+  oneOf:
+    (values: unknown[]) =>
+    (value: unknown): string | null => {
+      if (!values.includes(value)) return 'Ugyldig verdi';
+      return null;
+    },
 };
 
 /**
@@ -120,7 +132,7 @@ export function validateObject<T extends Record<string, unknown>>(
 
   return {
     valid: Object.keys(errors).length === 0,
-    errors
+    errors,
   };
 }
 
@@ -150,7 +162,7 @@ export function validateSak(data: {
       if (!value) return null;
       return VALIDATION_RULES.url(value);
     },
-    show_date: VALIDATION_RULES.required
+    show_date: VALIDATION_RULES.required,
   };
 
   return validateObject(data as Record<string, unknown>, schema);
@@ -165,7 +177,7 @@ export function validateSearchQuery(query: string): ValidationResult {
       VALIDATION_RULES.required,
       VALIDATION_RULES.minLength(2),
       VALIDATION_RULES.maxLength(200)
-    )
+    ),
   };
 
   return validateObject({ query }, schema);
@@ -176,10 +188,7 @@ export function validateSearchQuery(query: string): ValidationResult {
  */
 export function validateLogin(password: string): ValidationResult {
   const schema = {
-    password: composeValidators(
-      VALIDATION_RULES.required,
-      VALIDATION_RULES.minLength(4)
-    )
+    password: composeValidators(VALIDATION_RULES.required, VALIDATION_RULES.minLength(4)),
   };
 
   return validateObject({ password }, schema);
@@ -199,7 +208,7 @@ export function validateSettings(data: {
     email: (value: unknown): string | null => {
       if (!value) return null;
       return VALIDATION_RULES.email(value);
-    }
+    },
   };
 
   return validateObject(data as Record<string, unknown>, schema);
@@ -228,7 +237,7 @@ export function validateFile(
 
   return {
     valid: Object.keys(errors).length === 0,
-    errors
+    errors,
   };
 }
 
@@ -289,7 +298,7 @@ export function validateDateRange(
 
   return {
     valid: Object.keys(errors).length === 0,
-    errors
+    errors,
   };
 }
 
@@ -304,7 +313,7 @@ export function createValidator<T extends Record<string, unknown>>(
     validateField: (key: keyof T, value: unknown): string | null => {
       const validator = schema[key];
       return validator ? validator(value) : null;
-    }
+    },
   };
 }
 

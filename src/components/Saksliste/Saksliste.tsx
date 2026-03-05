@@ -48,7 +48,7 @@ const Saksliste: React.FC<SakslisteProps> = ({
 
   const handleSave = async (id: string, data: Partial<Sak>) => {
     if (!onSaveSak) return;
-    
+
     setSavingId(id);
     try {
       await onSaveSak(id, data);
@@ -83,7 +83,7 @@ const Saksliste: React.FC<SakslisteProps> = ({
             <Input
               type="date"
               value={selectedDate || getTomorrowDate()}
-              onChange={(e) => onDateChange?.(e.target.value)}
+              onChange={e => onDateChange?.(e.target.value)}
               className={styles.dateInput}
             />
             <Button
@@ -138,8 +138,8 @@ const Saksliste: React.FC<SakslisteProps> = ({
                   <SakItem
                     key={sak.id}
                     sak={sak}
-                    onEdit={(s) => handleEdit(s.id)}
-                    onDelete={(id) => handleDelete(id)}
+                    onEdit={s => handleEdit(s.id)}
+                    onDelete={id => handleDelete(id)}
                   />
                 )
               )}

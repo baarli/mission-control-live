@@ -27,7 +27,8 @@ const StatCard: React.FC<StatCardProps> = ({
   variant = 'default',
   isLoading = false,
 }) => {
-  const borderColor = variant === 'success' ? 'success' : variant === 'info' ? 'warning' : 'primary';
+  const borderColor =
+    variant === 'success' ? 'success' : variant === 'info' ? 'warning' : 'primary';
 
   if (isLoading) {
     return (
@@ -44,9 +45,7 @@ const StatCard: React.FC<StatCardProps> = ({
       <div className={styles.icon} aria-hidden="true">
         {icon}
       </div>
-      <div className={[styles.value, styles[variant]].join(' ')}>
-        {value}
-      </div>
+      <div className={[styles.value, styles[variant]].join(' ')}>{value}</div>
       <div className={styles.label}>{label}</div>
       {trendLabel && (
         <span className={[styles.trend, styles[trend]].join(' ')}>

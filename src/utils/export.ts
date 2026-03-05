@@ -19,11 +19,7 @@ export function exportToCsv(
     includeHeaders?: boolean;
   } = {}
 ): { success: boolean; blob?: Blob; error?: string } {
-  const { 
-    filename = 'export.csv', 
-    delimiter = ';',
-    includeHeaders = true 
-  } = options;
+  const { filename = 'export.csv', delimiter = ';', includeHeaders = true } = options;
 
   try {
     if (data.length === 0) {
@@ -36,23 +32,23 @@ export function exportToCsv(
     }
 
     const headers = Object.keys(firstRow);
-    
+
     // Create CSV content
     let csv = '';
-    
+
     // Add BOM for Excel UTF-8 compatibility
     csv += '\uFEFF';
-    
+
     // Headers
     if (includeHeaders) {
       csv += headers.join(delimiter) + '\n';
     }
-    
+
     // Rows
     for (const row of data) {
-      const values = headers.map((header) => {
+      const values = headers.map(header => {
         const value = row[header];
-        
+
         // Handle different value types
         if (value === null || value === undefined) return '';
         if (typeof value === 'string') {
@@ -68,18 +64,18 @@ export function exportToCsv(
         }
         return String(value);
       });
-      
+
       csv += values.join(delimiter) + '\n';
     }
-    
+
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     downloadBlob(blob, filename);
-    
+
     return { success: true, blob };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport',
     };
   }
 }
@@ -91,17 +87,17 @@ export function exportSakerToCsv(
   saker: Sak[],
   filename?: string
 ): { success: boolean; error?: string } {
-  const data = saker.map((sak) => ({
+  const data = saker.map(sak => ({
     Tittel: sak.title,
     Kategori: getCategoryLabel(sak.category),
     Beskrivelse: sak.description || '',
     'Show dato': formatDate(sak.show_date),
     Lenke: sak.link_url || '',
-    'Opprettet': formatDate(sak.created_at)
+    Opprettet: formatDate(sak.created_at),
   }));
 
-  return exportToCsv(data, { 
-    filename: filename || `saksliste-${formatDate(new Date())}.csv` 
+  return exportToCsv(data, {
+    filename: filename || `saksliste-${formatDate(new Date())}.csv`,
   });
 }
 
@@ -112,17 +108,17 @@ export function exportSearchResultsToCsv(
   results: SearchResult[],
   filename?: string
 ): { success: boolean; error?: string } {
-  const data = results.map((result) => ({
+  const data = results.map(result => ({
     Tittel: result.title,
     Beskrivelse: result.description,
     Kilde: result.source,
     Kategori: result.category ? getCategoryLabel(result.category) : '',
     URL: result.url,
-    Publisert: result.published_at ? formatDate(result.published_at) : ''
+    Publisert: result.published_at ? formatDate(result.published_at) : '',
   }));
 
-  return exportToCsv(data, { 
-    filename: filename || `sokeresultater-${formatDate(new Date())}.csv` 
+  return exportToCsv(data, {
+    filename: filename || `sokeresultater-${formatDate(new Date())}.csv`,
   });
 }
 
@@ -142,12 +138,12 @@ export function exportToJson(
     const json = JSON.stringify(data, null, indent);
     const blob = new Blob([json], { type: 'application/json' });
     downloadBlob(blob, filename);
-    
+
     return { success: true, blob };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport',
     };
   }
 }
@@ -162,11 +158,11 @@ export function exportSakerToJson(
   const exportData = {
     exportedAt: new Date().toISOString(),
     count: saker.length,
-    items: saker
+    items: saker,
   };
 
-  return exportToJson(exportData, { 
-    filename: filename || `saksliste-${formatDate(new Date())}.json` 
+  return exportToJson(exportData, {
+    filename: filename || `saksliste-${formatDate(new Date())}.json`,
   });
 }
 
@@ -182,16 +178,16 @@ export function exportStatsToJson(
     exportedAt: new Date().toISOString(),
     nielsen: {
       count: nielsenData.length,
-      data: nielsenData
+      data: nielsenData,
     },
     podcast: {
       count: podcastData.length,
-      data: podcastData
-    }
+      data: podcastData,
+    },
   };
 
-  return exportToJson(exportData, { 
-    filename: filename || `stats-${formatDate(new Date())}.json` 
+  return exportToJson(exportData, {
+    filename: filename || `stats-${formatDate(new Date())}.json`,
   });
 }
 
@@ -207,9 +203,9 @@ export function exportToText(
     downloadBlob(blob, filename || 'export.txt');
     return { success: true };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Ukjent feil ved eksport',
     };
   }
 }
@@ -224,14 +220,18 @@ export function exportSakerToText(saker: Sak[]): { success: boolean; error?: str
     `Generert: ${formatDate(new Date())}`,
     `Antall saker: ${saker.length}`,
     '',
-    ...saker.map((sak, index) => [
-      `${index + 1}. ${sak.title}`,
-      `   Kategori: ${getCategoryLabel(sak.category)}`,
-      sak.description ? `   Beskrivelse: ${sak.description}` : '',
-      `   Show dato: ${formatDate(sak.show_date)}`,
-      sak.link_url ? `   Lenke: ${sak.link_url}` : '',
-      ''
-    ].filter(Boolean).join('\n'))
+    ...saker.map((sak, index) =>
+      [
+        `${index + 1}. ${sak.title}`,
+        `   Kategori: ${getCategoryLabel(sak.category)}`,
+        sak.description ? `   Beskrivelse: ${sak.description}` : '',
+        `   Show dato: ${formatDate(sak.show_date)}`,
+        sak.link_url ? `   Lenke: ${sak.link_url}` : '',
+        '',
+      ]
+        .filter(Boolean)
+        .join('\n')
+    ),
   ];
 
   return exportToText(lines.join('\n'), `saksliste-${formatDate(new Date())}.txt`);
@@ -266,10 +266,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
  * Copy saker list to clipboard
  */
 export async function copySakerToClipboard(saker: Sak[]): Promise<boolean> {
-  const lines = saker.map((sak, index) => 
-    `${index + 1}. ${sak.title} [${getCategoryLabel(sak.category)}]`
+  const lines = saker.map(
+    (sak, index) => `${index + 1}. ${sak.title} [${getCategoryLabel(sak.category)}]`
   );
-  
+
   return copyToClipboard(lines.join('\n'));
 }
 
@@ -300,8 +300,8 @@ export function parseCsv(
   const { delimiter = ';', hasHeaders = true } = options;
 
   try {
-    const lines = csvText.split('\n').filter((line) => line.trim());
-    
+    const lines = csvText.split('\n').filter(line => line.trim());
+
     if (lines.length === 0) {
       return { success: false, error: 'Filen er tom' };
     }
@@ -311,7 +311,7 @@ export function parseCsv(
 
     lines.forEach((line, index) => {
       // Simple CSV parsing (doesn't handle all edge cases)
-      const values = line.split(delimiter).map((v) => v.trim().replace(/^"|"$/g, ''));
+      const values = line.split(delimiter).map(v => v.trim().replace(/^"|"$/g, ''));
 
       if (index === 0 && hasHeaders) {
         headers = values;
@@ -327,9 +327,9 @@ export function parseCsv(
 
     return { success: true, data };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Ukjent feil ved parsing' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Ukjent feil ved parsing',
     };
   }
 }
@@ -340,8 +340,8 @@ export function parseCsv(
 export function readFileAsText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target?.result as string);
-    reader.onerror = (e) => reject(e);
+    reader.onload = e => resolve(e.target?.result as string);
+    reader.onerror = e => reject(e);
     reader.readAsText(file);
   });
 }
@@ -434,5 +434,5 @@ export default {
   readFileAsText,
   readFileAsJson,
   generatePrintHtml,
-  printContent
+  printContent,
 };

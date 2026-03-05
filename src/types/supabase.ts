@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {
   public: {
@@ -95,5 +89,8 @@ export interface Database {
 }
 
 // Extended types for API usage
-export interface CreateMissionInput extends Omit<Database['public']['Tables']['missions']['Insert'], 'id' | 'created_at' | 'updated_at'> {}
+export interface CreateMissionInput extends Omit<
+  Database['public']['Tables']['missions']['Insert'],
+  'id' | 'created_at' | 'updated_at'
+> {}
 export interface UpdateMissionInput extends Partial<CreateMissionInput> {}

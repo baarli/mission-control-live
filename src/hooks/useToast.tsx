@@ -27,17 +27,20 @@ export const useToast = (): UseToastReturn => {
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
-  const showToast = useCallback((message: string, type: ToastType = 'info'): void => {
-    const id = `toast-${++idCounter.current}-${Date.now()}`;
-    const newToast: Toast = { id, message, type };
-    
-    setToasts(prev => [...prev, newToast]);
+  const showToast = useCallback(
+    (message: string, type: ToastType = 'info'): void => {
+      const id = `toast-${++idCounter.current}-${Date.now()}`;
+      const newToast: Toast = { id, message, type };
 
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-      removeToast(id);
-    }, 3000);
-  }, [removeToast]);
+      setToasts(prev => [...prev, newToast]);
+
+      // Auto-remove after 3 seconds
+      setTimeout(() => {
+        removeToast(id);
+      }, 3000);
+    },
+    [removeToast]
+  );
 
   // Listen to global toast events
   useEffect(() => {

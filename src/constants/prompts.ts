@@ -49,7 +49,7 @@ Fokuser på deltakere, drama og elimineringer.`,
    */
   INTERNATIONAL: `Søk etter internasjonale nyheter med underholdningsvinkel.
 Inkluder: Hollywood, britiske kjendiser, europeisk popkultur.
-Fokuser på skandaler, premierer og trender.`
+Fokuser på skandaler, premierer og trender.`,
 };
 
 /**
@@ -116,7 +116,7 @@ Nøkkelordene vil brukes for å søke etter relaterte artikler:`,
 1. Er det relevant for et ungt publikum (16-34 år)?
 2. Er det nyhetsverdig nok for radio?
 3. Passer det for morgensending?
-4. Gi en vurdering fra 1-10 og begrunnelse:`
+4. Gi en vurdering fra 1-10 og begrunnelse:`,
 };
 
 /**
@@ -126,34 +126,30 @@ export const CONTENT_TEMPLATES = {
   /**
    * Template for intro text
    */
-  INTRO: (showName: string, date: string) => 
-    `Velkommen til ${showName} - ${date}!`,
+  INTRO: (showName: string, date: string) => `Velkommen til ${showName} - ${date}!`,
 
   /**
    * Template for sak presentation
    */
-  SAK_PRESENTATION: (title: string, category: string) =>
-    `Neste sak: ${title} [${category}]`,
+  SAK_PRESENTATION: (title: string, category: string) => `Neste sak: ${title} [${category}]`,
 
   /**
    * Template for breaking news
    */
-  BREAKING_NEWS: (headline: string) =>
-    `⚡ BREAKING: ${headline}`,
+  BREAKING_NEWS: (headline: string) => `⚡ BREAKING: ${headline}`,
 
   /**
    * Template for weather mention
    */
-  WEATHER: (forecast: string) =>
-    `Og for de som lurer på været i dag: ${forecast}`,
+  WEATHER: (forecast: string) => `Og for de som lurer på været i dag: ${forecast}`,
 
   /**
    * Template for outro
    */
   OUTRO: (showName: string, nextShow?: string) =>
-    nextShow 
+    nextShow
       ? `Takk for at du lyttet til ${showName}! Husk å stille klokka for ${nextShow}.`
-      : `Takk for at du lyttet til ${showName}! Ha en strålende dag!`
+      : `Takk for at du lyttet til ${showName}! Ha en strålende dag!`,
 };
 
 /**
@@ -166,7 +162,7 @@ export const ERROR_MESSAGES = {
   DELETE_FAILED: 'Kunne ikke slette.',
   AUTH_FAILED: 'Innlogging feilet. Sjekk passordet.',
   NETWORK_ERROR: 'Nettverksfeil. Prøv igjen.',
-  UNKNOWN_ERROR: 'En ukjent feil oppstod.'
+  UNKNOWN_ERROR: 'En ukjent feil oppstod.',
 };
 
 /**
@@ -178,7 +174,7 @@ export const SUCCESS_MESSAGES = {
   UPDATED: 'Oppdatert!',
   EXPORTED: 'Eksportert!',
   COPIED: 'Kopiert til utklippstavlen!',
-  SYNCED: 'Synkronisert!'
+  SYNCED: 'Synkronisert!',
 };
 
 /**
@@ -188,7 +184,7 @@ export const CONFIRM_MESSAGES = {
   DELETE_SAK: 'Er du sikker på at du vil slette denne saken?',
   DELETE_ALL: 'Er du sikker på at du vil slette alle elementer?',
   LOGOUT: 'Er du sikker på at du vil logge ut?',
-  UNSAVED_CHANGES: 'Du har ulagrede endringer. Vil du fortsette?'
+  UNSAVED_CHANGES: 'Du har ulagrede endringer. Vil du fortsette?',
 };
 
 /**
@@ -199,7 +195,7 @@ export const PLACEHOLDERS = {
   SAK_TITLE: 'Skriv inn sakstittel...',
   SAK_DESCRIPTION: 'Beskrivelse av saken...',
   URL: 'https://...',
-  NOTES: 'Notater...'
+  NOTES: 'Notater...',
 };
 
 /**
@@ -215,7 +211,7 @@ export const LABELS = {
   FILTER: 'Filter',
   SORT: 'Sortering',
   EXPORT: 'Eksporter',
-  IMPORT: 'Importer'
+  IMPORT: 'Importer',
 };
 
 export default {
@@ -227,5 +223,5 @@ export default {
   CONFIRM_MESSAGES,
   PLACEHOLDERS,
   LABELS,
-  getSearchPrompt
+  getSearchPrompt,
 };

@@ -31,7 +31,7 @@ export const handlers = [
       ],
     });
   }),
-  
+
   // Supabase auth mock
   http.post('https://*.supabase.co/auth/v1/token', () => {
     return HttpResponse.json({
@@ -42,7 +42,7 @@ export const handlers = [
       },
     });
   }),
-  
+
   // Default fallback
   http.all('*', ({ request }) => {
     console.warn(`Unhandled request: ${request.method} ${request.url}`);
@@ -59,43 +59,43 @@ export const server = setupServer(...handlers);
 beforeAll(() => {
   // Setup MSW
   server.listen({ onUnhandledRequest: 'warn' });
-  
+
   // Setup mocks
   setupLocalStorageMock();
   setupDefaultMatchMedia();
-  
+
   // Setup IntersectionObserver mock
   global.IntersectionObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
   }));
-  
+
   // Setup MediaQueryListEvent mock
   global.MediaQueryListEvent = class MediaQueryListEvent extends Event {
     matches: boolean;
     media: string;
-    
+
     constructor(type: string, init?: { matches?: boolean; media?: string }) {
       super(type);
       this.matches = init?.matches ?? false;
       this.media = init?.media ?? '';
     }
   } as unknown as typeof MediaQueryListEvent;
-  
+
   // Setup ResizeObserver mock
   global.ResizeObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
   }));
-  
+
   // Mock window.scrollTo
   Object.defineProperty(window, 'scrollTo', {
     writable: true,
     value: vi.fn(),
   });
-  
+
   // Mock console methods in test environment
   if (process.env.NODE_ENV === 'test') {
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -106,15 +106,15 @@ beforeAll(() => {
 afterEach(() => {
   // Cleanup React Testing Library
   cleanup();
-  
+
   // Reset MSW handlers
   server.resetHandlers();
-  
+
   // Reset mocks
   resetLocalStorageMock();
   resetMatchMediaMock();
   setupDefaultMatchMedia();
-  
+
   // Clear all mocks
   vi.clearAllMocks();
 });
@@ -122,7 +122,7 @@ afterEach(() => {
 afterAll(() => {
   // Close MSW server
   server.close();
-  
+
   // Restore console mocks
   if (process.env.NODE_ENV === 'test') {
     vi.restoreAllMocks();
@@ -138,14 +138,12 @@ expect.extend({
     const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
-        message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
     } else {
       return {
-        message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
+        message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
         pass: false,
       };
     }
@@ -179,11 +177,7 @@ export function wait(ms: number): Promise<void> {
 /**
  * Create a mock file for file input testing
  */
-export function createMockFile(
-  name: string,
-  size: number,
-  type: string
-): File {
+export function createMockFile(name: string, size: number, type: string): File {
   const content = new Array(size).fill('a').join('');
   return new File([content], name, { type });
 }

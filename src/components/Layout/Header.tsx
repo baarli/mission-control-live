@@ -49,13 +49,10 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Navigation */}
         <nav className={styles.nav} aria-label="Hovednavigasjon">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <button
               key={item.id}
-              className={[
-                styles.navButton,
-                activeSection === item.id && styles.active,
-              ].join(' ')}
+              className={[styles.navButton, activeSection === item.id && styles.active].join(' ')}
               onClick={() => onNavigate(item.id)}
               aria-current={activeSection === item.id ? 'page' : undefined}
             >
@@ -76,12 +73,7 @@ const Header: React.FC<HeaderProps> = ({
             offIcon="☀️"
             ariaLabel={theme === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus'}
           />
-          <Button
-            variant="ghost"
-            onClick={onLogout}
-            leftIcon="🚪"
-            className={styles.logoutButton}
-          >
+          <Button variant="ghost" onClick={onLogout} leftIcon="🚪" className={styles.logoutButton}>
             <span className={styles.logoutText}>Logg ut</span>
           </Button>
         </div>

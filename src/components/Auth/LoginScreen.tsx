@@ -37,7 +37,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!password.trim() || isLoading) return;
 
     setIsLoading(true);
@@ -45,7 +45,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
 
     try {
       const success = await Promise.resolve(onLogin(password));
-      
+
       if (!success) {
         setShowError(true);
         setPassword('');
@@ -82,14 +82,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
             ref={inputRef}
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Skriv passord..."
             autoComplete="current-password"
             disabled={isLoading}
             fullWidth
           />
-          
+
           <Button
             type="submit"
             variant="primary"

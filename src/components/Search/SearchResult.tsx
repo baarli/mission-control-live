@@ -49,7 +49,7 @@ const SearchResultComponent: React.FC<SearchResultProps> = ({
       tabIndex={onSelect ? 0 : undefined}
       onKeyDown={
         onSelect
-          ? (e) => {
+          ? e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 onSelect(result.id, !isSelected);
@@ -64,7 +64,7 @@ const SearchResultComponent: React.FC<SearchResultProps> = ({
             type="checkbox"
             checked={isSelected}
             onChange={handleCheckboxChange}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
             className={styles.checkbox}
             aria-label={`Velg ${result.title}`}
           />
@@ -72,21 +72,15 @@ const SearchResultComponent: React.FC<SearchResultProps> = ({
 
         <div className={styles.content}>
           <h3 className={styles.title}>{result.title}</h3>
-          
-          {result.description && (
-            <p className={styles.description}>{result.description}</p>
-          )}
+
+          {result.description && <p className={styles.description}>{result.description}</p>}
 
           <div className={styles.meta}>
             {result.category && (
-              <Badge category={result.category as Category}>
-                {result.category}
-              </Badge>
+              <Badge category={result.category as Category}>{result.category}</Badge>
             )}
-            
-            {result.source && (
-              <span className={styles.source}>{result.source}</span>
-            )}
+
+            {result.source && <span className={styles.source}>{result.source}</span>}
 
             {result.published_at && (
               <span className={styles.date}>
@@ -104,7 +98,7 @@ const SearchResultComponent: React.FC<SearchResultProps> = ({
 
         {onAdd && (
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               onAdd(result);
             }}

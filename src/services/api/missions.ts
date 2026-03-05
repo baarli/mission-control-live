@@ -1,4 +1,3 @@
-
 import type { Mission } from '@/types';
 import type { CreateMissionInput, UpdateMissionInput } from '@/types/supabase';
 
@@ -18,11 +17,7 @@ export const missionsApi = {
 
   async getById(id: string): Promise<Mission | null> {
     const client = supabase.getClient();
-    const { data, error } = await client
-      .from('missions')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await client.from('missions').select('*').eq('id', id).single();
 
     if (error) throw error;
     return data;
@@ -30,11 +25,7 @@ export const missionsApi = {
 
   async create(input: CreateMissionInput): Promise<Mission> {
     const client = supabase.getClient();
-    const { data, error } = await client
-      .from('missions')
-      .insert(input)
-      .select()
-      .single();
+    const { data, error } = await client.from('missions').insert(input).select().single();
 
     if (error) throw error;
     return data;

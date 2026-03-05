@@ -5,10 +5,10 @@
 
 import { getSkillBridge, type SkillResult, type ProgressCallback } from './bridge';
 
-export type ImageGenerationType = 
-  | 'podcast-thumbnail' 
-  | 'social-media' 
-  | 'hero-image' 
+export type ImageGenerationType =
+  | 'podcast-thumbnail'
+  | 'social-media'
+  | 'hero-image'
   | 'episode-art';
 
 export type ImageSize = '1024x1024' | '1536x1024' | '1024x1536' | 'auto';
@@ -55,7 +55,7 @@ const DEFAULT_OPTIONS: ImageGenerationOptions = {
   size: '1024x1024',
   quality: 'auto',
   background: 'auto',
-  outputFormat: 'png'
+  outputFormat: 'png',
 };
 
 /**
@@ -75,7 +75,7 @@ export async function generatePodcastThumbnail(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -91,7 +91,7 @@ export async function generatePodcastThumbnail(
       quality: opts.quality,
       background: opts.background,
       outputFormat: opts.outputFormat,
-      outputName: `podcast-thumb-${data.episodeNumber || Date.now()}`
+      outputName: `podcast-thumb-${data.episodeNumber || Date.now()}`,
     },
     onProgress
   );
@@ -114,7 +114,7 @@ export async function generateSocialMediaGraphic(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -130,7 +130,7 @@ export async function generateSocialMediaGraphic(
       size,
       quality: opts.quality,
       outputFormat: opts.outputFormat,
-      outputName: `social-${data.platform}-${Date.now()}`
+      outputName: `social-${data.platform}-${Date.now()}`,
     },
     onProgress
   );
@@ -152,7 +152,7 @@ export async function generateHeroImage(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -167,7 +167,7 @@ export async function generateHeroImage(
       size: '1536x1024',
       quality: 'high',
       outputFormat: 'png',
-      outputName: `hero-${Date.now()}`
+      outputName: `hero-${Date.now()}`,
     },
     onProgress
   );
@@ -188,7 +188,7 @@ export async function generateEpisodeArt(
       episodeTitle,
       showName,
       episodeNumber,
-      style: 'modern'
+      style: 'modern',
     },
     { ...options, size: '1024x1024', quality: 'high' },
     onProgress
@@ -212,7 +212,7 @@ export async function editImage(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -225,7 +225,7 @@ export async function editImage(
       maskPath,
       model: 'gpt-image-1.5',
       size: options.size,
-      outputFormat: options.outputFormat
+      outputFormat: options.outputFormat,
     },
     onProgress
   );
@@ -246,7 +246,7 @@ export async function createTransparentBackground(
       action: 'edit',
       imagePath,
       prompt: 'Remove background, make transparent',
-      background: 'transparent'
+      background: 'transparent',
     },
     onProgress
   );
@@ -265,7 +265,7 @@ function buildPodcastThumbnailPrompt(data: PodcastThumbnailData): string {
     `Composition/framing: Centered, eye-catching design suitable for podcast platforms`,
     `Text: "${data.showName}"${data.episodeNumber ? ` - Episode ${data.episodeNumber}` : ''}`,
     `Constraints: Must be readable at small sizes, bold typography, high contrast`,
-    `Avoid: Cluttered design, small text, busy backgrounds`
+    `Avoid: Cluttered design, small text, busy backgrounds`,
   ];
 
   return parts.filter(Boolean).join('\n');
@@ -273,7 +273,7 @@ function buildPodcastThumbnailPrompt(data: PodcastThumbnailData): string {
 
 function buildSocialMediaPrompt(data: SocialMediaGraphicData): string {
   const size = getSocialMediaSize(data.platform);
-  
+
   const parts = [
     `Use case: social-media`,
     `Asset type: ${data.platform} post`,
@@ -284,7 +284,7 @@ function buildSocialMediaPrompt(data: SocialMediaGraphicData): string {
     `Size: ${size}`,
     `Style/medium: Clean, professional social media design`,
     `Constraints: On-brand colors${data.brandColors ? ` (${data.brandColors.join(', ')})` : ''}`,
-    `Avoid: Generic stock imagery, text too small for mobile`
+    `Avoid: Generic stock imagery, text too small for mobile`,
   ];
 
   return parts.filter(Boolean).join('\n');
@@ -300,7 +300,7 @@ function buildHeroImagePrompt(title: string, subtitle?: string): string {
     `Composition/framing: Wide format, generous negative space for text overlay`,
     `Lighting/mood: Professional, engaging`,
     `Constraints: Suitable for web hero section, high resolution`,
-    `Avoid: Text in image (will be added via HTML), busy patterns that conflict with text`
+    `Avoid: Text in image (will be added via HTML), busy patterns that conflict with text`,
   ];
 
   return parts.filter(Boolean).join('\n');
@@ -331,14 +331,14 @@ export function estimateCost(
   // Rough estimates based on OpenAI pricing
   const baseTokens = quality === 'high' ? 4000 : quality === 'medium' ? 2000 : 1000;
   const totalTokens = baseTokens * count;
-  
+
   // Approximate cost in USD (varies by model)
   const costPer1K = 0.04; // Approximate
   const cost = (totalTokens / 1000) * costPer1K;
 
   return {
     tokens: totalTokens,
-    approximateCost: `$${cost.toFixed(2)} USD`
+    approximateCost: `$${cost.toFixed(2)} USD`,
   };
 }
 
@@ -367,7 +367,7 @@ export function validatePrompt(prompt: string): { valid: boolean; issues: string
 
   return {
     valid: issues.length === 0,
-    issues
+    issues,
   };
 }
 
@@ -380,5 +380,5 @@ export default {
   editImage,
   createTransparentBackground,
   estimateCost,
-  validatePrompt
+  validatePrompt,
 };

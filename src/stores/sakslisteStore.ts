@@ -21,7 +21,7 @@ interface SakslisteState {
   };
   sortBy: 'order_index' | 'created_at' | 'title';
   sortOrder: 'asc' | 'desc';
-  
+
   // Actions
   setItems: (items: Sak[]) => void;
   addItem: (item: Sak) => void;
@@ -31,11 +31,14 @@ interface SakslisteState {
   reorderItems: (orderedIds: string[]) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  setFilter: (key: keyof SakslisteState['filters'], value: SakslisteState['filters'][keyof SakslisteState['filters']]) => void;
+  setFilter: (
+    key: keyof SakslisteState['filters'],
+    value: SakslisteState['filters'][keyof SakslisteState['filters']]
+  ) => void;
   clearFilters: () => void;
   setSort: (sortBy: SakslisteState['sortBy'], sortOrder?: 'asc' | 'desc') => void;
   reset: () => void;
-  
+
   // Computed
   getFilteredItems: () => Sak[];
   getItemById: (id: string) => Sak | undefined;
@@ -45,7 +48,7 @@ interface SakslisteState {
 const initialFilters = {
   category: null as Category | null,
   searchQuery: '',
-  dateRange: { from: null, to: null } as { from: string | null; to: string | null }
+  dateRange: { from: null, to: null } as { from: string | null; to: string | null },
 };
 
 export const useSakslisteStore = create<SakslisteState>()(
@@ -64,31 +67,31 @@ export const useSakslisteStore = create<SakslisteState>()(
 
         // Actions
         setItems: (items: Sak[]) => {
-          set({ 
-            items, 
+          set({
+            items,
             lastFetchedAt: new Date().toISOString(),
-            error: null 
+            error: null,
           });
         },
 
         addItem: (item: Sak) => {
-          set((state) => ({
-            items: [...state.items, item]
+          set(state => ({
+            items: [...state.items, item],
           }));
         },
 
         updateItem: (id: string, updates: Partial<Sak>) => {
-          set((state) => ({
-            items: state.items.map((item) =>
+          set(state => ({
+            items: state.items.map(item =>
               item.id === id ? { ...item, ...updates, updated_at: new Date().toISOString() } : item
-            )
+            ),
           }));
         },
 
         removeItem: (id: string) => {
-          set((state) => ({
-            items: state.items.filter((item) => item.id !== id),
-            selectedItemId: state.selectedItemId === id ? null : state.selectedItemId
+          set(state => ({
+            items: state.items.filter(item => item.id !== id),
+            selectedItemId: state.selectedItemId === id ? null : state.selectedItemId,
           }));
         },
 
@@ -97,8 +100,8 @@ export const useSakslisteStore = create<SakslisteState>()(
         },
 
         reorderItems: (orderedIds: string[]) => {
-          set((state) => {
-            const itemMap = new Map(state.items.map((item) => [item.id, item]));
+          set(state => {
+            const itemMap = new Map(state.items.map(item => [item.id, item]));
             const reorderedItems = orderedIds
               .map((id, index) => {
                 const item = itemMap.get(id);
@@ -108,12 +111,10 @@ export const useSakslisteStore = create<SakslisteState>()(
                 return null;
               })
               .filter((item): item is Sak => item !== null);
-            
+
             // Add any items not in the ordered list
-            const remainingItems = state.items.filter(
-              (item) => !orderedIds.includes(item.id)
-            );
-            
+            const remainingItems = state.items.filter(item => !orderedIds.includes(item.id));
+
             return { items: [...reorderedItems, ...remainingItems] };
           });
         },
@@ -126,9 +127,12 @@ export const useSakslisteStore = create<SakslisteState>()(
           set({ error, isLoading: false });
         },
 
-        setFilter: (key: keyof SakslisteState['filters'], value: SakslisteState['filters'][keyof SakslisteState['filters']]) => {
-          set((state) => ({
-            filters: { ...state.filters, [key]: value }
+        setFilter: (
+          key: keyof SakslisteState['filters'],
+          value: SakslisteState['filters'][keyof SakslisteState['filters']]
+        ) => {
+          set(state => ({
+            filters: { ...state.filters, [key]: value },
           }));
         },
 
@@ -137,9 +141,9 @@ export const useSakslisteStore = create<SakslisteState>()(
         },
 
         setSort: (sortBy: SakslisteState['sortBy'], sortOrder?: 'asc' | 'desc') => {
-          set((state) => ({
+          set(state => ({
             sortBy,
-            sortOrder: sortOrder || state.sortOrder
+            sortOrder: sortOrder || state.sortOrder,
           }));
         },
 
@@ -152,43 +156,43 @@ export const useSakslisteStore = create<SakslisteState>()(
             lastFetchedAt: null,
             filters: initialFilters,
             sortBy: 'order_index',
-            sortOrder: 'asc'
+            sortOrder: 'asc',
           });
         },
 
         // Computed
         getFilteredItems: () => {
           const { items, filters, sortBy, sortOrder } = get();
-          
+
           let filtered = [...items];
-          
+
           // Apply category filter
           if (filters.category) {
-            filtered = filtered.filter((item) => item.category === filters.category);
+            filtered = filtered.filter(item => item.category === filters.category);
           }
-          
+
           // Apply search filter
           if (filters.searchQuery) {
             const query = filters.searchQuery.toLowerCase();
             filtered = filtered.filter(
-              (item) =>
+              item =>
                 item.title.toLowerCase().includes(query) ||
                 item.description?.toLowerCase().includes(query)
             );
           }
-          
+
           // Apply date range filter
           if (filters.dateRange.from) {
             filtered = filtered.filter(
-              (item) => new Date(item.show_date) >= new Date(filters.dateRange.from!)
+              item => new Date(item.show_date) >= new Date(filters.dateRange.from!)
             );
           }
           if (filters.dateRange.to) {
             filtered = filtered.filter(
-              (item) => new Date(item.show_date) <= new Date(filters.dateRange.to!)
+              item => new Date(item.show_date) <= new Date(filters.dateRange.to!)
             );
           }
-          
+
           // Apply sorting
           filtered.sort((a, b) => {
             let comparison = 0;
@@ -205,26 +209,26 @@ export const useSakslisteStore = create<SakslisteState>()(
             }
             return sortOrder === 'desc' ? -comparison : comparison;
           });
-          
+
           return filtered;
         },
 
         getItemById: (id: string) => {
-          return get().items.find((item) => item.id === id);
+          return get().items.find(item => item.id === id);
         },
 
         getItemsByCategory: (category: Category) => {
-          return get().items.filter((item) => item.category === category);
-        }
+          return get().items.filter(item => item.category === category);
+        },
       }),
       {
         name: 'mc-saksliste-storage',
         storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({ 
+        partialize: state => ({
           filters: state.filters,
           sortBy: state.sortBy,
-          sortOrder: state.sortOrder
-        })
+          sortOrder: state.sortOrder,
+        }),
       }
     ),
     { name: 'SakslisteStore' }
@@ -232,13 +236,14 @@ export const useSakslisteStore = create<SakslisteState>()(
 );
 
 // Selector hooks
-export const useSakslisteItems = () => useSakslisteStore((state) => state.items);
-export const useSakslisteLoading = () => useSakslisteStore((state) => state.isLoading);
-export const useSakslisteError = () => useSakslisteStore((state) => state.error);
-export const useSelectedSak = () => useSakslisteStore((state) => 
-  state.selectedItemId ? state.getItemById(state.selectedItemId) : undefined
-);
-export const useSakslisteFilters = () => useSakslisteStore((state) => state.filters);
+export const useSakslisteItems = () => useSakslisteStore(state => state.items);
+export const useSakslisteLoading = () => useSakslisteStore(state => state.isLoading);
+export const useSakslisteError = () => useSakslisteStore(state => state.error);
+export const useSelectedSak = () =>
+  useSakslisteStore(state =>
+    state.selectedItemId ? state.getItemById(state.selectedItemId) : undefined
+  );
+export const useSakslisteFilters = () => useSakslisteStore(state => state.filters);
 export const useFilteredSakslisteItems = () => {
   const store = useSakslisteStore();
   return store.getFilteredItems();

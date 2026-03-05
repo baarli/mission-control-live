@@ -3,39 +3,39 @@
  */
 class LocalStorageMock {
   private store: Record<string, string> = {};
-  
+
   get length(): number {
     return Object.keys(this.store).length;
   }
-  
+
   key(index: number): string | null {
     const keys = Object.keys(this.store);
     return keys[index] || null;
   }
-  
+
   getItem(key: string): string | null {
     return this.store[key] || null;
   }
-  
+
   setItem(key: string, value: string): void {
     this.store[key] = String(value);
   }
-  
+
   removeItem(key: string): void {
     delete this.store[key];
   }
-  
+
   clear(): void {
     this.store = {};
   }
-  
+
   /**
    * Get all keys matching a prefix
    */
   getKeysWithPrefix(prefix: string): string[] {
     return Object.keys(this.store).filter(key => key.startsWith(prefix));
   }
-  
+
   /**
    * Get parsed item as JSON
    */
@@ -48,7 +48,7 @@ class LocalStorageMock {
       return defaultValue;
     }
   }
-  
+
   /**
    * Set item as JSON
    */

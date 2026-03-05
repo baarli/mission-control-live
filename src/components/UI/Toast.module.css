@@ -13,7 +13,7 @@
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  
+
   /* Initial state for animation */
   transform: translateX(120%);
   opacity: 0;

@@ -13,7 +13,7 @@ type Serializer<T> = {
 // Default JSON serializer
 const defaultSerializer: Serializer<unknown> = {
   stringify: JSON.stringify,
-  parse: JSON.parse
+  parse: JSON.parse,
 };
 
 interface UseLocalStorageOptions<T> {
@@ -55,36 +55,39 @@ export function useLocalStorage<T>(
   const [storedValue, setStoredValue] = useState<T>(readValue);
 
   // Return a wrapped version of useState's setter function that persists to localStorage
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      
-      // Save to state
-      setStoredValue(valueToStore);
-      
-      // Save to localStorage
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, serializer.stringify(valueToStore));
-        
-        // Dispatch custom event for cross-tab sync
-        if (sync) {
-          window.dispatchEvent(new StorageEvent('storage', { key }));
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        // Allow value to be a function so we have same API as useState
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+
+        // Save to state
+        setStoredValue(valueToStore);
+
+        // Save to localStorage
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(key, serializer.stringify(valueToStore));
+
+          // Dispatch custom event for cross-tab sync
+          if (sync) {
+            window.dispatchEvent(new StorageEvent('storage', { key }));
+          }
         }
+      } catch (error) {
+        console.warn(`[useLocalStorage] Error setting key "${key}":`, error);
       }
-    } catch (error) {
-      console.warn(`[useLocalStorage] Error setting key "${key}":`, error);
-    }
-  }, [key, storedValue, serializer, sync]);
+    },
+    [key, storedValue, serializer, sync]
+  );
 
   // Remove item from localStorage
   const removeValue = useCallback(() => {
     try {
       setStoredValue(initialValue);
-      
+
       if (typeof window !== 'undefined') {
         window.localStorage.removeItem(key);
-        
+
         if (sync) {
           window.dispatchEvent(new StorageEvent('storage', { key }));
         }
@@ -124,7 +127,7 @@ export function useLocalStorageValue<T>(
     if (typeof window === 'undefined') {
       return initialValue;
     }
-    
+
     try {
       const item = window.localStorage.getItem(key);
       return item ? serializer.parse(item) : initialValue;
@@ -135,16 +138,19 @@ export function useLocalStorageValue<T>(
 
   const getServerSnapshot = useCallback(() => initialValue, [initialValue]);
 
-  const subscribe = useCallback((callback: () => void) => {
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === key) {
-        callback();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [key]);
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const handleStorage = (event: StorageEvent) => {
+        if (event.key === key) {
+          callback();
+        }
+      };
+
+      window.addEventListener('storage', handleStorage);
+      return () => window.removeEventListener('storage', handleStorage);
+    },
+    [key]
+  );
 
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

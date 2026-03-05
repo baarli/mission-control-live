@@ -45,14 +45,14 @@ export const CommandSender: React.FC = () => {
   return (
     <GlassCard className={styles.commandCard}>
       <h3 className={styles.title}>📡 Send Command</h3>
-      
+
       <form onSubmit={handleSubmit} className={styles.commandForm}>
         <div className={styles.formRow}>
           <div className={styles.formGroup}>
             <label className={styles.label}>Command Type</label>
             <select
               value={commandType}
-              onChange={(e) => setCommandType(e.target.value as typeof commandType)}
+              onChange={e => setCommandType(e.target.value as typeof commandType)}
               className={styles.select}
               disabled={!isConnected}
             >
@@ -66,7 +66,7 @@ export const CommandSender: React.FC = () => {
             <label className={styles.label}>Priority</label>
             <select
               value={priority}
-              onChange={(e) => setPriority(e.target.value as typeof priority)}
+              onChange={e => setPriority(e.target.value as typeof priority)}
               className={styles.select}
               disabled={!isConnected}
             >
@@ -81,8 +81,8 @@ export const CommandSender: React.FC = () => {
           <label className={styles.label}>Command</label>
           <textarea
             value={command}
-            onChange={(e) => setCommand(e.target.value)}
-            placeholder={isConnected ? "Enter command..." : "Connect to send commands"}
+            onChange={e => setCommand(e.target.value)}
+            placeholder={isConnected ? 'Enter command...' : 'Connect to send commands'}
             className={styles.textarea}
             rows={3}
             disabled={!isConnected}

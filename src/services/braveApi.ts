@@ -14,7 +14,7 @@ const braveClient = axios.create({
   baseURL: BRAVE_API_BASE,
   headers: {
     'X-Subscription-Token': braveApiKey,
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
   timeout: 10000,
 });

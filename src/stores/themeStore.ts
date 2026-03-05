@@ -34,16 +34,16 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: getInitialTheme(),
   resolvedTheme: 'light',
-  
-  setTheme: (theme) => {
+
+  setTheme: theme => {
     setItem(StorageKeys.THEME, theme);
-    set({ 
+    set({
       theme,
-      resolvedTheme: resolveTheme(theme)
+      resolvedTheme: resolveTheme(theme),
     });
     applyTheme(resolveTheme(theme));
   },
-  
+
   toggleTheme: () => {
     const current = get().theme;
     const newTheme: Theme = current === 'light' ? 'dark' : 'light';
@@ -68,15 +68,15 @@ function applyTheme(theme: 'light' | 'dark') {
 export function initializeTheme() {
   const theme = getInitialTheme();
   const resolved = resolveTheme(theme);
-  useThemeStore.setState({ 
+  useThemeStore.setState({
     theme,
-    resolvedTheme: resolved
+    resolvedTheme: resolved,
   });
   applyTheme(resolved);
-  
+
   // Listen for system theme changes
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  mediaQuery.addEventListener('change', (e) => {
+  mediaQuery.addEventListener('change', e => {
     const currentTheme = useThemeStore.getState().theme;
     if (currentTheme === 'system') {
       const newResolved = e.matches ? 'dark' : 'light';

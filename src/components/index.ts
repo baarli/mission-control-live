@@ -17,48 +17,22 @@ export {
 } from './UI';
 
 // Layout Components
-export {
-  Layout,
-  Header,
-  Sidebar,
-  GlassCard,
-} from './Layout';
+export { Layout, Header, Sidebar, GlassCard } from './Layout';
 
 // Auth Components
-export {
-  LoginScreen,
-  ProtectedRoute,
-} from './Auth';
+export { LoginScreen, ProtectedRoute } from './Auth';
 
 // Dashboard Components
-export {
-  Dashboard,
-  StatCard,
-  StatusPanel,
-} from './Dashboard';
+export { Dashboard, StatCard, StatusPanel } from './Dashboard';
 
 // Saksliste Components
-export {
-  Saksliste,
-  SakItem,
-  SakEditForm,
-  EmptyState,
-} from './Saksliste';
+export { Saksliste, SakItem, SakEditForm, EmptyState } from './Saksliste';
 
 // Search Components
-export {
-  SearchPanel,
-  SearchResult,
-  PromptEditor,
-  SearchHistory,
-} from './Search';
+export { SearchPanel, SearchResult, PromptEditor, SearchHistory } from './Search';
 
 // Stats Components
-export {
-  StatsView,
-  LineChart,
-  DataTable,
-} from './Stats';
+export { StatsView, LineChart, DataTable } from './Stats';
 
 // Agent Components
 export {

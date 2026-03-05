@@ -9,14 +9,8 @@ export interface MatchMediaMock {
   matches: boolean;
   media: string;
   onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => void) | null;
-  addEventListener: (
-    type: 'change',
-    listener: (ev: MediaQueryListEvent) => void
-  ) => void;
-  removeEventListener: (
-    type: 'change',
-    listener: (ev: MediaQueryListEvent) => void
-  ) => void;
+  addEventListener: (type: 'change', listener: (ev: MediaQueryListEvent) => void) => void;
+  removeEventListener: (type: 'change', listener: (ev: MediaQueryListEvent) => void) => void;
   dispatchEvent: (ev: Event) => boolean;
 }
 
@@ -28,28 +22,28 @@ class MatchMediaMockImpl implements MatchMediaMock {
   media = '';
   onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => void) | null = null;
   private listeners: Array<(ev: MediaQueryListEvent) => void> = [];
-  
+
   constructor(query: string, matches = false) {
     this.media = query;
     this.matches = matches;
   }
-  
+
   addEventListener(type: 'change', listener: (ev: MediaQueryListEvent) => void): void {
     if (type === 'change') {
       this.listeners.push(listener);
     }
   }
-  
+
   removeEventListener(type: 'change', listener: (ev: MediaQueryListEvent) => void): void {
     if (type === 'change') {
       this.listeners = this.listeners.filter(l => l !== listener);
     }
   }
-  
+
   dispatchEvent(_ev: Event): boolean {
     return true;
   }
-  
+
   /**
    * Trigger change event for testing
    */
@@ -73,17 +67,17 @@ export function setupMatchMediaMock(
   queries: Record<string, boolean> = { '(prefers-color-scheme: dark)': false }
 ) {
   matchMediaMocks.clear();
-  
+
   Object.entries(queries).forEach(([query, matches]) => {
     matchMediaMocks.set(query, new MatchMediaMockImpl(query, matches));
   });
-  
+
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: (query: string) => {
       const mock = matchMediaMocks.get(query);
       if (mock) return mock;
-      
+
       // Return default mock for unknown queries
       const newMock = new MatchMediaMockImpl(query, false);
       matchMediaMocks.set(query, newMock);

@@ -33,7 +33,7 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#1e40af',
     bgColor: '#dbeafe',
     icon: '💬',
-    order: 1
+    order: 1,
   },
   {
     id: 'REALITY_TV',
@@ -44,7 +44,7 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#9d174d',
     bgColor: '#fce7f3',
     icon: '📺',
-    order: 2
+    order: 2,
   },
   {
     id: 'KJENDIS_DRAMA',
@@ -55,7 +55,7 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#92400e',
     bgColor: '#fef3c7',
     icon: '⭐',
-    order: 3
+    order: 3,
   },
   {
     id: 'FILM_TV',
@@ -66,7 +66,7 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#065f46',
     bgColor: '#d1fae5',
     icon: '🎬',
-    order: 4
+    order: 4,
   },
   {
     id: 'MUSIKK',
@@ -77,7 +77,7 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#3730a3',
     bgColor: '#e0e7ff',
     icon: '🎵',
-    order: 5
+    order: 5,
   },
   {
     id: 'INTERNASJONALT',
@@ -88,8 +88,8 @@ export const CATEGORIES: CategoryMeta[] = [
     color: '#6b21a8',
     bgColor: '#f3e8ff',
     icon: '🌍',
-    order: 6
-  }
+    order: 6,
+  },
 ];
 
 /**
@@ -146,7 +146,7 @@ export function getCategoryIcon(categoryId: Category): string {
  * Get all category IDs
  */
 export function getCategoryIds(): Category[] {
-  return CATEGORIES.map((c) => c.id);
+  return CATEGORIES.map(c => c.id);
 }
 
 /**
@@ -160,9 +160,9 @@ export function getCategoriesByOrder(): CategoryMeta[] {
  * Get categories for dropdown/select
  */
 export function getCategoryOptions(): Array<{ value: Category; label: string }> {
-  return getCategoriesByOrder().map((cat) => ({
+  return getCategoriesByOrder().map(cat => ({
     value: cat.id,
-    label: `${cat.icon} ${cat.label}`
+    label: `${cat.icon} ${cat.label}`,
   }));
 }
 
@@ -170,13 +170,16 @@ export function getCategoryOptions(): Array<{ value: Category; label: string }> 
  * Check if a string is a valid category
  */
 export function isValidCategory(value: string): value is Category {
-  return CATEGORIES.some((c) => c.id === value);
+  return CATEGORIES.some(c => c.id === value);
 }
 
 /**
  * Parse category from string (with fallback)
  */
-export function parseCategory(value: string | null | undefined, fallback: Category = 'TALK'): Category {
+export function parseCategory(
+  value: string | null | undefined,
+  fallback: Category = 'TALK'
+): Category {
   if (!value) return fallback;
   return isValidCategory(value) ? value : fallback;
 }
@@ -186,7 +189,7 @@ export function parseCategory(value: string | null | undefined, fallback: Catego
  */
 export const CATEGORY_FILTER_OPTIONS = [
   { value: '', label: 'Alle kategorier' },
-  ...getCategoryOptions()
+  ...getCategoryOptions(),
 ];
 
 /**
@@ -202,13 +205,16 @@ export function getDefaultCategory(): Category {
 export function groupByCategory<T extends { category: Category }>(
   items: T[]
 ): Record<Category, T[]> {
-  return items.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<Category, T[]>);
+  return items.reduce(
+    (acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    },
+    {} as Record<Category, T[]>
+  );
 }
 
 /**
@@ -218,17 +224,17 @@ export function countByCategory<T extends { category: Category }>(
   items: T[]
 ): Record<Category, number> {
   const counts = {} as Record<Category, number>;
-  
+
   // Initialize all categories to 0
-  CATEGORIES.forEach((cat) => {
+  CATEGORIES.forEach(cat => {
     counts[cat.id] = 0;
   });
-  
+
   // Count items
-  items.forEach((item) => {
+  items.forEach(item => {
     counts[item.category] = (counts[item.category] || 0) + 1;
   });
-  
+
   return counts;
 }
 
@@ -249,5 +255,5 @@ export default {
   parseCategory,
   getDefaultCategory,
   groupByCategory,
-  countByCategory
+  countByCategory,
 };

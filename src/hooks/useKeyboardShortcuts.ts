@@ -21,7 +21,7 @@ export function useKeyboardShortcuts(shortcuts: ShortcutConfig[]) {
         return;
       }
 
-      const matchingShortcut = shortcuts.find((shortcut) => {
+      const matchingShortcut = shortcuts.find(shortcut => {
         const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
         const ctrlMatch = !!shortcut.ctrl === (event.ctrlKey || event.metaKey);
         const shiftMatch = !!shortcut.shift === event.shiftKey;

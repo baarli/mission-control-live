@@ -16,12 +16,12 @@ interface BadgeProps {
 }
 
 const categoryToVariant: Record<Category, BadgeVariant> = {
-  'REALITY_TV': 'reality',
-  'KJENDIS_DRAMA': 'kjendis',
-  'FILM_TV': 'film',
-  'MUSIKK': 'musikk',
-  'INTERNASJONALT': 'internasjonalt',
-  'TALK': 'talk',
+  REALITY_TV: 'reality',
+  KJENDIS_DRAMA: 'kjendis',
+  FILM_TV: 'film',
+  MUSIKK: 'musikk',
+  INTERNASJONALT: 'internasjonalt',
+  TALK: 'talk',
 };
 
 const Badge: React.FC<BadgeProps> = ({
@@ -33,9 +33,7 @@ const Badge: React.FC<BadgeProps> = ({
   // If category is provided, use it to determine variant
   const finalVariant = category ? categoryToVariant[category] : variant;
 
-  const classNames = [styles.badge, styles[finalVariant], className]
-    .filter(Boolean)
-    .join(' ');
+  const classNames = [styles.badge, styles[finalVariant], className].filter(Boolean).join(' ');
 
   return <span className={classNames}>{children}</span>;
 };

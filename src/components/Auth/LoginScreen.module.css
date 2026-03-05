@@ -16,8 +16,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .card {
@@ -30,7 +34,9 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .logo {
@@ -48,8 +54,13 @@
 }
 
 @keyframes logoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .title {
@@ -92,9 +103,16 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 .footer {
@@ -108,7 +126,7 @@
   .logo {
     animation: none;
   }
-  
+
   .error.visible {
     animation: none;
   }
@@ -119,13 +137,13 @@
   .card {
     padding: var(--space-xl);
   }
-  
+
   .logo {
     width: 64px;
     height: 64px;
     font-size: 2rem;
   }
-  
+
   .title {
     font-size: 1.5rem;
   }

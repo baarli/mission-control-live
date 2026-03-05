@@ -4,10 +4,7 @@
 
 import { useEffect, useCallback } from 'react';
 
-import { 
-  useThemeStore, 
-  initializeTheme 
-} from '../stores/themeStore';
+import { useThemeStore, initializeTheme } from '../stores/themeStore';
 import type { Theme } from '../types';
 
 interface UseThemeReturn {
@@ -22,9 +19,9 @@ interface UseThemeReturn {
 }
 
 export function useTheme(): UseThemeReturn {
-  const theme = useThemeStore((state) => state.theme);
-  const toggleThemeFn = useThemeStore((state) => state.toggleTheme);
-  const setThemeFn = useThemeStore((state) => state.setTheme);
+  const theme = useThemeStore(state => state.theme);
+  const toggleThemeFn = useThemeStore(state => state.toggleTheme);
+  const setThemeFn = useThemeStore(state => state.setTheme);
 
   const isDark = theme === 'dark';
   const isLight = theme === 'light';
@@ -54,14 +51,14 @@ export function useTheme(): UseThemeReturn {
     setTheme: setThemeFn,
     setDark,
     setLight,
-    resetToSystem
+    resetToSystem,
   };
 }
 
 // Hook for applying theme to specific elements
 export function useThemedClass(baseClass: string, darkClass?: string, lightClass?: string): string {
   const { isDark, isLight } = useTheme();
-  
+
   let result = baseClass;
   if (isDark && darkClass) {
     result += ` ${darkClass}`;
@@ -69,13 +66,13 @@ export function useThemedClass(baseClass: string, darkClass?: string, lightClass
   if (isLight && lightClass) {
     result += ` ${lightClass}`;
   }
-  
+
   return result;
 }
 
 // Hook for system preference detection
 export function useSystemThemePreference(): Theme {
-  const theme = useThemeStore((state) => state.theme);
+  const theme = useThemeStore(state => state.theme);
   return theme === 'system' ? 'system' : theme;
 }
 

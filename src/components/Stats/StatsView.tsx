@@ -34,7 +34,10 @@ const StatsView: React.FC<StatsViewProps> = ({
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       .slice(-12) // Last 12 data points
       .map(m => ({
-        label: new Date(m.created_at).toLocaleDateString('nb-NO', { month: 'short', day: 'numeric' }),
+        label: new Date(m.created_at).toLocaleDateString('nb-NO', {
+          month: 'short',
+          day: 'numeric',
+        }),
         value: m.value,
         date: m.created_at,
       }));
@@ -45,7 +48,10 @@ const StatsView: React.FC<StatsViewProps> = ({
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       .slice(-12)
       .map(m => ({
-        label: new Date(m.created_at).toLocaleDateString('nb-NO', { month: 'short', day: 'numeric' }),
+        label: new Date(m.created_at).toLocaleDateString('nb-NO', {
+          month: 'short',
+          day: 'numeric',
+        }),
         value: m.rank,
         date: m.created_at,
       }));
@@ -79,13 +85,10 @@ const StatsView: React.FC<StatsViewProps> = ({
                   color="#6366f1"
                   showGrid
                   showArea
-                  yAxisFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                  yAxisFormatter={v => `${(v / 1000).toFixed(0)}k`}
                 />
               </div>
-              <DataTable
-                data={radioData.slice(0, 5)}
-                type="radio"
-              />
+              <DataTable data={radioData.slice(0, 5)} type="radio" />
             </>
           )}
         </GlassCard>
@@ -115,13 +118,10 @@ const StatsView: React.FC<StatsViewProps> = ({
                   color="#10b981"
                   showGrid
                   showArea
-                  yAxisFormatter={(v) => `#${v}`}
+                  yAxisFormatter={v => `#${v}`}
                 />
               </div>
-              <DataTable
-                data={podcastData.slice(0, 5)}
-                type="podcast"
-              />
+              <DataTable data={podcastData.slice(0, 5)} type="podcast" />
             </>
           )}
         </GlassCard>

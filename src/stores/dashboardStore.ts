@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import type { Metric, Mission } from '@/types';
 import { missionsApi } from '@services/api/missions';
 
-
 interface DashboardState {
   // Data
   metrics: Metric[];
@@ -17,11 +16,11 @@ interface DashboardState {
   setMissions: (missions: Mission[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  
+
   // Async actions
   fetchDashboardData: () => Promise<void>;
   refreshMetrics: () => Promise<void>;
-  
+
   // Computed
   getActiveMissions: () => Mission[];
   getPendingMissions: () => Mission[];

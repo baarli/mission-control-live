@@ -39,7 +39,7 @@ export interface LinkedTranscription {
 const DEFAULT_OPTIONS: TranscriptionOptions = {
   model: 'gpt-4o-mini-transcribe',
   responseFormat: 'text',
-  chunkingStrategy: 'auto'
+  chunkingStrategy: 'auto',
 };
 
 /**
@@ -59,7 +59,7 @@ export async function transcribeAudio(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -71,7 +71,7 @@ export async function transcribeAudio(
     audioPath: filePath,
     model: opts.model,
     responseFormat: opts.responseFormat,
-    chunkingStrategy: opts.chunkingStrategy
+    chunkingStrategy: opts.chunkingStrategy,
   };
 
   if (opts.language) {
@@ -82,11 +82,7 @@ export async function transcribeAudio(
     args.knownSpeakers = opts.knownSpeakers;
   }
 
-  const result = await bridge.execute<TranscriptionResult>(
-    'transcribe',
-    args,
-    onProgress
-  );
+  const result = await bridge.execute<TranscriptionResult>('transcribe', args, onProgress);
 
   // Clean up temp file if we created one
   if (isFile) {
@@ -109,7 +105,7 @@ export async function transcribeWithDiarization(
     {
       model: 'gpt-4o-transcribe-diarize',
       responseFormat: 'diarized_json',
-      knownSpeakers
+      knownSpeakers,
     },
     onProgress
   );
@@ -130,7 +126,7 @@ export async function linkTranscriptionToSak(
     audioPath,
     transcriptPath: `${audioPath}.transcript.json`,
     transcription: transcriptionResult,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 
   // Save to localStorage for persistence
@@ -142,7 +138,7 @@ export async function linkTranscriptionToSak(
     success: true,
     data: linkedTranscription,
     outputPath: linkedTranscription.transcriptPath,
-    logs: [`Transcription linked to sak ${sak.id}`]
+    logs: [`Transcription linked to sak ${sak.id}`],
   };
 }
 
@@ -151,7 +147,7 @@ export async function linkTranscriptionToSak(
  */
 export function getTranscriptionsForSak(sakId: string): LinkedTranscription[] {
   const allTranscriptions = getAllTranscriptionsFromStorage();
-  return allTranscriptions.filter((t) => t.sakId === sakId);
+  return allTranscriptions.filter(t => t.sakId === sakId);
 }
 
 /**
@@ -167,7 +163,7 @@ export function getAllTranscriptions(): LinkedTranscription[] {
 export function deleteTranscription(transcriptionId: string): boolean {
   try {
     const allTranscriptions = getAllTranscriptionsFromStorage();
-    const filtered = allTranscriptions.filter((t) => t.id !== transcriptionId);
+    const filtered = allTranscriptions.filter(t => t.id !== transcriptionId);
     localStorage.setItem('mc-transcriptions', JSON.stringify(filtered));
     return true;
   } catch {
@@ -188,14 +184,14 @@ export function extractQuotes(
     // Split text into sentences as fallback
     return transcription.text
       .split(/[.!?]+/)
-      .map((s) => s.trim())
-      .filter((s) => s.length >= minLength && s.length <= maxLength);
+      .map(s => s.trim())
+      .filter(s => s.length >= minLength && s.length <= maxLength);
   }
 
   return transcription.segments
-    .filter((segment) => !speaker || segment.speaker === speaker)
-    .map((segment) => segment.text.trim())
-    .filter((text) => text.length >= minLength && text.length <= maxLength);
+    .filter(segment => !speaker || segment.speaker === speaker)
+    .map(segment => segment.text.trim())
+    .filter(text => text.length >= minLength && text.length <= maxLength);
 }
 
 /**
@@ -214,7 +210,7 @@ export function searchTranscription(
         results.push({
           text: segment.text,
           timestamp: segment.start,
-          speaker: segment.speaker
+          speaker: segment.speaker,
         });
       }
     }
@@ -242,7 +238,7 @@ export function validateAudioFile(file: File): { valid: boolean; error?: string 
   if (!extension || !supportedFormats.includes(extension)) {
     return {
       valid: false,
-      error: `Unsupported format: ${extension}. Supported: ${supportedFormats.join(', ')}`
+      error: `Unsupported format: ${extension}. Supported: ${supportedFormats.join(', ')}`,
     };
   }
 
@@ -251,7 +247,7 @@ export function validateAudioFile(file: File): { valid: boolean; error?: string 
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Max: 100MB`
+      error: `File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Max: 100MB`,
     };
   }
 
@@ -303,5 +299,5 @@ export default {
   extractQuotes,
   searchTranscription,
   getSupportedAudioFormats,
-  validateAudioFile
+  validateAudioFile,
 };

@@ -28,12 +28,12 @@ export interface Toast {
 }
 
 // Category
-export type Category = 
-  | 'TALK' 
-  | 'REALITY_TV' 
-  | 'KJENDIS_DRAMA' 
-  | 'FILM_TV' 
-  | 'MUSIKK' 
+export type Category =
+  | 'TALK'
+  | 'REALITY_TV'
+  | 'KJENDIS_DRAMA'
+  | 'FILM_TV'
+  | 'MUSIKK'
   | 'INTERNASJONALT';
 
 // Sak (Agenda Item)
@@ -164,7 +164,14 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 export type InputType = 'text' | 'password' | 'email' | 'number' | 'date' | 'textarea';
 
 // Badge Variants
-export type BadgeVariant = 'default' | 'reality' | 'kjendis' | 'film' | 'musikk' | 'internasjonalt' | 'talk';
+export type BadgeVariant =
+  | 'default'
+  | 'reality'
+  | 'kjendis'
+  | 'film'
+  | 'musikk'
+  | 'internasjonalt'
+  | 'talk';
 
 // API Configuration
 export interface ApiConfig {

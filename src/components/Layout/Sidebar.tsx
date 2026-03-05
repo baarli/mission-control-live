@@ -39,13 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Mobile overlay */}
-      {isOpen && (
-        <div
-          className={styles.overlay}
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
+      {isOpen && <div className={styles.overlay} onClick={onClose} aria-hidden="true" />}
 
       <aside
         className={[styles.sidebar, isOpen && styles.open].filter(Boolean).join(' ')}
@@ -53,28 +47,23 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className={styles.header}>
           <div className={styles.brand}>
-            <span className={styles.logo} aria-hidden="true">🎛️</span>
+            <span className={styles.logo} aria-hidden="true">
+              🎛️
+            </span>
             <span className={styles.brandText}>Mission Control</span>
           </div>
           {onClose && (
-            <button
-              className={styles.closeButton}
-              onClick={onClose}
-              aria-label="Lukk meny"
-            >
+            <button className={styles.closeButton} onClick={onClose} aria-label="Lukk meny">
               ✕
             </button>
           )}
         </div>
 
         <nav className={styles.nav} aria-label="Sidebar navigasjon">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <button
               key={item.id}
-              className={[
-                styles.navItem,
-                activeSection === item.id && styles.active,
-              ].join(' ')}
+              className={[styles.navItem, activeSection === item.id && styles.active].join(' ')}
               onClick={() => handleNavClick(item.id)}
               aria-current={activeSection === item.id ? 'page' : undefined}
             >

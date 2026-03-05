@@ -60,18 +60,15 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
           className={styles.toggle}
           aria-expanded={isExpanded}
         >
-          <span className={[styles.chevron, isExpanded && styles.expanded].filter(Boolean).join(' ')}>
+          <span
+            className={[styles.chevron, isExpanded && styles.expanded].filter(Boolean).join(' ')}
+          >
             ▼
           </span>
           <span>{label}</span>
         </button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleReset}
-          className={styles.resetButton}
-        >
+
+        <Button variant="ghost" size="sm" onClick={handleReset} className={styles.resetButton}>
           Tilbakestill
         </Button>
       </div>
@@ -81,16 +78,14 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
         <div className={styles.editorWrapper}>
           <textarea
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             className={styles.editor}
             rows={Math.min(Math.max(lineCount + 1, 8), 20)}
             spellCheck={false}
             aria-label="Prompt editor"
           />
           <div className={styles.footer}>
-            <span className={styles.charCount}>
-              {value.length} tegn
-            </span>
+            <span className={styles.charCount}>{value.length} tegn</span>
           </div>
         </div>
       )}

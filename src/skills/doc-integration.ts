@@ -43,7 +43,7 @@ export interface MeetingAgendaData {
 const DEFAULT_OPTIONS: DocGenerationOptions = {
   title: 'Mission Control Document',
   includeTimestamp: true,
-  template: 'default'
+  template: 'default',
 };
 
 /**
@@ -63,7 +63,7 @@ export async function exportSakslisteToDocx(
     return {
       success: false,
       error: `Missing environment variables: ${envCheck.missing.join(', ')}`,
-      logs: ['Environment check failed']
+      logs: ['Environment check failed'],
     };
   }
 
@@ -76,14 +76,14 @@ export async function exportSakslisteToDocx(
     template: opts.template,
     content: {
       type: 'saksliste',
-      items: saker.map((sak) => ({
+      items: saker.map(sak => ({
         title: sak.title,
         description: sak.description,
         category: sak.category,
         link: sak.link_url,
-        showDate: sak.show_date
-      }))
-    }
+        showDate: sak.show_date,
+      })),
+    },
   };
 
   return bridge.execute(
@@ -92,7 +92,7 @@ export async function exportSakslisteToDocx(
       action: 'generate',
       format: 'docx',
       data: docData,
-      outputName: `saksliste-${new Date().toISOString().split('T')[0]}`
+      outputName: `saksliste-${new Date().toISOString().split('T')[0]}`,
     },
     onProgress
   );
@@ -121,8 +121,8 @@ export async function generateDailyBriefing(
       weather: data.weather,
       topStories: data.topStories,
       showNotes: data.showNotes,
-      reminders: data.reminders
-    }
+      reminders: data.reminders,
+    },
   };
 
   return bridge.execute(
@@ -131,7 +131,7 @@ export async function generateDailyBriefing(
       action: 'generate',
       format: 'docx',
       data: docData,
-      outputName: `briefing-${data.date}`
+      outputName: `briefing-${data.date}`,
     },
     onProgress
   );
@@ -158,12 +158,12 @@ export async function generateMeetingAgenda(
       type: 'meeting-agenda',
       attendees: data.attendees,
       agendaItems: data.agendaItems,
-      saker: data.saker.map((sak) => ({
+      saker: data.saker.map(sak => ({
         title: sak.title,
         category: sak.category,
-        description: sak.description
-      }))
-    }
+        description: sak.description,
+      })),
+    },
   };
 
   return bridge.execute(
@@ -172,7 +172,7 @@ export async function generateMeetingAgenda(
       action: 'generate',
       format: 'docx',
       data: docData,
-      outputName: `agenda-${data.date}`
+      outputName: `agenda-${data.date}`,
     },
     onProgress
   );
@@ -195,7 +195,7 @@ export async function generateFromTemplate(
       action: 'generate-from-template',
       template: templateName,
       variables,
-      options: { ...DEFAULT_OPTIONS, ...options }
+      options: { ...DEFAULT_OPTIONS, ...options },
     },
     onProgress
   );
@@ -211,12 +211,9 @@ export function getAvailableTemplates(): string[] {
 /**
  * Preview document (returns HTML representation)
  */
-export function previewDocument(
-  saker: Sak[],
-  options: DocGenerationOptions = {}
-): string {
+export function previewDocument(saker: Sak[], options: DocGenerationOptions = {}): string {
   const opts = { ...DEFAULT_OPTIONS, ...options };
-  
+
   const html = `
     <!DOCTYPE html>
     <html>
@@ -249,18 +246,22 @@ export function previewDocument(
       </div>
       
       <h2>Saker (${saker.length})</h2>
-      ${saker.map((sak, index) => `
+      ${saker
+        .map(
+          (sak, index) => `
         <div class="sak">
           <div class="sak-title">${index + 1}. ${sak.title}</div>
           <span class="sak-category category-${sak.category}">${sak.category.replace('_', ' ')}</span>
           ${sak.description ? `<div class="sak-description">${sak.description}</div>` : ''}
           ${sak.link_url ? `<div class="sak-link"><a href="${sak.link_url}" target="_blank">${sak.link_url}</a></div>` : ''}
         </div>
-      `).join('')}
+      `
+        )
+        .join('')}
     </body>
     </html>
   `;
-  
+
   return html;
 }
 
@@ -271,5 +272,5 @@ export default {
   generateMeetingAgenda,
   generateFromTemplate,
   getAvailableTemplates,
-  previewDocument
+  previewDocument,
 };

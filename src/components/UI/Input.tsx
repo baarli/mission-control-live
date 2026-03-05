@@ -16,16 +16,18 @@ interface BaseInputProps {
   fullWidth?: boolean;
 }
 
-type TextInputProps = InputHTMLAttributes<HTMLInputElement> & BaseInputProps & {
-  type?: Exclude<InputType, 'textarea'>;
-  multiline?: false;
-};
+type TextInputProps = InputHTMLAttributes<HTMLInputElement> &
+  BaseInputProps & {
+    type?: Exclude<InputType, 'textarea'>;
+    multiline?: false;
+  };
 
-type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & BaseInputProps & {
-  type?: 'textarea';
-  multiline: true;
-  rows?: number;
-};
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> &
+  BaseInputProps & {
+    type?: 'textarea';
+    multiline: true;
+    rows?: number;
+  };
 
 type InputProps = TextInputProps | TextareaProps;
 
@@ -47,11 +49,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
     const hasError = !!error;
 
-    const containerClass = [
-      styles.container,
-      fullWidth && styles.fullWidth,
-      className,
-    ]
+    const containerClass = [styles.container, fullWidth && styles.fullWidth, className]
       .filter(Boolean)
       .join(' ');
 
@@ -72,9 +70,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
           </label>
         )}
         <div className={styles.wrapper}>
-          {leftIcon && (
-            <span className={styles.leftIcon}>{leftIcon}</span>
-          )}
+          {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
           {multiline ? (
             <textarea
               ref={ref as React.Ref<HTMLTextAreaElement>}
@@ -94,9 +90,7 @@ const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
               {...(props as InputHTMLAttributes<HTMLInputElement>)}
             />
           )}
-          {rightIcon && (
-            <span className={styles.rightIcon}>{rightIcon}</span>
-          )}
+          {rightIcon && <span className={styles.rightIcon}>{rightIcon}</span>}
         </div>
         {hasError && (
           <span id={`${inputId}-error`} className={styles.errorMessage} role="alert">
