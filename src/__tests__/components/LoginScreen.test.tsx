@@ -210,7 +210,7 @@ describe('LoginScreen', () => {
   });
 
   describe('visual states', () => {
-    it('has proper styling classes', () => {
+    it('renders proper DOM structure', () => {
       render(<LoginScreen onLogin={mockOnLogin} />);
       // The form is nested inside a card which is inside a screen container
       const form = screen.getByRole('form');

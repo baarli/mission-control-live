@@ -238,7 +238,7 @@ describe('Auth Flow Integration', () => {
       expect(input).toHaveFocus();
     });
 
-    it('button is focusable', async () => {
+    it('button receives focus when clicked', async () => {
       const user = userEvent.setup();
       render(<LoginScreen onLogin={vi.fn()} />);
 

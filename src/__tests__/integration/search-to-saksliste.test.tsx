@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { useState } from 'react';
 import { describe, it, expect } from 'vitest';
@@ -147,10 +147,11 @@ describe('Search to Saksliste Integration', () => {
       // Add first result to saksliste
       await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
 
-      // Should appear in saksliste
+      // Should appear in saksliste section
       await waitFor(() => {
+        const sakslisteSection = screen.getByTestId('saksliste-section');
         expect(screen.getByText('Saksliste (1)')).toBeInTheDocument();
-        expect(screen.getAllByText('Test Video Premiere').length).toBeGreaterThanOrEqual(1);
+        expect(within(sakslisteSection).getByText('Test Video Premiere')).toBeInTheDocument();
       });
     });
 
@@ -174,11 +175,12 @@ describe('Search to Saksliste Integration', () => {
       await user.click(screen.getByLabelText('Legg til Test Video Premiere'));
       await user.click(screen.getByLabelText('Legg til Behind the Scenes'));
 
-      // Both should appear in saksliste
+      // Both should appear in saksliste section
       await waitFor(() => {
+        const sakslisteSection = screen.getByTestId('saksliste-section');
         expect(screen.getByText('Saksliste (2)')).toBeInTheDocument();
-        expect(screen.getAllByText('Test Video Premiere').length).toBeGreaterThanOrEqual(1);
-        expect(screen.getAllByText('Behind the Scenes').length).toBeGreaterThanOrEqual(1);
+        expect(within(sakslisteSection).getByText('Test Video Premiere')).toBeInTheDocument();
+        expect(within(sakslisteSection).getByText('Behind the Scenes')).toBeInTheDocument();
       });
     });
 
@@ -255,8 +257,9 @@ describe('Search to Saksliste Integration', () => {
 
       // 5. Verify in saksliste with correct data
       await waitFor(() => {
+        const sakslisteSection = screen.getByTestId('saksliste-section');
         expect(screen.getByText('Saksliste (1)')).toBeInTheDocument();
-        expect(screen.getAllByText('Behind the Scenes').length).toBeGreaterThanOrEqual(1);
+        expect(within(sakslisteSection).getByText('Behind the Scenes')).toBeInTheDocument();
 
         // Verify sak has correct status
         const sakStatus = screen.getByTestId('sak-status');
